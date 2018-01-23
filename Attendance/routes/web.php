@@ -13,7 +13,6 @@
 
 Route::get('/', 'HomeController@index');
 Route::get('/home','HomeController@index');
-Route::resource('groups','groupController');
-Route::resource('conversations','ConversationController');
 Auth::routes();
 
+Route::post('/addModule', 'ModuleController@addModule');

@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateConversationsTable extends Migration
+class CreateModuleUserTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,10 @@ class CreateConversationsTable extends Migration
      */
     public function up()
     {
-        Schema::create('conversations', function (Blueprint $table) {
+        Schema::create('module_user', function (Blueprint $table) {
             $table->increments('id');
-            $table->text('message')->nullable();
+            $table->unsignedInteger('module_id');
             $table->unsignedInteger('user_id');
-            $table->unsignedinteger('module_id');
             $table->timestamps();
         });
     }
@@ -29,6 +28,6 @@ class CreateConversationsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('conversations');
+        Schema::dropIfExists('group_user');
     }
 }
