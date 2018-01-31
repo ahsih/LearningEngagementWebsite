@@ -27,8 +27,26 @@ class User extends Authenticatable
         'password', 'remember_token',
     ];
 
+    /**
+     * Define the role as belogns to many users
+     */
     public function roles(){
         return $this->belongsToMany(Role::class);
+    }
+
+    /**
+     * Users can belongs to many modules
+     */
+    public function modules(){
+        return $this->belongsToMany(Module::class);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     * Has one first choice module
+     */
+    public function firstChoice(){
+        return $this->hasOne(FirstChoiceUserModule::class);
     }
     
     /**

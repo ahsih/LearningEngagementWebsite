@@ -13,14 +13,15 @@
 		<!-- Javascript for Ajax -->
 	<script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
 	<script src="{{ asset('js/ajax.js') }}"></script>
+	<script src="{{ asset('js/common.js') }}"></script>
  	<title>Learning Engagement</title>
 </head>
 
 <body>
 		<h1 class="text-center">Learning Engagement</h1>
-		@include('inc.navbar') 
+		@include('inc.navbar')
+		@yield('reward')
 		@yield('module')
-		@yield('reward') 
 		@yield('live-chat') 
 		@yield('polling feature')
 		@yield('notifications')

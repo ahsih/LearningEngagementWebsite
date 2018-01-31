@@ -4,19 +4,19 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateModulesTable extends Migration
+class FirstChoiceUsersModulesTable extends Migration
 {
     /**
      * Run the migrations.
-     *
+     * Used to determine the main live chat in the main menu
      * @return void
      */
     public function up()
     {
-        Schema::create('modules', function (Blueprint $table) {
+        Schema::create('firstChoiceUserModule', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('module_name');
-            $table->timestamps();
+            $table->integer('user_id')->unsigned();
+            $table->integer('module_id')->unsigned();
         });
     }
 
@@ -27,6 +27,6 @@ class CreateModulesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('modules');
+        Schema::dropIfExists('first_choice_user_module');
     }
 }

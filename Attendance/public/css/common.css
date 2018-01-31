@@ -1,3 +1,49 @@
 .moduleBoxLarge {
     width: 300px;
 }
+
+.module-bottom-zero{
+    margin-bottom: 0;
+    text-align: center;
+}
+
+.scrollable-chat {
+    overflow-y: auto;
+    height: 300px;
+}
+
+.label-font-big {
+    font-size: 15px;
+}
+
+.liveChat-popup {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height:100%;
+    visibility: hidden;
+}
+
+#popup-wrapper {
+    width: 250px;
+    margin: 300px auto;
+    border-radius: 2px;
+}
+
+.setToZero{
+    margin:0 auto;
+    height:25px;
+}
+
+.addModule-error{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height:100%;
+    visibility: hidden;
+}
+
+
+
