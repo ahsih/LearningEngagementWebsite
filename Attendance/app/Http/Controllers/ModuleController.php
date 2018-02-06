@@ -21,6 +21,40 @@ class ModuleController extends Controller
     }
 
     /**
+     * select module into the user
+     */
+    public function selectModule()
+    {
+        //Get the request ID
+        $moduleID = request()->moduleID;
+
+        //Get the user details
+        //Attach the module ID to the user
+        $user = User::find(Auth::user()->id);
+        if (!$user->hasModule($moduleID)) {
+            $user->modules()->attach($moduleID);
+
+            //Get first choice of the user, if user doesn't have a first choice of the module,
+            //Then he will set this module as first choice
+            $firstChoiceModule = FirstChoiceUserModule::where('user_id', '=', $user->id)->exists();
+            //If it null
+            if (!$firstChoiceModule) {
+                $firstChoiceModule = new FirstChoiceUserModule();
+                $firstChoiceModule->user_id = $user->id;
+                $firstChoiceModule->module_id = $moduleID;
+                $firstChoiceModule->timestamps = false;
+                //Save first choice
+                $firstChoiceModule->save();
+            }
+
+            return "true";
+
+        } else {
+            return "false";
+        }
+    }
+
+    /**
      * Add the module to the database
      * Getting the module name from the form
      */

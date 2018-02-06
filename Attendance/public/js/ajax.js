@@ -17,6 +17,39 @@ $(document).ready(function () {
     });
     //-------------------------------------------------------------
 
+    //-------------------------------------------------------------
+    //Select module list
+    $('#expandModules').click(function () {
+       $('#moduleList').css("visibility","visible");
+    });
+
+    //Close the module list
+    $('#closeModuleList').click(function (){
+        $('#moduleList').css("visibility","hidden");
+    })
+
+    $('#selectModules').click(function (){
+        //get the module ID
+        var moduleID = $('#listOfModules').val();
+
+        //Send the ajax request
+       $.ajax({
+            type: 'POST',
+            url: '/selectModule',
+           data: {'moduleID': moduleID},
+           success: function(data){
+                //Reload the page
+                if(data == "true"){
+                    location.reload();
+                }else{
+                    $('#modulePopUp').append('Module already exist in your library!');
+                }
+           }
+        });
+
+    });
+    //-------------------------------------------------------------
+
     //--------------------------------------------------------------
     //Add module into the database
     // return the result to the module label
@@ -38,17 +71,17 @@ $(document).ready(function () {
             }
         });
     });
-
     //--------------------------------------------------------------
 
+    //--------------------------------------------------------------
     //Open live chat settings
     $('#changeLiveChat').click(function () {
-        $('.liveChat-popup').css("visibility", "visible");
+        $('.hidden-popup').css("visibility", "visible");
     });
 
     //Close live chat settings
     $('#closeLiveChatSettings').click(function () {
-        $('.liveChat-popup').css("visibility", "hidden");
+        $('.hidden-popup').css("visibility", "hidden");
     });
 
     //If change module button has been click then close the live chat setting first
@@ -71,6 +104,8 @@ $(document).ready(function () {
             location.reload();
         });
     });
+    //--------------------------------------------------------------
+
 
     //--------------------------------------------------------------
     //if send text has been click on it
@@ -94,17 +129,35 @@ $(document).ready(function () {
             $('#messageConfirmation').text('Text' + data + ': send completed');
         })
     });
+    //--------------------------------------------------------------
 
     //--------------------------------------------------------------
     //Every 3 seconds update the chat
     window.setInterval(function () {
         //Call the ajax
-       var request = $.ajax({
+        //Send no data and it GET request as we getting the data from the controller
+        $.ajax({
+            type: 'GET',
+            url: '/getChatMessage',
+            data: null,
+            //If it success
+            success: function (data) {
+                if (data != "No Data") {
+                    //Get the conversations
+                    var conversations = data.conversations;
+                    conversations.forEach(function (index) {
+                        var listOfChats = "<ul class=\'list-inline setToZero\'>";
+                        //Append the UL
+                        listOfChats += "<li><p class='pull-left text-danger'>" + index.fullName + "</p></li>";
+                        listOfChats += "<li><p class=\'pull-left text-success\'>" + index.message + "</p></li>";
+                        listOfChats += "<li><p class=\'pull-left text-info\'>" + index.created_at + "</p></li>";
+                        listOfChats += "</ul>";
 
+                        $('#live-chat-messages').append(listOfChats);
+                    });
+                }
+            }
         });
-
-        //chat store in a request and loop and display
-
 
     }, 3000);
 

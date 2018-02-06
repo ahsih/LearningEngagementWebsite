@@ -1,10 +1,17 @@
-@extends('layouts.homePage') @section('live-chat')
+@extends('layouts.homePage') @section('module')
     <div class="container">
         <div class="panel panel-default">
-            <div class="panel-heading">
-                <p class="text-center">Live-chat</p>
-            </div>
-            <div class="panel-body"> test
+            <div class="panel-body">
+                <!-- Get all the modules the tutor teaches -->
+                <Label id="modules">Your Study Modules:
+                    @foreach ($modules as $module)
+                        {{ $module->module_name }}
+                    @endforeach
+                </label>
+                </br>
+                <h4>Select the current module to your list</h4>
+                <input type="button" class="btn btn-success" id="expandModules" value="Module List"></br>
+                <hint>You can remove the module by asking the module tutor.</hint>
             </div>
         </div>
     </div>

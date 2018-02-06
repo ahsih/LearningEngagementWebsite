@@ -16,7 +16,7 @@
     font-size: 15px;
 }
 
-.liveChat-popup {
+.hidden-popup {
     position: absolute;
     top: 0;
     left: 0;
@@ -26,6 +26,12 @@
 }
 
 #popup-wrapper {
+    width: 250px;
+    margin: 300px auto;
+    border-radius: 2px;
+}
+
+#popup-wrapper-module{
     width: 250px;
     margin: 300px auto;
     border-radius: 2px;
@@ -45,5 +51,12 @@
     visibility: hidden;
 }
 
-
+.moduleList-popup{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height:100%;
+    visibility: hidden;
+}
 

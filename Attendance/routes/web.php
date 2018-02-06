@@ -18,3 +18,5 @@ Auth::routes();
 Route::post('/addModule', 'ModuleController@addModule');
 Route::post('/changeLiveChatModule', 'ConversationController@changeLiveChatModule');
 Route::post('/sendLiveChatText','ConversationController@sendLiveChatMessage');
+Route::get('/getChatMessage','ConversationController@getMessage');
+Route::post('/selectModule','ModuleController@selectModule');

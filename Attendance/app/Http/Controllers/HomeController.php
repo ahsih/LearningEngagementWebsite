@@ -33,23 +33,40 @@ class HomeController extends Controller
        //Get the module this user teaches/studies
       $modules = User::find($user_id)->modules;
 
+      //Get a list of all the modules
+      $allModules = Module::all();
+
+      //Get the first choice of the module the student/tutor pick
       $firstChoiceModule = FirstChoiceUserModule::where('user_id','=',$user_id)->first();
 
+      //if user don't have first choice module, then we should cancel it.
       //Get the conversation chat
-      $conversations = Conversation::orderBy('created_at')
-          ->where('user_id','=',$user_id)
-          ->where('module_id','=',$firstChoiceModule->module_id)->get();
+        if($firstChoiceModule == null){
+            $data = array(
+                'allModules' => $allModules,
+                'modules' => $modules,
+                'conversations' => null,
+                'moduleName' => null
+            );
 
-      //Get the module name
-        $moduleName = Module::find($firstChoiceModule->module_id);
+        }else {
+            $conversations = Conversation::orderBy('created_at')
+                ->where('module_id', '=', $firstChoiceModule->module_id)->get();
 
-      //Pass to the view
-      $data = array(
-          'modules' => $modules,
-          'conversations' => $conversations,
-          'moduleName' => $moduleName->module_name
-      );
+            //Get the module name
+            $moduleName = Module::find($firstChoiceModule->module_id);
 
+            //Pass to the view
+            $data = array(
+                'allModules' => $allModules,
+                'modules' => $modules,
+                'conversations' => $conversations,
+                'moduleName' => $moduleName->module_name
+            );
+
+        }
+
+        //Return two different views for students and tutors
         if($request->user()->hasRole('student')){
             return view('pages.studentHome')->with($data);
         }else{

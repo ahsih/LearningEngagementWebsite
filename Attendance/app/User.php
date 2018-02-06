@@ -73,9 +73,20 @@ class User extends Authenticatable
      /**
     * Check one role
     * @param string $role
+      * @return null if there is no role in this user.
     */
     public function hasRole($role)
         {
         return null !== $this->roles()->where("name", $role)->first();
         }
+
+    /**
+     * @param $moduleID - the ID associate with the user
+     * @return bool -true if the module ID is found , otherwise false
+     */
+    public function hasModule($moduleID){
+        return null !== $this->modules()->where("module_id",$moduleID)->first();
+    }
+
+
     }
