@@ -19,7 +19,7 @@
 		<ul class="nav navbar-nav navbar-left">
 			<li class="navbar-brand">Reward</li>
 			<li class="navbar-brand">Polling</li>
-			<li class="navbar-brand">Live-chat</li>
+			<li><a class="navbar-brand" href="{{ url('/management') }}">Module management</a></li>
 			<li class="navbar-brand">Help</li>
 		</ul>
 

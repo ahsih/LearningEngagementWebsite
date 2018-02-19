@@ -12,10 +12,11 @@
 
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+    <link rel="stylesheet" href="{{asset('css/common.css')}}">
 </head>
 <body>
     <div id="app">
-        <h1 class="text-center top-buffer" >Learning Engagement</h1>
+        <h1 class="text-center top-buffer titleText">Learning Engagement</h1>
         
         @yield('content')
     </div>

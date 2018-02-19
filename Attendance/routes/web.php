@@ -13,6 +13,8 @@
 
 Route::get('/', 'HomeController@index');
 Route::get('/home','HomeController@index');
+Route::get('/live-chat','LiveChatController@index');
+Route::get('/management','ManagementController@index');
 Auth::routes();
 
 Route::post('/addModule', 'ModuleController@addModule');

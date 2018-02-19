@@ -52,8 +52,12 @@ class ConversationController extends Controller
         $conversation = new Conversation();
         //set message
         $conversation->message = $textMessage;
-        //Set the ID
-        $conversation->fullName = $user->name;
+        //Set the name
+        if (request()->anonymous == 0) {
+            $conversation->fullName = $user->name;
+        } else {
+            $conversation->fullName = "Anonymous";
+        }
         //Set the module
         //Get the first choice module from the current user
         $firstChoiceModule = FirstChoiceUserModule::where('user_id', '=', $user->id)->first()->module_id;
@@ -75,10 +79,9 @@ class ConversationController extends Controller
         //Get the user first choice live chat module
         $module = FirstChoiceUserModule::where('user_id', '=', $user->id)->first();
 
-        if($module != null) {
+        if ($module != null) {
             //List of chats from 3 seconds
             $conversations = Conversation::orderBy('created_at')
-                ->where('fullName', '=', $user->name)
                 ->where('module_id', '=', $module->module_id)
                 ->where('created_at', '>', Carbon::now()->subSeconds(3))->get();
 
@@ -90,7 +93,7 @@ class ConversationController extends Controller
 
             return $data;
         }
-            return "No Data";
+        return "No Data";
     }
 
 

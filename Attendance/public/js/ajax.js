@@ -20,31 +20,38 @@ $(document).ready(function () {
     //-------------------------------------------------------------
     //Select module list
     $('#expandModules').click(function () {
-       $('#moduleList').css("visibility","visible");
+        $('#moduleList').css("visibility", "visible");
     });
 
     //Close the module list
-    $('#closeModuleList').click(function (){
-        $('#moduleList').css("visibility","hidden");
+    $('#closeModuleList').click(function () {
+        $('#moduleList').css("visibility", "hidden");
     })
 
-    $('#selectModules').click(function (){
+    $('#selectModules').click(function () {
         //get the module ID
         var moduleID = $('#listOfModules').val();
 
         //Send the ajax request
-       $.ajax({
+        $.ajax({
             type: 'POST',
             url: '/selectModule',
-           data: {'moduleID': moduleID},
-           success: function(data){
+            data: {'moduleID': moduleID},
+            success: function (data) {
                 //Reload the page
-                if(data == "true"){
+                if (data == "moduleAdded") {
                     location.reload();
-                }else{
-                    $('#modulePopUp').append('Module already exist in your library!');
+                } else if (data == "requestAdded") {
+                    $('#popUpModuleErrorMessage').empty();
+                    $('#popUpModuleErrorMessage').append('<p>Your request to join this module has been notified by your module tutor.</p>');
+                } else if (data == 'requestAlreadyMade') {
+                    $('#popUpModuleErrorMessage').empty();
+                    $('#popUpModuleErrorMessage').append('<p>You have already made the request to join this module</p>');
+                } else {
+                    $('#popUpModuleErrorMessage').empty();
+                    $('#popUpModuleErrorMessage').append('<p>Module already exist in your library!</p>');
                 }
-           }
+            }
         });
 
     });
@@ -112,12 +119,19 @@ $(document).ready(function () {
     $('#SendText').click(function () {
         //get the text message
         var textMessage = $('#sendTextChat').val();
+        var anonymous = 0;
+        if ($('#anonymousTick').is(':checked')) {
+            anonymous = 1;
+        }
 
         //Then pass to the Ajax request
         var request = $.ajax({
             type: 'POST',
             url: '/sendLiveChatText',
-            data: {'textMessage': textMessage},
+            data: {
+                'textMessage': textMessage,
+                'anonymous': anonymous
+            },
         });
 
         //Once the request is completed
@@ -126,7 +140,7 @@ $(document).ready(function () {
             //Clear text
             $('#sendTextChat').val('');
             //Send a confirmation of the message
-            $('#messageConfirmation').text('Text' + data + ': send completed');
+            $('#messageConfirmation').text('Text ' + data + ': send completed');
         })
     });
     //--------------------------------------------------------------
