@@ -32,6 +32,7 @@ class ModuleController extends Controller
         //Get the user details
         //Attach the module ID to the user
         $user = User::find(Auth::user()->id);
+        $module = Module::find($moduleID);
         //if user do not contains this module
         if (!$user->hasModule($moduleID)) {
 
@@ -48,6 +49,9 @@ class ModuleController extends Controller
                     $newRequest = new requestModule();
                     $newRequest->user_id = $user->id;
                     $newRequest->module_id = $moduleID;
+                    $newRequest->full_name = $user->name;
+                    $newRequest->email = $user->email;
+                    $newRequest->module_name = $module->module_name;
                     $newRequest->timestamps = false;
                     $newRequest->save();
 

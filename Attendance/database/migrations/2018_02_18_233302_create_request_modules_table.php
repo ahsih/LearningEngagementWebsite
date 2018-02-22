@@ -16,6 +16,9 @@ class CreateRequestModulesTable extends Migration
         Schema::create('request_modules', function (Blueprint $table) {
             $table->integer("user_id")->unsigned();
             $table->integer("module_id")->unsigned();
+            $table->string('module_name');
+            $table->string('full_name');
+            $table->string('email');
         });
     }
 
