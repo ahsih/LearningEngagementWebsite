@@ -3,6 +3,7 @@
 namespace attendance\Http\Controllers;
 
 use attendance\Conversation;
+use attendance\declineModules;
 use attendance\FirstChoiceUserModule;
 use attendance\Module;
 use Illuminate\Http\Request;
@@ -36,6 +37,9 @@ class HomeController extends Controller
       //Get a list of all the modules
       $allModules = Module::all();
 
+      //Get a list of decline module
+        $listOfDeclineModules = declineModules::where('user_id','=',$user_id)->get();
+
       //Get the first choice of the module the student/tutor pick
       $firstChoiceModule = FirstChoiceUserModule::where('user_id','=',$user_id)->first();
 
@@ -46,7 +50,8 @@ class HomeController extends Controller
                 'allModules' => $allModules,
                 'modules' => $modules,
                 'conversations' => null,
-                'moduleName' => null
+                'moduleName' => null,
+                'listDeclineModules'=> $listOfDeclineModules
             );
 
         }else {
@@ -61,7 +66,8 @@ class HomeController extends Controller
                 'allModules' => $allModules,
                 'modules' => $modules,
                 'conversations' => $conversations,
-                'moduleName' => $moduleName->module_name
+                'moduleName' => $moduleName->module_name,
+                'listDeclineModules' => $listOfDeclineModules
             );
 
         }

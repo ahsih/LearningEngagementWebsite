@@ -2,6 +2,7 @@
 
 namespace attendance\Http\Controllers;
 
+use attendance\declineModules;
 use attendance\requestModule;
 use attendance\User;
 use Illuminate\Http\Request;
@@ -116,9 +117,11 @@ class ManagementController extends Controller
                     $this->deleteRequestModule($userId,$moduleId);
 
                     //Add to the decline list
-
-
-
+                    $declineModule = new declineModules();
+                    $declineModule->module_name = $module->module_name;
+                    $declineModule->user_id = $userId;
+                    $declineModule->timestamps = false;
+                    $declineModule->save();
                 }
             }
         }

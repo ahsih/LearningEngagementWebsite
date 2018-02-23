@@ -2,6 +2,7 @@
 
 namespace attendance\Http\Controllers;
 
+use attendance\declineModules;
 use attendance\FirstChoiceUserModule;
 use attendance\requestModule;
 use Auth;
@@ -28,6 +29,7 @@ class ModuleController extends Controller
     {
         //Get the request ID
         $moduleID = request()->moduleID;
+        $moduleName = Module::find($moduleID)->module_name;
 
         //Get the user details
         //Attach the module ID to the user
@@ -43,7 +45,7 @@ class ModuleController extends Controller
                     ->where('module_id', '=', $moduleID)->exists();
 
                 if ($requestAlreadyExist) {
-                    return "requestAlreadyMade";
+                    $result =  "requestAlreadyMade";
                 } else {
                     //Add new request
                     $newRequest = new requestModule();
@@ -55,7 +57,7 @@ class ModuleController extends Controller
                     $newRequest->timestamps = false;
                     $newRequest->save();
 
-                    return "requestAdded";
+                    $result = "requestAdded";
                 }
                 
                 //If it a tutor
@@ -74,14 +76,19 @@ class ModuleController extends Controller
                     //Save first choice
                     $firstChoiceModule->save();
                 }
-
-                return "moduleAdded";
+                $result = "moduleAdded";
             }
 
         } else {
 
-            return "false";
+            $result = "false";
         }
+
+        $data = array(
+            'moduleName' => $moduleName,
+            'result' => $result
+        );
+        return $data;
     }
 
     /**
@@ -132,5 +139,12 @@ class ModuleController extends Controller
         }
     }
 
+    /**
+     * Delete all the declined message from the user
+     */
+    public function deleteDeclineRequest(){
+        //Delete all the declined request from the user.
+        declineModules::where('user_id','=',Auth::user()->id)->delete();
+    }
 
 }

@@ -42,6 +42,15 @@ class User extends Authenticatable
     }
 
     /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * User can have many decline modules
+     */
+    public function declineRequest(){
+        return $this->hasMany(declineModules::class);
+    }
+
+
+    /**
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      * Has one first choice module
      */
