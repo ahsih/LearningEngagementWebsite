@@ -18,6 +18,23 @@ $(document).ready(function () {
     //-------------------------------------------------------------
 
     //-------------------------------------------------------------
+    //Close decline module pop up
+    $('#deleteDeclineModule').click(function () {
+
+        //Delete all the declined request from the user
+        $.ajax({
+            type: 'GET',
+            url: '/deleteDeclineRequest',
+            data: null,
+            success: function () {
+                //do nothing
+            }
+        });
+        $('#declineModule').css("visibility", "hidden");
+    });
+    //-------------------------------------------------------------
+
+    //-------------------------------------------------------------
     //Select module list
     $('#expandModules').click(function () {
         $('#moduleList').css("visibility", "visible");
@@ -41,15 +58,15 @@ $(document).ready(function () {
                 //Reload the page
                 if (data == "moduleAdded") {
                     location.reload();
-                } else if (data == "requestAdded") {
+                } else if (data.result == "requestAdded") {
                     $('#popUpModuleErrorMessage').empty();
-                    $('#popUpModuleErrorMessage').append('<p>Your request to join this module has been notified by your module tutor.</p>');
-                } else if (data == 'requestAlreadyMade') {
+                    $('#popUpModuleErrorMessage').append('<p>Your request to join this module <b>'+ data.moduleName + '</b> has been notified by your module tutor.</p>');
+                } else if (data.result == 'requestAlreadyMade') {
                     $('#popUpModuleErrorMessage').empty();
-                    $('#popUpModuleErrorMessage').append('<p>You have already made the request to join this module</p>');
+                    $('#popUpModuleErrorMessage').append('<p>You have already made the request to join this module</p><b>' + data.moduleName + '</b>');
                 } else {
                     $('#popUpModuleErrorMessage').empty();
-                    $('#popUpModuleErrorMessage').append('<p>Module already exist in your library!</p>');
+                    $('#popUpModuleErrorMessage').append('<p>Module <b>' + data.moduleName + '</b> already exist in your library!</p>');
                 }
             }
         });

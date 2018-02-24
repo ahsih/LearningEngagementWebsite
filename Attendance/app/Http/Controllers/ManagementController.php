@@ -3,6 +3,8 @@
 namespace attendance\Http\Controllers;
 
 use attendance\declineModules;
+use attendance\FirstChoiceUserModule;
+use attendance\Module;
 use attendance\requestModule;
 use attendance\User;
 use Illuminate\Http\Request;
@@ -22,8 +24,8 @@ class ManagementController extends Controller
     }
 
     /**
-     * Show the application homepage
-     *
+     * Show the application management homepage
+     * @param $request - request from the user
      * @return \Illuminate\Http\Response
      */
     public function index(Request $request)
@@ -40,14 +42,46 @@ class ManagementController extends Controller
             // on what he teaches
             $listApprovedModules = $this->getTutorValidRequestModules($request);
 
+            //Get the module this tutor teaches
+            $modules = User::find($request->user()->id)->modules;
+            $firstChoice = FirstChoiceUserModule::where('user_id', '=', $request->user()->id)->first();
+            $module_name = Module::find($firstChoice->module_id)->module_name;
+
+            $listUsers = User::all();
+            //Store all the students who's are not in this module
+            $listNotInModuleStudentUsers = array();
+            //Store all the students who in this module
+            $listStudentInThisModule = array();
+            //If user is a student , then we need to check whether he is already in the module
+            foreach ($listUsers as $user) {
+                if ($user->hasRole('student')) {
+                    //If user do not have this module
+                    if (!$user->hasModule($firstChoice->module_id)) {
+                        array_push($listNotInModuleStudentUsers, $user);
+                    } else {
+                        array_push($listStudentInThisModule, $user);
+                    }
+                }
+            }
+
+
         } else {
+            //Student profile should not have access to this page
             $permission = false;
+            $modules = null;
+            $module_name = null;
+            $listNotInModuleStudentUsers = null;
+            $listStudentInThisModule = null;
         }
 
         $data = array(
             'title' => 'Management',
             'permission' => $permission,
-            'listApprovedModules' => $listApprovedModules
+            'listApprovedModules' => $listApprovedModules,
+            'modules' => $modules,
+            'moduleName' => $module_name,
+            'listNotInModuleStudentUsers' => $listNotInModuleStudentUsers,
+            'listStudentInThisModule' => $listStudentInThisModule
         );
 
         return view('pages.managementPage')->with($data);
@@ -91,7 +125,6 @@ class ManagementController extends Controller
      */
     public function acceptRequest(Request $request)
     {
-        $listApprovedModules = array();
         $listApprovedModules = $this->getTutorValidRequestModules($request);
 
         //Get all the radio button details
@@ -106,7 +139,7 @@ class ManagementController extends Controller
             if ($radioButton != null) {
                 if ($radioButton == "accept") {
                     //Delete the request module
-                    $this->deleteRequestModule($userId,$moduleId);
+                    $this->deleteRequestModule($userId, $moduleId);
 
                     //Add the user into the user module
                     User::find($userId)->modules()->attach($moduleId);
@@ -114,7 +147,7 @@ class ManagementController extends Controller
                 } else {
                     //Else it will be decline, so once we delete the request module, we need to alert the student
                     //Delete the request module
-                    $this->deleteRequestModule($userId,$moduleId);
+                    $this->deleteRequestModule($userId, $moduleId);
 
                     //Add to the decline list
                     $declineModule = new declineModules();
@@ -125,7 +158,54 @@ class ManagementController extends Controller
                 }
             }
         }
+        return redirect('/management');
+    }
 
+    /**
+     * Delete the student from this module
+     * @return management page.
+     */
+   public function deleteStudentInModule(){
+
+       //Get the module that is currently being managed
+       $firstChoice = FirstChoiceUserModule::where('user_id', '=', Auth::user()->id)->first();
+       $users = User::all();
+       foreach ($users as $user) {
+           //if user has this module
+        if($user->hasModule($firstChoice->module_id)){
+            //Get the checkbox detail
+            $checkbox = Input::get($user->id);
+            if($checkbox == 'true'){
+                User::find($user->id)->modules()->detach($firstChoice->module_id);
+                FirstChoiceUserModule::where('user_id','=',$user->id)->delete();
+            }
+        }
+       }
+
+       return redirect('/management');
+   }
+
+    /**
+     * Add the student to the module
+     * @return the management page
+     */
+    public function addStudentToModule()
+    {
+        //Get the module that is currently being managed
+        $firstChoice = FirstChoiceUserModule::where('user_id', '=', Auth::user()->id)->first();
+        $users = User::all();
+        foreach ($users as $user) {
+            //If user do not have this module, then check whether you have select to add them to the module
+            if ($user->hasRole('student')) {
+                if (!$user->hasModule($firstChoice->module_id)) {
+                    $checkbox = Input::get($user->id);
+                    if ($checkbox == 'true') {
+                        //Add the user to the module
+                        User::find($user->id)->modules()->attach($firstChoice->module_id);
+                    }
+                }
+            }
+        }
 
         return redirect('/management');
     }
@@ -135,7 +215,8 @@ class ManagementController extends Controller
      * @param $userId
      * @param $moduleId
      */
-    public function deleteRequestModule($userId,$moduleId){
+    public function deleteRequestModule($userId, $moduleId)
+    {
         requestModule::where('user_id', '=', $userId)
             ->where('module_id', '=', $moduleId)->delete();
     }

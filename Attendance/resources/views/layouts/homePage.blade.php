@@ -29,7 +29,7 @@
                 Live-Chat-{{ $moduleName }}
             @else You have no live-chat module
             @endif
-            <button class="pull-right btn btn-warning" id="changeLiveChat">Live-Chat Setting <span
+            <button class="pull-right btn btn-warning" id="changeLiveChat">Change Live-Chat Module <span
                         class="glyphicon glyphicon-asterisk"></span></button>
         </h2>
         <!-- chat message -->

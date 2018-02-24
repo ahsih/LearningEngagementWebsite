@@ -21,24 +21,6 @@ class ConversationController extends Controller
     }
 
     /**
-     * Change the default live chat module
-     */
-    public function changeLiveChatModule()
-    {
-        //Get the ID the user wish to change
-        $moduleID = request()->moduleID;
-
-        //Change in the first choice live chat system
-        $firstChoiceModule = FirstChoiceUserModule::where('user_id', '=', Auth::user()->id)->first();
-        //If first choice module id is not same as the module id that has been given, then change
-        if ($firstChoiceModule->module_id != $moduleID) {
-            $firstChoiceModule->module_id = $moduleID;
-            $firstChoiceModule->timestamps = false;
-            $firstChoiceModule->save();
-        }
-    }
-
-    /**
      * Store the message to the conversation, which can then be display
      * to the chat.
      */

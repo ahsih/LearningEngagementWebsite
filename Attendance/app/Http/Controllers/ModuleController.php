@@ -45,7 +45,7 @@ class ModuleController extends Controller
                     ->where('module_id', '=', $moduleID)->exists();
 
                 if ($requestAlreadyExist) {
-                    $result =  "requestAlreadyMade";
+                    $result = "requestAlreadyMade";
                 } else {
                     //Add new request
                     $newRequest = new requestModule();
@@ -59,7 +59,7 @@ class ModuleController extends Controller
 
                     $result = "requestAdded";
                 }
-                
+
                 //If it a tutor
             } else {
                 $user->modules()->attach($moduleID);
@@ -142,9 +142,35 @@ class ModuleController extends Controller
     /**
      * Delete all the declined message from the user
      */
-    public function deleteDeclineRequest(){
+    public function deleteDeclineRequest()
+    {
         //Delete all the declined request from the user.
-        declineModules::where('user_id','=',Auth::user()->id)->delete();
+        declineModules::where('user_id', '=', Auth::user()->id)->delete();
+    }
+
+    /**
+     * Change the default live chat module
+     */
+    public function changeLiveChatModule()
+    {
+        //Get the ID the user wish to change
+        $moduleID = request()->moduleID;
+
+        //Change in the first choice live chat system
+        $firstChoiceModule = FirstChoiceUserModule::where('user_id', '=', Auth::user()->id)->first();
+        //If first choice module id is not same as the module id that has been given, then change
+        //If it null, then create a new one
+        if ($firstChoiceModule == null) {
+            $firstChoiceModule = new FirstChoiceUserModule();
+            $firstChoiceModule->module_id = $moduleID;
+            $firstChoiceModule->user_id = Auth::User()->id;
+            $firstChoiceModule->timestamps = false;
+            $firstChoiceModule->save();
+        } else if ($firstChoiceModule->module_id != $moduleID) {
+            $firstChoiceModule->module_id = $moduleID;
+            $firstChoiceModule->timestamps = false;
+            $firstChoiceModule->save();
+        }
     }
 
 }
