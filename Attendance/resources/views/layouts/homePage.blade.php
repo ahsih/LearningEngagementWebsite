@@ -35,29 +35,41 @@
         <!-- chat message -->
         <div class="panel panel-body">
             <!-- Live chat -->
-            <div class="scrollable-chat" id="live-chat-messages">
-                @if($moduleName != null)
-                    @foreach($conversations as $conversation)
-                        <ul class="list-inline setToZero">
-                            <li><p class="pull-left text-danger">{{ $conversation->fullName }}:</p></li>
-                            <li><p class="pull-left text-success">{{ $conversation->message }}</p></li>
-                            <li><p class="pull-left text-info">{{ $conversation->created_at }}</p></li>
-                        </ul>
-                    @endforeach
-                @endif
-            </div>
-            <label class="label-font-big"> Send Text </label>
-            <input type="text" id="sendTextChat" placeholder="Type the message you want to send here"
-                   class="moduleBoxLarge"/>
-            <input type="button" id="SendText" value="Send Message" class="btn btn-success"/>
-            <label class="label-font-big"><input type="checkbox" id="anonymousTick"/>Anonymous</label>
-            <label id="messageConfirmation"></label>
+            @if($role == 'tutor')
+                <div class="scrollable-chat conversationMessage" id="live-chat-messages">
+                    @elseif($role == 'student')
+                        <div class="scrollable-chat" id="live-chat-messages">
+                            @endif
+
+                            @if($moduleName != null)
+                                @foreach($conversations as $conversation)
+                                    {!! Form::open(['action'=>'ConversationController@deleteMessage']) !!}
+                                    <input type="hidden" value="{{ $conversation->id }}" name="deleteValue"/>
+                                    <ul class="list-inline setToZero">
+                                        <li><p class="pull-left text-danger">{{ $conversation->fullName }}:</p></li>
+                                        <li><p class="pull-left text-success">{{ $conversation->message }}</p></li>
+                                        <li><p class="pull-left text-info">{{ $conversation->created_at }}</p></li>
+                                        <li class="invisibleDeleteMessage pull-left text-info">
+                                            <button type="submit"
+                                                    class="glyphicon glyphicon-minus-sign set-red buttonWithoutButtonlayout"></button>
+                                        </li>
+                                    </ul>
+                                    {!! Form::close() !!}
+                                @endforeach
+                            @endif
+                        </div>
+                        <label class="label-font-big"> Send Text </label>
+                        <input type="text" id="sendTextChat" placeholder="Type the message you want to send here"
+                               class="moduleBoxLarge"/>
+                        <input type="button" id="SendText" value="Send Message" class="btn btn-success"/>
+                        <label class="label-font-big"><input type="checkbox" id="anonymousTick"/>Anonymous</label>
+                        <label id="messageConfirmation"></label>
+                </div>
         </div>
     </div>
-</div>
 @yield('polling feature')
 @yield('notifications')
 <!-- Scripts -->
-<script src="{{ asset('js/app.js') }}"></script>
+    <script src="{{ asset('js/app.js') }}"></script>
 </body>
 </html>
