@@ -177,7 +177,11 @@ class ManagementController extends Controller
             $checkbox = Input::get($user->id);
             if($checkbox == 'true'){
                 User::find($user->id)->modules()->detach($firstChoice->module_id);
-                FirstChoiceUserModule::where('user_id','=',$user->id)->delete();
+               $userFirstChoiceModule = FirstChoiceUserModule::where('user_id','=',$user->id)->
+                where('module_id','=',$firstChoice->module_id)->first();
+               if($userFirstChoiceModule != null){
+                   $userFirstChoiceModule->delete();
+               }
             }
         }
        }

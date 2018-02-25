@@ -60,7 +60,7 @@ $(document).ready(function () {
                     location.reload();
                 } else if (data.result == "requestAdded") {
                     $('#popUpModuleErrorMessage').empty();
-                    $('#popUpModuleErrorMessage').append('<p>Your request to join this module <b>'+ data.moduleName + '</b> has been notified by your module tutor.</p>');
+                    $('#popUpModuleErrorMessage').append('<p>Your request to join this module <b>' + data.moduleName + '</b> has been notified by your module tutor.</p>');
                 } else if (data.result == 'requestAlreadyMade') {
                     $('#popUpModuleErrorMessage').empty();
                     $('#popUpModuleErrorMessage').append('<p>You have already made the request to join this module</p><b>' + data.moduleName + '</b>');
@@ -173,24 +173,45 @@ $(document).ready(function () {
             data: null,
             //If it success
             success: function (data) {
-                if (data != "No Data") {
-                    //Get the conversations
-                    var conversations = data.conversations;
-                    conversations.forEach(function (index) {
-                        var listOfChats = "<ul class=\'list-inline setToZero\'>";
-                        //Append the UL
-                        listOfChats += "<li><p class='pull-left text-danger'>" + index.fullName + "</p></li>";
-                        listOfChats += "<li><p class=\'pull-left text-success\'>" + index.message + "</p></li>";
-                        listOfChats += "<li><p class=\'pull-left text-info\'>" + index.created_at + "</p></li>";
-                        listOfChats += "</ul>";
+              if (data != "No Data") {
+                  //Get the conversations
+                  var conversations = data.conversations;
+                  var csrf_token = $('meta[name="csrf-token"]').attr('content');
 
-                        $('#live-chat-messages').append(listOfChats);
-                    });
-                }
+                  conversations.forEach(function (index) {
+                      var ChatMessage = "<form method=\'POST\' action=\'http://attendances.local:8008/deleteMessage\' accept-charset=\'UTF-8\'>";
+                      ChatMessage += "<input type='hidden' value=" + index.id + " name='deleteValue'/>";
+                      ChatMessage += "<input type='hidden' value='"+ csrf_token + "' name='_token'>";
+                      ChatMessage += "<ul class=\'list-inline setToZero\'>";
+                      //Append the UL
+                      ChatMessage += "<li><p class='pull-left text-danger'>" + index.fullName + "</p></li>";
+                      ChatMessage += "<li><p class=\'pull-left text-success\'>" + index.message + "</p></li>";
+                      ChatMessage += "<li><p class=\'pull-left text-info\'>" + index.created_at + "</p></li>";
+                      ChatMessage += "<li class='invisibleDeleteMessage pull-left text-info'><button type='submit' class='glyphicon glyphicon-minus-sign set-red buttonWithoutButtonlayout'></button></li>";
+                      ChatMessage += "</ul>";
+                      ChatMessage += "</form>";
+
+                      $('#live-chat-messages').append(ChatMessage);
+
+                  });
+              }
             }
         });
 
-    }, 3000);
+    }, 2000);
+    //--------------------------------------------------------------
+
+    //--------------------------------------------------------------
+    //Make the delete message invisible/visible
+    $('.conversationMessage').mouseover(function () {
+        $('.invisibleDeleteMessage').css("visibility", "visible");
+    });
+
+    $('.conversationMessage').mouseout(function () {
+        $('.invisibleDeleteMessage').css("visibility", "hidden");
+    });
+    //--------------------------------------------------------------
+    //--------------------------------------------------------------
 
 
 });

@@ -78,3 +78,17 @@
     width: 100%;
     height:100%;
 }
+
+.invisibleDeleteMessage {
+    visibility: hidden;
+}
+
+.set-red {
+    color:darkred;
+}
+
+.buttonWithoutButtonlayout{
+    background: none;
+    border: none;
+    padding:0;
+}

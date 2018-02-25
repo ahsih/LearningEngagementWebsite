@@ -7,6 +7,7 @@ use attendance\FirstChoiceUserModule;
 use attendance\User;
 use Auth;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Input;
 
 class ConversationController extends Controller
 {
@@ -51,6 +52,16 @@ class ConversationController extends Controller
     }
 
     /**
+     * Delete the message according to the tutor chosen one
+     */
+    public function deleteMessage(){
+      $deleteId =  Input::get('deleteValue');
+      Conversation::find($deleteId)->delete();
+
+      return redirect('/');
+    }
+
+    /**
      * Get the message from the conversation
      */
     public function getMessage()
@@ -65,7 +76,7 @@ class ConversationController extends Controller
             //List of chats from 3 seconds
             $conversations = Conversation::orderBy('created_at')
                 ->where('module_id', '=', $module->module_id)
-                ->where('created_at', '>', Carbon::now()->subSeconds(3))->get();
+                ->where('created_at', '>', Carbon::now()->subSeconds(2.5))->get();
 
             //Store both username and their conversation
             $data = array(
