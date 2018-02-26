@@ -11,7 +11,7 @@
                 </br>
                 <h4>Select the current module to your list</h4>
                 <input type="button" class="btn btn-success" id="expandModules" value="Module List"></br>
-                <hint>You can remove the module by asking the module tutor.</hint>
+                <hint>You can ask your module tutor to remove you from the module</hint>
             </div>
         </div>
     </div>

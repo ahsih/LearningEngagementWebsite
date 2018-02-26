@@ -38,7 +38,7 @@
             @if($role == 'tutor')
                 <div class="scrollable-chat conversationMessage" id="live-chat-messages">
                     @elseif($role == 'student')
-                        <div class="scrollable-chat" id="live-chat-messages">
+                        <div class="scrollable-chat studentOwnMessage" id="live-chat-messages">
                             @endif
 
                             @if($moduleName != null)
@@ -49,10 +49,17 @@
                                         <li><p class="pull-left text-danger">{{ $conversation->fullName }}:</p></li>
                                         <li><p class="pull-left text-success">{{ $conversation->message }}</p></li>
                                         <li><p class="pull-left text-info">{{ $conversation->created_at }}</p></li>
-                                        <li class="invisibleDeleteMessage pull-left text-info">
-                                            <button type="submit"
-                                                    class="glyphicon glyphicon-minus-sign set-red buttonWithoutButtonlayout"></button>
-                                        </li>
+                                        @if($role == 'tutor')
+                                            <li class="invisibleDeleteMessage pull-left text-info">
+                                                <button type="submit"
+                                                        class="glyphicon glyphicon-minus-sign set-red buttonWithoutButtonlayout"></button>
+                                            </li>
+                                        @elseif(Auth::user()->name == $conversation->fullName)
+                                            <li class="studentDeleteMessage pull-left text-info">
+                                                <button type="submit"
+                                                        class="glyphicon glyphicon-minus-sign set-red buttonWithoutButtonlayout"></button>
+                                            </li>
+                                        @endif
                                     </ul>
                                     {!! Form::close() !!}
                                 @endforeach

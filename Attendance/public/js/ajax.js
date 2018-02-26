@@ -210,6 +210,16 @@ $(document).ready(function () {
     $('.conversationMessage').mouseout(function () {
         $('.invisibleDeleteMessage').css("visibility", "hidden");
     });
+
+    //Student delete their own message
+    $('.studentOwnMessage').mouseover(function () {
+        $('.studentDeleteMessage').css("visibility","visible");
+    });
+
+    $('.studentOwnMessage').mouseout(function () {
+        $('.studentDeleteMessage').css("visibility","hidden");
+    });
+
     //--------------------------------------------------------------
     //--------------------------------------------------------------
 
