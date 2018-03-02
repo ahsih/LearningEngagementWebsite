@@ -3,6 +3,7 @@
 namespace attendance\Http\Controllers;
 
 use attendance\Conversation;
+use attendance\Events\message;
 use attendance\FirstChoiceUserModule;
 use attendance\User;
 use Auth;
@@ -45,6 +46,7 @@ class ConversationController extends Controller
         //Get the first choice module from the current user
         $firstChoiceModule = FirstChoiceUserModule::where('user_id', '=', $user->id)->first()->module_id;
         $conversation->module_id = $firstChoiceModule;
+        $conversation->created_at = Carbon::now()->addSeconds(1);
         //save the conversation
         $conversation->save();
 
@@ -56,9 +58,10 @@ class ConversationController extends Controller
      */
     public function deleteMessage(){
       $deleteId =  Input::get('deleteValue');
-      Conversation::find($deleteId)->delete();
+     Conversation::find($deleteId)->delete();
 
-      return redirect('/');
+     //Redirect the page
+        return redirect('/');
     }
 
     /**
@@ -73,18 +76,26 @@ class ConversationController extends Controller
         $module = FirstChoiceUserModule::where('user_id', '=', $user->id)->first();
 
         if ($module != null) {
-            //List of chats from 3 seconds
-            $conversations = Conversation::orderBy('created_at')
+            //count list of chats
+            $totalModuleConversations = Conversation::orderBy('created_at')
                 ->where('module_id', '=', $module->module_id)
-                ->where('created_at', '>', Carbon::now()->subSeconds(2.5))->get();
+                ->count();
 
-            //Store both username and their conversation
-            $data = array(
-                'conversations' => $conversations
-            );
+            //Store in session
+            //If session has the key, if not then create a new one
+            if(!session()->has('totalModuleChats')) {
+                session(['totalModuleChats' => $totalModuleConversations]);
 
-
-            return $data;
+                return "No Data";
+            }else{
+                //Get the session value
+              $value =  session('totalModuleChats');
+              //compare
+                if($value != $totalModuleConversations){
+                    session(['totalModuleChats'=> $totalModuleConversations]);
+                    return "redirect";
+                }
+            }
         }
         return "No Data";
     }

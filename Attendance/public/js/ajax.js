@@ -157,7 +157,7 @@ $(document).ready(function () {
             //Clear text
             $('#sendTextChat').val('');
             //Send a confirmation of the message
-            $('#messageConfirmation').text('Text ' + data + ': send completed');
+            $('#messageConfirmation').text(' Send completed');
         })
     });
     //--------------------------------------------------------------
@@ -173,6 +173,13 @@ $(document).ready(function () {
             data: null,
             //If it success
             success: function (data) {
+
+                if(data != "No Data"){
+                    if(window.location.pathname == '/') {
+                        location.reload();
+                    }
+                }
+                /*
               if (data != "No Data") {
                   //Get the conversations
                   var conversations = data.conversations;
@@ -194,11 +201,10 @@ $(document).ready(function () {
                       $('#live-chat-messages').append(ChatMessage);
 
                   });
+                  */
               }
-            }
-        });
-
-    }, 2000);
+            });
+        }, 2000);
     //--------------------------------------------------------------
 
     //--------------------------------------------------------------
