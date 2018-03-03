@@ -153,11 +153,19 @@ $(document).ready(function () {
 
         //Once the request is completed
         request.done(function (data) {
-            //You don't do anything, as details are saved into the database
-            //Clear text
-            $('#sendTextChat').val('');
-            //Send a confirmation of the message
-            $('#messageConfirmation').text(' Send completed');
+
+            if (data == "inappropriate") {
+                //Inappropriate word is not allowed
+                    $('#sendTextChat').val('');
+                $('#messageConfirmation').text('Inappropriate word is not permitted');
+            } else {
+
+                //You don't do anything, as details are saved into the database
+                //Clear text
+                $('#sendTextChat').val('');
+                //Send a confirmation of the message
+                $('#messageConfirmation').text(' Send completed');
+            }
         })
     });
     //--------------------------------------------------------------
@@ -174,8 +182,8 @@ $(document).ready(function () {
             //If it success
             success: function (data) {
 
-                if(data != "No Data"){
-                    if(window.location.pathname == '/') {
+                if (data != "No Data") {
+                    if (window.location.pathname == '/') {
                         location.reload();
                     }
                 }
@@ -202,9 +210,9 @@ $(document).ready(function () {
 
                   });
                   */
-              }
-            });
-        }, 2000);
+            }
+        });
+    }, 2000);
     //--------------------------------------------------------------
 
     //--------------------------------------------------------------
@@ -219,11 +227,11 @@ $(document).ready(function () {
 
     //Student delete their own message
     $('.studentOwnMessage').mouseover(function () {
-        $('.studentDeleteMessage').css("visibility","visible");
+        $('.studentDeleteMessage').css("visibility", "visible");
     });
 
     $('.studentOwnMessage').mouseout(function () {
-        $('.studentDeleteMessage').css("visibility","hidden");
+        $('.studentDeleteMessage').css("visibility", "hidden");
     });
 
     //--------------------------------------------------------------
