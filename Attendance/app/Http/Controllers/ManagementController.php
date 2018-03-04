@@ -33,6 +33,9 @@ class ManagementController extends Controller
         //init all the approve request
         $listApprovedModules = array();
 
+        //Get the path
+        $path = $request->path();
+
         //Check if it tutor requesting for this page
         if ($request->user()->hasRole('tutor')) {
             $permission = true;
@@ -75,6 +78,7 @@ class ManagementController extends Controller
         }
 
         $data = array(
+            'path' => $path,
             'title' => 'Management',
             'permission' => $permission,
             'listApprovedModules' => $listApprovedModules,

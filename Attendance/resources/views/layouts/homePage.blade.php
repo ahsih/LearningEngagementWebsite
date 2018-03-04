@@ -23,7 +23,7 @@
 @include('inc.notifications')
 @yield('reward')
 @yield('module')
-<div class="container">
+<div class="container lightBlue">
     <div class="panel panel-heading">
         <h2 class="module-bottom-zero">@if ($moduleName != null)
                 Live-Chat-{{ $moduleName }}

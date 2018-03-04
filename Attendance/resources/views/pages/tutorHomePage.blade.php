@@ -1,5 +1,5 @@
 @extends('layouts.homePage') @section('module')
-    <div class="container">
+    <div class="container lightBlue">
         <div class="panel panel-default">
             <div class="panel-body">
                 <!-- Get all the modules the tutor teaches -->
@@ -26,6 +26,18 @@
             <div class="alert alert-warning">
                 <a class="pull-right glyphicon glyphicon-remove" id="closeModuleAlert"></a>
                 <p class="text-center"> Module already existed!</p>
+            </div>
+        </div>
+    </div>
+@stop
+@section('polling feature')
+    <div class="container lightBlue">
+        <div class="panel panel-heading">
+            <h2 class="module-bottom-zero">Classroom polling
+                <button class="btn btn-warning pull-right" ><a class="white-text-hyperlink" href="{{ url('/polling') }}">Create classroom polling</a></button>
+            </h2>
+            <div class="panel-body">
+                <p> content </p>
             </div>
         </div>
     </div>

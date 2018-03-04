@@ -96,3 +96,11 @@
     border: none;
     padding:0;
 }
+
+.lightBlue {
+    background-color: #e3f2fd;
+}
+
+.noMarginBottom {
+    margin-bottom: 0px;
+}

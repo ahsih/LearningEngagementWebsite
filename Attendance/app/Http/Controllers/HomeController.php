@@ -34,6 +34,9 @@ class HomeController extends Controller
         //Get the module this user teaches/studies
         $modules = User::find($user_id)->modules;
 
+        //Get the path
+        $path = $request->path();
+
         //Get a list of all the modules
         $allModules = Module::all();
 
@@ -63,6 +66,7 @@ class HomeController extends Controller
 
             //Pass to the view
             $data = array(
+                'path' => $path,
                 'allModules' => $allModules,
                 'modules' => $modules,
                 'conversations' => $conversations,
@@ -73,8 +77,10 @@ class HomeController extends Controller
 
             return view('pages.studentHome')->with($data);
         } else {
+
             //Pass to the view
             $data = array(
+                'path' => $path,
                 'allModules' => $allModules,
                 'modules' => $modules,
                 'conversations' => $conversations,
