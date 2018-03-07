@@ -128,7 +128,7 @@ class ModuleController extends Controller
             //Start a conversation
             $conversation = new Conversation();
             $conversation->message = "Starting conversation for: " . $moduleName;
-            $conversation->user_id = $user->id;
+            $conversation->fullName = $user->name;
             $conversation->module_id = $module->id;
             //save the conversation
             $conversation->save();

@@ -40,6 +40,15 @@ class HomeController extends Controller
         //Get a list of all the modules
         $allModules = Module::all();
 
+        //Get only the module the users don't have
+        foreach ($modules as $module) {
+            for ($i = 0; $i <= sizeof($allModules); $i++) {
+                if ($module->id == $allModules[$i]->id) {
+                    unset($allModules[$i]);
+                }
+            }
+        }
+
         //Get a list of decline module
         $listOfDeclineModules = declineModules::where('user_id', '=', $user_id)->get();
 
@@ -76,7 +85,7 @@ class HomeController extends Controller
             );
 
             return view('pages.studentHome')->with($data);
-        } else {
+        } else if ($request->user()->hasRole('tutor')) {
 
             //Pass to the view
             $data = array(
@@ -90,6 +99,24 @@ class HomeController extends Controller
             );
             //Pass all the modules this tutor teaches
             return view('pages.tutorHomePage')->with($data);
+        } else if ($request->user()->hasRole('admin')){
+
+            //Get all the users in the database
+            $users = User::all();
+            $studentUsers = array();
+            foreach($users as $user){
+                if($user->hasRole('student')){
+                    array_push($studentUsers,$user);
+                }
+            }
+
+            $data = array(
+                'title' => 'Admin Page',
+                'path' => $path,
+                'studentUsers' => $studentUsers,
+            );
+
+            return view('pages.adminPage')->with($data);
         }
     }
 }

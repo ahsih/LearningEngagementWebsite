@@ -89,7 +89,7 @@ $(document).ready(function () {
 
         request.done(function (data) {
             if (data == "true") {
-                $('#modules').append(moduleName);
+                $('#modules').append("'"+ moduleName + "'");
             } else {
                 $('#moduleError').css("visibility", "visible");
             }
@@ -232,6 +232,11 @@ $(document).ready(function () {
 
     $('.studentOwnMessage').mouseout(function () {
         $('.studentDeleteMessage').css("visibility", "hidden");
+    });
+
+    //Direct to polling
+    $('#directToPolling').click(function (){
+        window.location.href = "/polling";
     });
 
     //--------------------------------------------------------------

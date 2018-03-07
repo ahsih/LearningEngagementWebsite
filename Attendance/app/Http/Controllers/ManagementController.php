@@ -6,6 +6,7 @@ use attendance\declineModules;
 use attendance\FirstChoiceUserModule;
 use attendance\Module;
 use attendance\requestModule;
+use attendance\Role;
 use attendance\User;
 use Illuminate\Http\Request;
 use Auth;
@@ -229,5 +230,26 @@ class ManagementController extends Controller
             ->where('module_id', '=', $moduleId)->delete();
     }
 
+    /**
+     * @param Request $request
+     * Assign the user to become a tutor.
+     */
+    public function createTutor(Request $request){
+        //Get all the users
+        $users = User::all();
+        foreach($users as $user){
+            if($user->hasRole('student')){
+                    $checkbox = Input::get($user->id);
+                    if($checkbox == 'true'){
+                        $studentRole = Role::where('name','=','student')->first();
+                        $tutorRole = Role::where('name','=','tutor')->first();
+                        $user->roles()->detach($studentRole->id);
+                        $user->roles()->attach($tutorRole->id);
+                    }
+            }
+        }
+
+        return redirect('/');
+    }
 
 }

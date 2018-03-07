@@ -5,7 +5,7 @@
                 <!-- Get all the modules the tutor teaches -->
                 <Label id="modules">Your Modules:
                     @foreach ($modules as $module)
-                        {{ $module->module_name }}
+                        '{{ $module->module_name }}'
                     @endforeach
                 </label>
                 </br>
@@ -33,8 +33,8 @@
 @section('polling feature')
     <div class="container lightBlue">
         <div class="panel panel-heading">
-            <h2 class="module-bottom-zero">Classroom polling
-                <button class="btn btn-warning pull-right" ><a class="white-text-hyperlink" href="{{ url('/polling') }}">Create classroom polling</a></button>
+            <h2 class="module-bottom-zero font-navy">Classroom polling
+                <button class="btn btn-warning pull-right" id="directToPolling">Create classroom polling</button>
             </h2>
             <div class="panel-body">
                 <p> content </p>

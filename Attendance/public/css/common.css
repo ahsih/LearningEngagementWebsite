@@ -18,6 +18,11 @@
     height: 320px;
 }
 
+.scrollable-tutor {
+    overflow-y: auto;
+    height: 1000px;
+}
+
 .label-font-big {
     font-size: 15px;
 }
@@ -71,6 +76,10 @@
     color: navy;
 }
 
+.font-navy{
+    color: navy;
+}
+
 #declineModule {
     position: absolute;
     top: 0;
@@ -103,4 +112,27 @@
 
 .noMarginBottom {
     margin-bottom: 0px;
+}
+
+.white-text-hyperlink:hover {
+    text-decoration: none;
+    color: #FFFFFF;
+}
+.white-text-hyperlink {
+    text-decoration: none;
+    color: #FFFFFF;
+}
+
+.white-text-hyperlink:active{
+    text-decoration: none;
+    color: #FFFFFF;
+}
+
+.white-text-hyperlink:link{
+    text-decoration: none;
+    color: #FFFFFF;
+}
+
+.margin-zero-top {
+    margin-top:0px;
 }

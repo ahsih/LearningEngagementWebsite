@@ -25,7 +25,7 @@
 @yield('module')
 <div class="container lightBlue">
     <div class="panel panel-heading">
-        <h2 class="module-bottom-zero">@if ($moduleName != null)
+        <h2 class="module-bottom-zero font-navy">@if ($moduleName != null)
                 Live-Chat-{{ $moduleName }}
             @else You have no live-chat module
             @endif

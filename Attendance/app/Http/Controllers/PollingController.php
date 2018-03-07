@@ -41,4 +41,12 @@ class PollingController extends Controller
         );
         return view('pages.pollingPage')->with($data);
     }
+
+    /**
+     * @param Request $request
+     * Create a polling for tutor to create a question
+     */
+    public function createPoll(Request $request){
+
+    }
 }
