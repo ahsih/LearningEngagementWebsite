@@ -5,6 +5,7 @@ namespace attendance\Http\Controllers;
 use attendance\declineModules;
 use attendance\FirstChoiceUserModule;
 use attendance\Module;
+use attendance\question;
 use attendance\requestModule;
 use attendance\User;
 use Illuminate\Http\Request;
@@ -47,6 +48,13 @@ class PollingController extends Controller
      * Create a polling for tutor to create a question
      */
     public function createPoll(Request $request){
+        $post = Input::all();
+            //Get the main question first
+                $mainQuestion = Input::get('mainQuestion');
+                //Get list of optional answers
+                $optionalAnswers = Input::get('optionalAnswers');
 
+                //Create new question
+                $question = new question();
     }
 }

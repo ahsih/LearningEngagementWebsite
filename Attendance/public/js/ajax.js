@@ -242,6 +242,21 @@ $(document).ready(function () {
     //--------------------------------------------------------------
     //--------------------------------------------------------------
 
+    //Add optional answer/append optional answer
+    $('#addMoreAnswer').click(function (){
+
+        //Get the value
+        var countValue = $('#optionalAnswersCount').val();
+        countValue++;
+
+        //Change the value
+        $('#optionalAnswersCount').val(countValue);
+
+        var optionalAnswer =  "<label>Optional Answer " + countValue + "</label>";
+        optionalAnswer += "<input type='text' class='form-control' name='optionalAnswers"+ countValue +"' placeholder='optional answer "+countValue+"'/>";
+
+        $('#optionalAnswerBox').append(optionalAnswer);
+    });
 
     //--------------------------------------------------------------
     //--------------------------------------------------------------

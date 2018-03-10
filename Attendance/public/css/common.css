@@ -136,3 +136,7 @@
 .margin-zero-top {
     margin-top:0px;
 }
+
+.clearFloat {
+    clear:both;
+}
