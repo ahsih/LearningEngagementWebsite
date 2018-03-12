@@ -17,4 +17,11 @@ class Module extends Model
     public function firstChoice(){
        return $this->hasOne(FirstChoiceUserModule::class);
     }
+
+    /**
+     * This model has many questions
+     */
+    public function question(){
+       return $this->hasMany(question::class);
+    }
 }

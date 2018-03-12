@@ -117,6 +117,7 @@ class ConversationController extends Controller
                 //Get the session value
                 $value = session('totalModuleChats');
                 //compare
+                //If it different, then redirect the page and save a new session value
                 if ($value != $totalModuleConversations) {
                     session(['totalModuleChats' => $totalModuleConversations]);
                     return "redirect";

@@ -43,6 +43,14 @@ class User extends Authenticatable
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * Has many questions
+     */
+    public function question(){
+        return $this->hasMany(question::class);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      * User can have many decline modules
      */
     public function declineRequest(){

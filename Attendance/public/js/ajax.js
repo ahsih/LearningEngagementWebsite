@@ -89,7 +89,7 @@ $(document).ready(function () {
 
         request.done(function (data) {
             if (data == "true") {
-                $('#modules').append("'"+ moduleName + "'");
+                $('#modules').append("'" + moduleName + "'");
             } else {
                 $('#moduleError').css("visibility", "visible");
             }
@@ -156,7 +156,7 @@ $(document).ready(function () {
 
             if (data == "inappropriate") {
                 //Inappropriate word is not allowed
-                    $('#sendTextChat').val('');
+                $('#sendTextChat').val('');
                 $('#messageConfirmation').text('Inappropriate word is not permitted');
             } else {
 
@@ -235,7 +235,7 @@ $(document).ready(function () {
     });
 
     //Direct to polling
-    $('#directToPolling').click(function (){
+    $('#directToPolling').click(function () {
         window.location.href = "/polling";
     });
 
@@ -243,7 +243,7 @@ $(document).ready(function () {
     //--------------------------------------------------------------
 
     //Add optional answer/append optional answer
-    $('#addMoreAnswer').click(function (){
+    $('#addMoreAnswer').click(function () {
 
         //Get the value
         var countValue = $('#optionalAnswersCount').val();
@@ -252,9 +252,15 @@ $(document).ready(function () {
         //Change the value
         $('#optionalAnswersCount').val(countValue);
 
-        var optionalAnswer =  "<label>Optional Answer " + countValue + "</label>";
-        optionalAnswer += "<input type='text' class='form-control' name='optionalAnswers"+ countValue +"' placeholder='optional answer "+countValue+"'/>";
+        //add to the optional answer part
+        var optionalAnswer = "<label>Optional Answer " + countValue + "</label>";
+        optionalAnswer += "<input type='text' class='form-control' name='optionalAnswers" + countValue + "' placeholder='optional answer " + countValue + "'/>";
 
+        //Add to the select list
+        var optionalAnswerSelect = "<option value='" + countValue + "'>Optional Answer " + countValue + "</option>";
+
+        //Append to the both optional select and option question
+        $('#correctAnswerOption').append(optionalAnswerSelect);
         $('#optionalAnswerBox').append(optionalAnswer);
     });
 
