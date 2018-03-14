@@ -54,7 +54,7 @@
                                                 <button type="submit"
                                                         class="glyphicon glyphicon-minus-sign set-red buttonWithoutButtonlayout"></button>
                                             </li>
-                                        @elseif(Auth::user()->name == $conversation->fullName)
+                                        @elseif(Auth::user()->id == $conversation->user_id)
                                             <li class="studentDeleteMessage pull-left text-info">
                                                 <button type="submit"
                                                         class="glyphicon glyphicon-minus-sign set-red buttonWithoutButtonlayout"></button>

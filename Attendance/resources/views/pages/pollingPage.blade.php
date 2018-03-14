@@ -11,6 +11,12 @@
                     @endif
                     {{ Session::forget('pollingError') }}
                 </div>
+                <div class="text-success">
+                    @if(Session::has('pollingSuccess'))
+                        <p class="noMarginBottom">{{ Session::get('pollingSuccess') }}</p>
+                        @endif
+                    {{ Session::forget('pollingSuccess') }}
+                </div>
                 {!! Form::open(['action' => 'PollingController@createPoll']) !!}
                 <div class="form-group">
                     <label>Module:</label>

@@ -6,6 +6,8 @@ use attendance\Conversation;
 use attendance\declineModules;
 use attendance\FirstChoiceUserModule;
 use attendance\Module;
+use attendance\question;
+use attendance\Response;
 use Illuminate\Http\Request;
 use Auth;
 use attendance\User;
@@ -24,7 +26,7 @@ class HomeController extends Controller
 
     /**
      * Show the application homepage
-     *
+     * @param $request - the request from user
      * @return \Illuminate\Http\Response
      */
     public function index(Request $request)
@@ -37,17 +39,8 @@ class HomeController extends Controller
         //Get the path
         $path = $request->path();
 
-        //Get a list of all the modules
-        $allModules = Module::all();
-
-        //Get only the module the users don't have
-        foreach ($modules as $module) {
-            for ($i = 0; $i <= sizeof($allModules); $i++) {
-                if ($module->id == $allModules[$i]->id) {
-                    unset($allModules[$i]);
-                }
-            }
-        }
+        //Get all the modules users don't have
+        $notAvailableModules = $this->getNotAvailableModules($modules);
 
         //Get a list of decline module
         $listOfDeclineModules = declineModules::where('user_id', '=', $user_id)->get();
@@ -68,6 +61,10 @@ class HomeController extends Controller
             //Get the module name
             $module = Module::find($firstChoiceModule->module_id);
             $moduleName = $module->module_name;
+
+            //Get the not filled questions
+            $questions = $this->getNotFilledQuestions($user_id, $firstChoiceModule);
+
         }
 
         //Return two different views for students and tutors
@@ -75,8 +72,9 @@ class HomeController extends Controller
 
             //Pass to the view
             $data = array(
+                'questions' => $questions,
                 'path' => $path,
-                'allModules' => $allModules,
+                'allModules' => $notAvailableModules,
                 'modules' => $modules,
                 'conversations' => $conversations,
                 'moduleName' => $moduleName,
@@ -90,7 +88,7 @@ class HomeController extends Controller
             //Pass to the view
             $data = array(
                 'path' => $path,
-                'allModules' => $allModules,
+                'allModules' => $notAvailableModules,
                 'modules' => $modules,
                 'conversations' => $conversations,
                 'moduleName' => $moduleName,
@@ -99,16 +97,10 @@ class HomeController extends Controller
             );
             //Pass all the modules this tutor teaches
             return view('pages.tutorHomePage')->with($data);
-        } else if ($request->user()->hasRole('admin')){
 
-            //Get all the users in the database
-            $users = User::all();
-            $studentUsers = array();
-            foreach($users as $user){
-                if($user->hasRole('student')){
-                    array_push($studentUsers,$user);
-                }
-            }
+        } else if ($request->user()->hasRole('admin')) {
+
+            $studentUsers = $this->getAllStudentUser();
 
             $data = array(
                 'title' => 'Admin Page',
@@ -119,4 +111,72 @@ class HomeController extends Controller
             return view('pages.adminPage')->with($data);
         }
     }
+
+    /**
+     * Get the questions that are not filled
+     */
+    private function getNotFilledQuestions($user_id, $firstChoiceModule)
+    {
+        //Get the question that are related to this module
+        $questions = question::where('module_id', '=', $firstChoiceModule->module_id)->get();
+
+        $responses = Response::where('user_id', '=', $user_id)->get();
+
+        //Loop the response
+        //Check if the response has already got the question id
+        //if it is, remove the question from the question array
+        if ($responses != null) {
+            foreach($responses as $response){
+                for($i=0;$i<=sizeof($questions);$i++){
+                    if($response->question_id == $questions[$i]->id){
+                        unset($questions[$i]);
+                    }
+                }
+            }
+        }
+        return $questions;
+    }
+
+/**
+ * Get all the student user array
+ * @return a list of students
+ */
+private
+function getAllStudentUser()
+{
+    //Get all the users in the database
+    $users = User::all();
+    $studentUsers = array();
+    foreach ($users as $user) {
+        if ($user->hasRole('student')) {
+            array_push($studentUsers, $user);
+        }
+    }
+
+    return $studentUsers;
+}
+
+/**
+ * Get all the not available modules from the user
+ * @param $modules - list of all modules
+ * @return not available modules
+ */
+private
+function getNotAvailableModules($modules)
+{
+    //Get a list of all the modules
+    $notAvailableModules = Module::all();
+
+    //Get only the module the users don't have
+    foreach ($modules as $module) {
+        for ($i = 0; $i <= sizeof($notAvailableModules); $i++) {
+            if ($module->id == $notAvailableModules[$i]->id) {
+                unset($notAvailableModules[$i]);
+            }
+        }
+    }
+
+    return $notAvailableModules;
+}
+
 }

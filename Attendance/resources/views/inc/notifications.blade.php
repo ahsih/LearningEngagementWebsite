@@ -4,7 +4,7 @@
         <div class="alert alert-info">
             <a class="pull-right glyphicon glyphicon-remove" id="closeLiveChatSettings"></a>
             <h5> Change your live-chat module</h5>
-            <select id="liveChatModuleID">
+            <select id="liveChatModuleID" class="form-control">
                 <optgroup label="Modules">
                     @foreach ($modules as $module)
                         <option value="{{ $module->id  }}"> {{ $module->module_name }}</option>
@@ -20,7 +20,7 @@
     <div id="popup-wrapper">
         <div class="alert alert-info" id="modulePopUp">
             <a class="pull-right glyphicon glyphicon-remove" id="closeModuleList"></a>
-            <select id="listOfModules">
+            <select id="listOfModules" class="form-control">
                 @foreach($allModules as $module)
                     <option value="{{ $module->id  }}"> {{ $module->module_name }}</option>
                 @endforeach

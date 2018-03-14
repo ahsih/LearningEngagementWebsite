@@ -69,6 +69,7 @@ class ConversationController extends Controller
             //Set the module
             //Get the first choice module from the current user
             $firstChoiceModule = FirstChoiceUserModule::where('user_id', '=', $user->id)->first()->module_id;
+            $conversation->user_id = $user->id;
             $conversation->module_id = $firstChoiceModule;
             $conversation->created_at = Carbon::now()->addSeconds(1);
             //save the conversation

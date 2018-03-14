@@ -102,6 +102,9 @@ class PollingController extends Controller
                 $pollQuestion->save();
             }
 
+            //Create a session that tell the tutor they have successfully created a polling.
+            session(['pollingSuccess' => 'Polling has been created successfully']);
+
         } else {
             session(['pollingError' => $error]);
         }

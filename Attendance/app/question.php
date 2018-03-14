@@ -30,4 +30,11 @@ class question extends Model
         return $this->belongsTo(User::class);
     }
 
+    /**
+     * This model has many response
+     */
+    public function responses(){
+        return $this->hasMany(Response::class);
+    }
+
 }
