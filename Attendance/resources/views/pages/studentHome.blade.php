@@ -22,6 +22,7 @@
             <h2 class="module-bottom-zero font-navy">Classroom polling</h2>
             <div class="panel-body">
                 <div id="studentPollingNotifications"></div>
+                @if($questions != null)
                     @foreach($questions as $question)
                         <div id="question{{ $question->id }}">
                             <div class="panel-heading classroomHeading">
@@ -37,7 +38,8 @@
                                 </a>
                             @endforeach
                         </div>
-                @endforeach
+                    @endforeach
+                @endif
             </div>
         </div>
     </div>
