@@ -267,5 +267,37 @@ $(document).ready(function () {
     //--------------------------------------------------------------
     //--------------------------------------------------------------
 
+    //Ajax for saving the student response
+   $('.optionSelected').click(function () {
+
+        var optionalAnswerValue = $(this).find('input:hidden').val();
+        var questionValue = $(this).find('input.questionID').val();
+
+        //Call the Ajax to save the response
+        var request = $.ajax({
+            type: 'POST',
+            url: '/saveResponse',
+           data: {
+               'optionalAnswerValue' :optionalAnswerValue,
+               'questionValue' : questionValue,
+           }
+      });
+
+        //If the ajax request is completed.
+        request.done(function (data){
+            if(data == 'optionalNotExist'){
+                $('#studentPollingNotifications').append("<p class='text-danger'>Oh no, look like somebody change the questionID or optional ID!</p>");
+            }else if(data == 'responseExist'){
+                $('#studentPollingNotifications').append("<p class='text-danger'>This user has already respond to this poll!</p>")
+            }else{
+                $('div#question'+ data).remove();
+            }
+        });
+
+    });
+
+
+    //--------------------------------------------------------------
+    //--------------------------------------------------------------
 
 });

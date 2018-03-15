@@ -70,7 +70,11 @@
                                class="moduleBoxLarge"/>
                         <input type="button" id="SendText" value="Send Message" class="btn btn-success"/>
                         <label class="label-font-big"><input type="checkbox" id="anonymousTick"/>Anonymous</label>
-                        <label id="messageConfirmation"></label>
+                        <label id="messageConfirmation">@if(Session::has('noPermissionToDelete'))
+                                {{ Session::get('noPermissionToDelete') }}
+                            @endif
+                            {{ Session::forget('noPermissionToDelete') }}
+                        </label>
                 </div>
         </div>
     </div>

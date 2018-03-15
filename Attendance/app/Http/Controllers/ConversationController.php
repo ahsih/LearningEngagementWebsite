@@ -46,7 +46,7 @@ class ConversationController extends Controller
 
         //check if the string/text message contains swearing word
         foreach ($wordArray as $word) {
-            if (stripos($textMessage,"fuck") !== false) {
+            if (stripos($textMessage, $word) !== false) {
                 $inappropriateWord = true;
             }
         }
@@ -84,8 +84,28 @@ class ConversationController extends Controller
      */
     public function deleteMessage()
     {
+        //Get the user ID
+        $user = User::find(Auth::user()->id);
+        //Get the delete ID
         $deleteId = Input::get('deleteValue');
-        Conversation::find($deleteId)->delete();
+        //Find the conversation message
+        $conversation = Conversation::find($deleteId);
+
+        if ($conversation != null) {
+            if ($user->hasRole('student')) {
+                if ($conversation->user_id == $user->id) {
+                    $conversation->delete();
+                } else {
+                    session(['noPermissionToDelete' => 'You do not have the permission to delete this message']);
+                }
+            } else {
+                //Delete the conversation
+                Conversation::find($deleteId)->delete();
+            }
+        }else{
+            session(['noPermissionToDelete' => 'You do not have the permission to delete this message']);
+        }
+
 
         //Redirect the page
         return redirect('/');

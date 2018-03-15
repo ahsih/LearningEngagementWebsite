@@ -4,6 +4,7 @@ namespace attendance\Http\Controllers;
 
 use attendance\optionalAnswers;
 use attendance\question;
+use attendance\Response;
 use attendance\User;
 use Illuminate\Http\Request;
 use Auth;
@@ -139,5 +140,87 @@ class PollingController extends Controller
         return $error;
 
     }
+
+    /**
+     * Save the student response
+     */
+    public function saveResponse()
+    {
+        //Get the value
+        $optionalAnswerValue = request()->optionalAnswerValue;
+        //Get the question value
+        $questionValue = request()->questionValue;
+
+        $responseExist = $this->checkQuestionExistInUserResponse($questionValue);
+        //Optional answer value belong to the question
+        $optionalExist = $this->checkOptionalExistInQuestion($questionValue, $optionalAnswerValue);
+
+        if ($optionalExist) {
+            if (!$responseExist) {
+                //Create a new response
+                //And put all the data inside here
+                // Save
+                $response = new Response();
+                $response->optionalAnswer_id = $optionalAnswerValue;
+                $response->question_id = $questionValue;
+                $response->user_id = Auth::user()->id;
+                $response->save();
+                return $questionValue;
+            }else{
+                return 'responseExist';
+            }
+        } else {
+            return 'optionalNotExist';
+        }
+
+
+    }
+
+    /**
+     * Check if the response exist
+     * @param $questionValue
+     * @return bool
+     */
+    private function checkQuestionExistInUserResponse($questionValue)
+    {
+        //Check if this question already exist in the user response
+        $response = Response::where('user_id', '=', Auth::user()->id)
+            ->where('question_id', '=', $questionValue)->exists();
+
+        if ($response) {
+            return true;
+        } else {
+            return false;
+        }
+
+    }
+
+    /**
+     * @param $questionValue
+     * @param $optionalAnswerValue
+     * Check if the optional answer is inside the question
+     * @return boolean whether exist or not, exist = true, not = false
+     */
+    private function checkOptionalExistInQuestion($questionValue, $optionalAnswerValue)
+    {
+
+        // use optional answer model to find the question ID
+        $question = question::find($questionValue);
+        $optionalExist = false;
+
+        //Check if this optional answer is inside question , if not that mean
+        //user have change the ID in the console code
+        if ($question != null) {
+            foreach ($question->optionalAnswers as $optional) {
+                if ($optional->id == $optionalAnswerValue) {
+                    $optionalExist = true;
+                }
+            }
+        }
+
+        return $optionalExist;
+
+    }
+
 
 }

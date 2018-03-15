@@ -9,7 +9,7 @@
                     @endforeach
                 </label>
                 </br>
-                <h4>Select the current module to your list</h4>
+                <h4>Request to join the module</h4>
                 <input type="button" class="btn btn-success" id="expandModules" value="Module List"></br>
                 <hint>You can ask your module tutor to remove you from the module</hint>
             </div>
@@ -21,13 +21,22 @@
         <div class="panel panel-heading">
             <h2 class="module-bottom-zero font-navy">Classroom polling</h2>
             <div class="panel-body">
-                @foreach($questions as $question)
-                    <div>
-                        <p>{{ $question->question }}</p>
-                        @foreach($question->optionalAnswers as $optionalAnswer)
-                            <p>{{ $optionalAnswer->optional_answer }}</p>
-                        @endforeach
-                    </div>
+                <div id="studentPollingNotifications"></div>
+                    @foreach($questions as $question)
+                        <div id="question{{ $question->id }}">
+                            <div class="panel-heading classroomHeading">
+                                <p class="noMarginBottom">{{ $question->question }}</p>
+                            </div>
+                            @foreach($question->optionalAnswers as $optionalAnswer)
+                                <a href="#" class="optionSelected">
+                                    <input type="hidden" value="{{ $optionalAnswer->id }}"/>
+                                    <input type="hidden" class="questionID" value="{{ $question->id }}"/>
+                                    <div class="classroomAnswer">
+                                        <p class="marginBottomByFive">{{ $optionalAnswer->optional_answer }}</p>
+                                    </div>
+                                </a>
+                            @endforeach
+                        </div>
                 @endforeach
             </div>
         </div>

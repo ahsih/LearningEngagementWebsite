@@ -126,9 +126,9 @@ class HomeController extends Controller
         //Check if the response has already got the question id
         //if it is, remove the question from the question array
         if ($responses != null) {
-            foreach($responses as $response){
-                for($i=0;$i<=sizeof($questions);$i++){
-                    if($response->question_id == $questions[$i]->id){
+            foreach ($responses as $response) {
+                for ($i = 0; $i <= sizeof($questions); $i++) {
+                    if ($response->question_id == $questions[$i]->id) {
                         unset($questions[$i]);
                     }
                 }
@@ -137,46 +137,53 @@ class HomeController extends Controller
         return $questions;
     }
 
-/**
- * Get all the student user array
- * @return a list of students
- */
-private
-function getAllStudentUser()
-{
-    //Get all the users in the database
-    $users = User::all();
-    $studentUsers = array();
-    foreach ($users as $user) {
-        if ($user->hasRole('student')) {
-            array_push($studentUsers, $user);
-        }
-    }
-
-    return $studentUsers;
-}
-
-/**
- * Get all the not available modules from the user
- * @param $modules - list of all modules
- * @return not available modules
- */
-private
-function getNotAvailableModules($modules)
-{
-    //Get a list of all the modules
-    $notAvailableModules = Module::all();
-
-    //Get only the module the users don't have
-    foreach ($modules as $module) {
-        for ($i = 0; $i <= sizeof($notAvailableModules); $i++) {
-            if ($module->id == $notAvailableModules[$i]->id) {
-                unset($notAvailableModules[$i]);
+    /**
+     * Get all the student user array
+     * @return a list of students
+     */
+    private function getAllStudentUser()
+    {
+        //Get all the users in the database
+        $users = User::all();
+        $studentUsers = array();
+        foreach ($users as $user) {
+            if ($user->hasRole('student')) {
+                array_push($studentUsers, $user);
             }
         }
+
+        return $studentUsers;
     }
 
-    return $notAvailableModules;
-}
+    /**
+     * Get all the not available modules from the user
+     * @param $modules - list of all modules
+     * @return not available modules
+     */
+    private
+    function getNotAvailableModules($modules)
+    {
+        //Get a list of all the modules
+        $allModules = Module::all();
+        $keyLocation = array();
+
+        //Get only the module the users don't have
+        foreach ($modules as $module) {
+            for ($i = 0; $i < sizeof($allModules); $i++) {
+                if ($module->id == $allModules[$i]->id) {
+                    array_push($keyLocation,$i);
+                }
+            }
+        }
+
+        foreach($keyLocation as $key){
+            unset($allModules[$key]);
+        }
+
+        $allModules = $allModules->values();
+
+
+        return $allModules;
+    }
 
 }

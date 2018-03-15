@@ -30,3 +30,4 @@ Route::post('/deleteStudentInModule','ManagementController@deleteStudentInModule
 Route::post('/deleteMessage','ConversationController@deleteMessage');
 Route::post('/createPoll','PollingController@createPoll');
 Route::post('/createTutor','ManagementController@createTutor');
+Route::post('/saveResponse','PollingController@saveResponse');
