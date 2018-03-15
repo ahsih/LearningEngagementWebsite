@@ -171,7 +171,7 @@ $(document).ready(function () {
     //--------------------------------------------------------------
 
     //--------------------------------------------------------------
-    //Every 3 seconds update the chat
+    //Every 2 seconds update the chat
     window.setInterval(function () {
         //Call the ajax
         //Send no data and it GET request as we getting the data from the controller
@@ -183,7 +183,7 @@ $(document).ready(function () {
             success: function (data) {
 
                 if (data != "No Data") {
-                    if (window.location.pathname == '/') {
+                    if (window.location.pathname == '/' || window.location.pathname == '/home') {
                         location.reload();
                     }
                 }
@@ -296,8 +296,27 @@ $(document).ready(function () {
 
     });
 
+    //--------------------------------------------------------------
+    //--------------------------------------------------------------
 
-    //--------------------------------------------------------------
-    //--------------------------------------------------------------
+    //Every 10 seconds check if there are new classroom polling for student to fill in
+    window.setInterval(function () {
+        //Get the classroom polling data
+        $.ajax({
+            type: 'GET',
+            url: '/getClassroomPolling',
+            data: null,
+            //If it success
+            success: function (data) {
+
+                if (data != "No Data") {
+                    if (window.location.pathname == '/' || window.location.pathname == '/home') {
+                        location.reload();
+                    }
+                }
+            }
+        });
+    }, 10000);
+
 
 });

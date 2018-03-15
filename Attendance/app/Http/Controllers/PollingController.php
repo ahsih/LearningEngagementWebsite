@@ -2,6 +2,7 @@
 
 namespace attendance\Http\Controllers;
 
+use attendance\FirstChoiceUserModule;
 use attendance\optionalAnswers;
 use attendance\question;
 use attendance\Response;
@@ -166,14 +167,71 @@ class PollingController extends Controller
                 $response->user_id = Auth::user()->id;
                 $response->save();
                 return $questionValue;
-            }else{
+            } else {
                 return 'responseExist';
             }
         } else {
             return 'optionalNotExist';
         }
+    }
 
+    /**
+     * @return data if new classroom polling exist
+     */
+    public function getClassroomPolling()
+    {
+        //Get the current user
+        $user = User::find(Auth::user()->id);
+        //Find their first choice module
+        $firstChoiceModule = FirstChoiceUserModule::where('user_id', '=', $user->id)->first();
 
+        //If user is a student, then we start to check whether to reload the page
+        if ($user->hasRole('student')) {
+
+            //Check if this user has his main module
+            if ($firstChoiceModule != null) {
+                $questionCount = question::where('module_id', '=', $firstChoiceModule->module_id)->count();
+
+                //check polling count session and $question count
+                $data = $this->checkPollingCountSession($questionCount);
+
+            } else {
+                $data = 'No Data';
+            }
+        } else {
+            $data = 'No Data';
+        }
+
+        return $data;
+    }
+
+    /**
+     * Check if the polling count is same as the session
+     * If not, then we should reload the page for new classroom polling content
+     * @param $questionCount
+     * @return $data
+     */
+    private function checkPollingCountSession($questionCount){
+        //Check if session exist, if not, then create a new one
+        //The session used to store amount of classroom polling in
+        if (session()->has('pollingCount')) {
+            //Get the polling count total
+            $pollingCount = session()->get('pollingCount');
+
+            //Check if polling count from session is same as $question->count()
+            if ($pollingCount != $questionCount) {
+                session(['pollingCount' => $questionCount]);
+                $data = 'data';
+            }else{
+                $data = 'No Data';
+            }
+
+        } else {
+            session(['pollingCount' => $questionCount]);
+            $data = 'No Data';
+        }
+
+        return $data;
     }
 
     /**

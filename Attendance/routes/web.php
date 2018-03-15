@@ -31,3 +31,4 @@ Route::post('/deleteMessage','ConversationController@deleteMessage');
 Route::post('/createPoll','PollingController@createPoll');
 Route::post('/createTutor','ManagementController@createTutor');
 Route::post('/saveResponse','PollingController@saveResponse');
+Route::get('/getClassroomPolling','PollingController@getClassroomPolling');

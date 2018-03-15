@@ -53,6 +53,7 @@ class HomeController extends Controller
         if ($firstChoiceModule == null) {
             $conversations = null;
             $moduleName = null;
+            $questions = null;
 
         } else {
             $conversations = Conversation::orderBy('created_at')
@@ -122,18 +123,31 @@ class HomeController extends Controller
 
         $responses = Response::where('user_id', '=', $user_id)->get();
 
+        $keyLocation = array();
+
         //Loop the response
         //Check if the response has already got the question id
         //if it is, remove the question from the question array
-        if ($responses != null) {
-            foreach ($responses as $response) {
-                for ($i = 0; $i <= sizeof($questions); $i++) {
-                    if ($response->question_id == $questions[$i]->id) {
-                        unset($questions[$i]);
+        if($questions != null) {
+            if ($responses != null) {
+                foreach ($responses as $response) {
+                    for ($i = 0; $i < sizeof($questions); $i++) {
+                        if ($response->question_id == $questions[$i]->id) {
+                           array_push($keyLocation,$i);
+                        }
                     }
                 }
             }
         }
+
+        //Unset the location
+        foreach($keyLocation as $key){
+            unset($questions[$key]);
+        }
+
+        //Reindex the questions
+        $questions = $questions->values();
+
         return $questions;
     }
 
