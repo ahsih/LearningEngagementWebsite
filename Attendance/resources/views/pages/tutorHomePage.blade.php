@@ -21,6 +21,14 @@
             </div>
         </div>
     </div>
+    <div id="moduleSuccess" class="addModule-error">
+        <div id="popup-wrapper">
+            <div class="alert alert-success">
+                <a class="pull-right glyphicon glyphicon-remove" id="closeModuleSuccess"></a>
+                <p class="text-center"> Module has been added</p>
+            </div>
+        </div>
+    </div>
     <div id="moduleError" class="addModule-error">
         <div id="popup-wrapper">
             <div class="alert alert-warning">

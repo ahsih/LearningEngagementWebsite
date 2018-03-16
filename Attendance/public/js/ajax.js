@@ -11,10 +11,13 @@ $(document).ready(function () {
     });
 
     //-------------------------------------------------------------
-    //Close the alert
+    //Close the module alert
     $('#closeModuleAlert').click(function () {
         $('#moduleError').css("visibility", "hidden");
     });
+    $('#closeModuleSuccess').click(function (){
+        $('#moduleSuccess').css("visibility","hidden");
+    })
     //-------------------------------------------------------------
 
     //-------------------------------------------------------------
@@ -90,6 +93,7 @@ $(document).ready(function () {
         request.done(function (data) {
             if (data == "true") {
                 $('#modules').append("'" + moduleName + "'");
+                $('#moduleSuccess').css("visibility","visible");
             } else {
                 $('#moduleError').css("visibility", "visible");
             }

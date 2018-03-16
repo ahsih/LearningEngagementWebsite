@@ -78,6 +78,7 @@
                 </div>
         </div>
     </div>
+</div>
 @yield('polling feature')
 @yield('notifications')
 <!-- Scripts -->
