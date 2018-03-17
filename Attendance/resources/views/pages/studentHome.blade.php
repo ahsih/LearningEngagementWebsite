@@ -19,7 +19,10 @@
 @section('polling feature')
     <div class="container lightBlue">
         <div class="panel panel-heading">
-            <h2 class="module-bottom-zero font-navy">Classroom polling</h2>
+            <h2 class="module-bottom-zero font-navy">@if ($moduleName != null)Classroom Polling Module:
+                {{ $moduleName }}
+                @else You have No Classroom Polling Module
+                @endif </h2>
             <div class="panel-body">
                 <div id="studentPollingNotifications"></div>
                 @if($questions != null)

@@ -41,11 +41,20 @@
 @section('polling feature')
     <div class="container lightBlue">
         <div class="panel panel-heading">
-            <h2 class="module-bottom-zero font-navy">Classroom polling
+            <h2 class="module-bottom-zero font-navy">@if ($moduleName != null)Classroom Polling Result For Module:
+                {{ $moduleName }}
+                @else You have No Classroom Polling Module
+                @endif
                 <button class="btn btn-warning pull-right" id="directToPolling">Create classroom polling</button>
             </h2>
             <div class="panel-body">
-                <p> content </p>
+                @if($questions != null)
+                    @foreach($questions as $question)
+                        <div id="tutorQuestionPolling" onmouseover="createChart('{{ $question->question}}');">
+                            <canvas id="pollingChart"></canvas>
+                        </div>
+                    @endforeach
+                @endif
             </div>
         </div>
     </div>

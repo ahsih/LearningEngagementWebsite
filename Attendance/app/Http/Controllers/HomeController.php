@@ -86,8 +86,16 @@ class HomeController extends Controller
             return view('pages.studentHome')->with($data);
         } else if ($request->user()->hasRole('tutor')) {
 
+            //Get list of tutor questions
+            if($firstChoiceModule != null) {
+                $questions = question::where('module_id', '=', $firstChoiceModule->module_id)->get();
+            }else{
+                $questions = null;
+            }
+
             //Pass to the view
             $data = array(
+                'questions' => $questions,
                 'path' => $path,
                 'allModules' => $notAvailableModules,
                 'modules' => $modules,
@@ -96,6 +104,7 @@ class HomeController extends Controller
                 'listDeclineModules' => $listOfDeclineModules,
                 'role' => 'tutor'
             );
+
             //Pass all the modules this tutor teaches
             return view('pages.tutorHomePage')->with($data);
 

@@ -158,3 +158,9 @@
 .marginBottomByFive {
     margin-bottom:2px;
 }
+
+.pollingResultTitle{
+    font-size: 20px;
+    margin-bottom:0;
+    color: lawngreen;
+}

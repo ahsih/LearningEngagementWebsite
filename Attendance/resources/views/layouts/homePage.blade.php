@@ -12,6 +12,8 @@
     <link rel="stylesheet" href="{{asset('css/common.css')}}">
     <!-- Javascript for Ajax -->
     <script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
+    <!-- Javascript for chart js to create chart -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.min.js"></script>
     <script src="{{ asset('js/ajax.js') }}"></script>
     <script src="{{ asset('js/common.js') }}"></script>
     <title>Learning Engagement</title>
@@ -26,8 +28,8 @@
 <div class="container lightBlue">
     <div class="panel panel-heading">
         <h2 class="module-bottom-zero font-navy">@if ($moduleName != null)
-                Live-Chat-{{ $moduleName }}
-            @else You have no live-chat module
+                Group Chat Module: {{ $moduleName }}
+            @else You have no Group Chat Module
             @endif
             <button class="pull-right btn btn-warning" id="changeLiveChat">Change Main Module <span
                         class="glyphicon glyphicon-asterisk"></span></button>
