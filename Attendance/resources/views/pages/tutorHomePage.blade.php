@@ -50,8 +50,28 @@
             <div class="panel-body">
                 @if($questions != null)
                     @foreach($questions as $question)
-                        <div id="tutorQuestionPolling" onmouseover="createChart('{{ $question->question}}');">
-                            <canvas id="pollingChart"></canvas>
+                        <?php
+                        //get list of option
+                        $optional = $question->optionalAnswers;
+                        //Create an array to store the amount
+                        $amountArray = array();
+                        //Create an array to store the optional answer
+                        $answerArray = array();
+                        foreach ($optional as $option) {
+                            $answer = $option->optional_answer;
+                            $amount = \attendance\Response::where('optionalAnswer_id', '=', $option->id)->count();
+                            array_push($amountArray, $amount);
+                            array_push($answerArray, $answer);
+                        }
+                        //encode the amount
+                        $amountArray = json_encode($amountArray);
+                        //encode the answer
+                        $answerArray = json_encode($answerArray);
+
+                        ?>
+                        <div id="tutorQuestionPolling"
+                             onmouseover="createChart({{$question}},{{ $answerArray }},{{ $amountArray }});">
+                            <canvas id="pollingChart{{$question->id}}"></canvas>
                         </div>
                     @endforeach
                 @endif

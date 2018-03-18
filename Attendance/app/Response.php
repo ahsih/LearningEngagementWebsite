@@ -14,4 +14,11 @@ class Response extends Model
     {
         return $this->belongsTo(question::class);
     }
+
+    /**
+     * This belong to the optional answer
+     */
+    public function response(){
+        return $this->belongsTo(optionalAnswers::class);
+    }
 }

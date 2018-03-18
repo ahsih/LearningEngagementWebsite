@@ -10,6 +10,13 @@ class optionalAnswers extends Model
      * This belong to the question class.
      */
     public function question(){
-        $this->belongsTo(question::class);
+      return  $this->belongsTo(question::class);
+    }
+
+    /**
+     * This has many response
+     */
+    public function response(){
+       return $this->hasMany(Response::class);
     }
 }
