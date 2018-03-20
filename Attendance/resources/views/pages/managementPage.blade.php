@@ -7,6 +7,7 @@
                 <div class="panel-heading"><h3 class="text-center titleText">Approve student request</h3></div>
                 <div class="panel-body">
                     {!! Form::open(['action' => 'ManagementController@acceptRequest']) !!}
+                    {!! Form::token() !!}
                     <table class="table table-hover">
                         <tr>
                             <th>Student Name</th>
@@ -36,22 +37,23 @@
         </div>
         <div class="container lightBlue">
             <div class="panel panel-default">
+                <h4 class="text-info">Change your module</h4>
+                <select class="form-control" id="liveChatModuleID">
+                    <optgroup label="Modules">
+                        @foreach ($modules as $module)
+                            <option value="{{ $module->id  }}"> {{ $module->module_name }}</option>
+                        @endforeach
+                    </optgroup>
+                </select>
+                <input type="button" id="changeModule" value="Submit" class="btn btn-success center-block"/>
                 <div class="panel-heading"><h3 class="text-center titleText">Modify students in your
                         module: <b class="text-danger">{{ $moduleName }}</b></h3>
-                    <h4 class="text-info">Change your module</h4>
-                    <select id="liveChatModuleID">
-                        <optgroup label="Modules">
-                            @foreach ($modules as $module)
-                                <option value="{{ $module->id  }}"> {{ $module->module_name }}</option>
-                            @endforeach
-                        </optgroup>
-                    </select>
-                    <input type="button" id="changeModule" value="Submit" class="btn btn-success"/>
                 </div>
                 <div class="panel-body">
                     <h4>Add new students to the module</h4>
                     <div class="scrollable-module">
                         {!! Form::open(['action' => 'ManagementController@addStudentToModule']) !!}
+                        {!! Form::token() !!}
                         <table class="table table-hover">
                             <tr>
                                 <th>Student Name</th>
@@ -74,6 +76,7 @@
                     <h4>Delete existing students from the current module</h4>
                     <div class="scrollable-module">
                         {!! Form::open(['action' => 'ManagementController@deleteStudentInModule']) !!}
+                        {!! Form::token() !!}
                         <table class="table table-hover">
                             <tr>
                                 <th>Student Name</th>

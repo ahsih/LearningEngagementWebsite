@@ -19,6 +19,13 @@ class Module extends Model
     }
 
     /**
+     * This has many modules
+     */
+    public function responses(){
+        return $this->hasMany(Response::class);
+    }
+
+    /**
      * This model has many questions
      */
     public function question(){

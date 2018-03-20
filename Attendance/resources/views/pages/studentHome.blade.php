@@ -21,7 +21,7 @@
         <div class="panel panel-heading">
             <h2 class="module-bottom-zero font-navy">@if ($moduleName != null)Classroom Polling Module:
                 {{ $moduleName }}
-                @else You have No Classroom Polling Module
+                @else You Do Not Have A Classroom Polling Module
                 @endif </h2>
             <div class="panel-body">
                 <div id="studentPollingNotifications"></div>

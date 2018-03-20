@@ -34,16 +34,47 @@ class PollingController extends Controller
         //Get the path
         $path = $request->path();
 
+        //Get the student
+        $user = User::find($request->user()->id);
+
         //Get the users module
         $modules = User::find($request->user()->id)->modules;
 
-        //Store the detail that will pass to the view
-        $data = array(
-            'modules' => $modules,
-            'path' => $path,
-            'title' => 'Classroom polling'
-        );
-        return view('pages.pollingPage')->with($data);
+
+        //Check if they are: student/tutor/admin
+        if($user->hasRole('student')){
+
+           $responses = Response::latest('created_at')
+            ->where('user_id','=',$user->id)->get();
+
+            $data = array(
+                'responses' => $responses,
+                'title' => 'Classroom Polling',
+                'path' => $path
+            );
+
+            return view('pages.pollingPage-student')->with($data);
+
+        }else if($user->hasRole('tutor')){
+            //Store the detail that will pass to the view
+            $data = array(
+                'role' => 'tutor',
+                'modules' => $modules,
+                'path' => $path,
+                'title' => 'Classroom Polling'
+            );
+
+            return view('pages.pollingPage-tutor')->with($data);
+        }else{
+            //Store the detail that will pass to the view
+            $data = array(
+                'role' => 'admin',
+                'modules' => $modules,
+                'path' => $path,
+                'title' => 'Classroom Polling'
+            );
+            return view('pages.pollingPage-tutor')->with($data);
+        }
     }
 
     /**
@@ -61,7 +92,6 @@ class PollingController extends Controller
         //Add the module id
         $pollQuestion->module_id = $post['moduleList'];
         $pollQuestion->user_id = Auth::user()->id;
-        $pollQuestion->correct_id = $post['correctAnswerOption'];
 
         //Store the error list
         $error = array();

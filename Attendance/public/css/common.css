@@ -156,11 +156,29 @@
 }
 
 .marginBottomByFive {
-    margin-bottom:2px;
+    margin-bottom: 2px;
 }
 
-.pollingResultTitle{
+.pollingResultTitle {
     font-size: 20px;
-    margin-bottom:0;
+    margin-bottom: 0;
     color: lawngreen;
+}
+
+.responseQuestion {
+    color: red;
+    background-color: springgreen;
+    font-size: 20px;
+}
+
+.textNormal{
+    font-size:25px;
+}
+
+.greenIcon{
+    color:greenyellow;
+}
+
+.redIcon{
+    color:red;
 }

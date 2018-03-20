@@ -22,7 +22,6 @@
             <li class=""><a class="navbar-brand" href="#">Reward</a></li>
             <li class="{{ $path == 'polling' ? 'active' : '' }}"><a class="navbar-brand" href="{{ url('/polling') }}">Polling</a></li>
             <li class="{{ $path == 'management' ? 'active' : '' }}"><a class="navbar-brand" href="{{ url('/management') }}">Module management</a></li>
-            <li class="navbar-brand">Help</li>
         </ul>
 
         <!-- Right Side Of Navbar -->

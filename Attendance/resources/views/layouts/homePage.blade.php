@@ -29,7 +29,7 @@
     <div class="panel panel-heading">
         <h2 class="module-bottom-zero font-navy">@if ($moduleName != null)
                 Group Chat Module: {{ $moduleName }}
-            @else You have no Group Chat Module
+            @else You Do Not Have A Group Chat Module
             @endif
             <button class="pull-right btn btn-warning" id="changeLiveChat">Change Main Module <span
                         class="glyphicon glyphicon-asterisk"></span></button>
@@ -68,9 +68,15 @@
                             @endif
                         </div>
                         <label class="label-font-big"> Send Text </label>
+                        @if ($moduleName != null)
                         <input type="text" id="sendTextChat" placeholder="Type the message you want to send here"
                                class="moduleBoxLarge"/>
-                        <input type="button" id="SendText" value="Send Message" class="btn btn-success"/>
+                            <input type="button" id="SendText" value="Send Message" class="btn btn-success"/>
+                            @else
+                            <input type="text" id="sendTextChat" placeholder="Type the message you want to send here"
+                                   class="moduleBoxLarge" disabled/>
+                            <input type="button" id="SendText" value="Send Message" class="btn btn-success" disabled/>
+                        @endif
                         <label class="label-font-big"><input type="checkbox" id="anonymousTick"/>Anonymous</label>
                         <label id="messageConfirmation">@if(Session::has('noPermissionToDelete'))
                                 {{ Session::get('noPermissionToDelete') }}
