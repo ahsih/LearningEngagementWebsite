@@ -31,4 +31,12 @@ class Module extends Model
     public function question(){
        return $this->hasMany(question::class);
     }
+
+    /**
+     * This has many rewards
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function rewards(){
+        return $this->hasMany(Reward::class);
+    }
 }

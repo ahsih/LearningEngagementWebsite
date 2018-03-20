@@ -88,7 +88,7 @@ class HomeController extends Controller
 
             //Get list of tutor questions
             if($firstChoiceModule != null) {
-                $questions = question::where('module_id', '=', $firstChoiceModule->module_id)->get();
+                $questions = question::latest('created_at')->where('module_id', '=', $firstChoiceModule->module_id)->get();
             }else{
                 $questions = null;
             }

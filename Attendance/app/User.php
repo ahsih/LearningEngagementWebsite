@@ -50,6 +50,14 @@ class User extends Authenticatable
     }
 
     /**
+     * This has many rewards
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function rewards(){
+        return $this->hasMany(Reward::class);
+    }
+
+    /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      * User can have many decline modules
      */
