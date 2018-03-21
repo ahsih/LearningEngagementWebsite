@@ -34,25 +34,15 @@ class ConversationController extends Controller
         //Get the message
         $textMessage = request()->textMessage;
 
-        //Check if text message contains inappropriate word
-        $fileName = resource_path() . '\InappropriateWord';
-        $contents = File::get($fileName);
-
-        //line by line stored as array
-        $wordArray = explode("\n", $contents);
-
         // by default inappropriate word is false;
-        $inappropriateWord = false;
+        $inappropriateWord = $this->checkInappropriateWord($textMessage);
 
-        //check if the string/text message contains swearing word
-        foreach ($wordArray as $word) {
-            if (stripos($textMessage, $word) !== false) {
-                $inappropriateWord = true;
-            }
-        }
+        $emptyTextMessage = $this->checkEmptyWord($textMessage);
 
         //if it contains inappropriate word, then chat should not allow to send this.
-        if ($inappropriateWord) {
+        if ($emptyTextMessage) {
+            return "empty";
+        } else if ($inappropriateWord) {
             return "inappropriate";
         } else {
 
@@ -80,6 +70,43 @@ class ConversationController extends Controller
     }
 
     /**
+     * @param $textMessage
+     */
+    private function checkEmptyWord($textMessage)
+    {
+        $emptyText = false;
+        if ($textMessage == "" || $textMessage == " ") {
+            $emptyText = true;
+        }
+        return $emptyText;
+    }
+
+    /**
+     * Check if the text message contains inappropriate word
+     * @param $textMessage - text message
+     */
+    private function checkInappropriateWord($textMessage)
+    {
+        //Check if text message contains inappropriate word
+        $fileName = resource_path() . '\InappropriateWord';
+        $contents = File::get($fileName);
+
+        //line by line stored as array
+        $wordArray = explode("\n", $contents);
+
+        //Inappropriate boolean = false
+        $inappropriateWord = false;
+
+        //check if the string/text message contains swearing word
+        foreach ($wordArray as $word) {
+            if (stripos($textMessage, $word) !== false) {
+                $inappropriateWord = true;
+            }
+        }
+        return $inappropriateWord;
+    }
+
+    /**
      * Delete the message according to the tutor chosen one
      */
     public function deleteMessage()
@@ -102,7 +129,7 @@ class ConversationController extends Controller
                 //Delete the conversation
                 Conversation::find($deleteId)->delete();
             }
-        }else{
+        } else {
             session(['noPermissionToDelete' => 'You do not have the permission to delete this message']);
         }
 

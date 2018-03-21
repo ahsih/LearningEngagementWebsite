@@ -162,7 +162,12 @@ $(document).ready(function () {
                 //Inappropriate word is not allowed
                 $('#sendTextChat').val('');
                 $('#messageConfirmation').text('Inappropriate word is not permitted');
-            } else {
+            } else if(data == "empty"){
+                //Empty text not permitted
+                $('#sendTextChat').val('');
+                $('#messageConfirmation').text('Text message cannot be empty');
+            }
+            else {
 
                 //You don't do anything, as details are saved into the database
                 //Clear text
