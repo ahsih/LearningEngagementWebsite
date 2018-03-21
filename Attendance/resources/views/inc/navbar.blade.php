@@ -19,7 +19,7 @@
 
         <ul class="nav navbar-nav navbar-left">
             <li class="{{ $path == '/' ? 'active' : '' }}{{ $path == 'home' ? 'active' : '' }}"><a class="navbar-brand" href="{{ url('/') }}">Home</a></li>
-            <li class=""><a class="navbar-brand" href="#">Reward</a></li>
+            <li class="{{ $path == 'reward' ? 'active' : '' }}"><a class="navbar-brand" href="{{ url('/reward') }}">Reward</a></li>
             <li class="{{ $path == 'polling' ? 'active' : '' }}"><a class="navbar-brand" href="{{ url('/polling') }}">Polling</a></li>
             <li class="{{ $path == 'management' ? 'active' : '' }}"><a class="navbar-brand" href="{{ url('/management') }}">Module management</a></li>
         </ul>

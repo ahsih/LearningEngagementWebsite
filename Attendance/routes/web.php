@@ -17,6 +17,7 @@ Route::get('/live-chat','LiveChatController@index');
 Route::get('/management','ManagementController@index');
 Route::get('/deleteDeclineRequest','ModuleController@deleteDeclineRequest');
 Route::get('/polling','PollingController@index');
+Route::get('/reward','RewardController@index');
 Auth::routes();
 
 Route::post('/addModule', 'ModuleController@addModule');
