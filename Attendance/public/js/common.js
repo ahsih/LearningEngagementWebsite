@@ -5,9 +5,6 @@ function createChart(question, optionalAnswers, amountArray) {
 
     var myChart = document.getElementById(pollingQuestionID).getContext('2d');
 
-    myChart.canvas.width = 140;
-    myChart.canvas.height = 30;
-
     var massPopChart = new Chart(myChart, {
         type: 'horizontalBar', // bar , horizontalBar, pie, line, doughnut, radar
         data: {
@@ -23,7 +20,8 @@ function createChart(question, optionalAnswers, amountArray) {
 
         //Add title
         options: {
-
+            responsive: true,
+            maintainAspectRatio: false,
             //Scale
             scales: {
                 yAxes: [{
@@ -31,7 +29,7 @@ function createChart(question, optionalAnswers, amountArray) {
                         display: true,
                         labelString: 'Answer',
                         fontSize: 15,
-                    }
+                    },
                 }],
                 xAxes: [{
                     scaleLabel: {
@@ -39,12 +37,13 @@ function createChart(question, optionalAnswers, amountArray) {
                         labelString: 'Amount',
                         fontSize: 15,
                     },
-                    display: true,
                     ticks: {
                         min: 0,
                         beginAtZero: true,
                         stepSize: 1,
-                    }
+                    },
+                    display: true,
+
                 }]
             },
 
@@ -59,14 +58,6 @@ function createChart(question, optionalAnswers, amountArray) {
                 display: false,
                 position: 'right',
             },
-
-            layout: {
-                padding: {
-                    left: 0,
-                    right: 200,
-                }
-            }
-
         }
     });
 }

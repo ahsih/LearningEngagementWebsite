@@ -17,7 +17,6 @@
     </div>
 @stop
 @section('polling feature')
-    <div class="container lightBlue">
         <div class="panel panel-heading">
             <h2 class="module-bottom-zero font-navy">@if ($moduleName != null)Classroom Polling Module:
                 {{ $moduleName }}
@@ -45,5 +44,4 @@
                 @endif
             </div>
         </div>
-    </div>
 @stop

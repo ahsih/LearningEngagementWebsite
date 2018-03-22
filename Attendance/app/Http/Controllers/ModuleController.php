@@ -100,6 +100,10 @@ class ModuleController extends Controller
         //Get the request module
         $moduleName = request()->moduleName;
 
+        if ($moduleName == "" || $moduleName == " ") {
+            return "false";
+        }
+
         if (!Module::where('module_name', '=', $moduleName)->exists()) {
             $module = new Module();
             $module->module_name = $moduleName;

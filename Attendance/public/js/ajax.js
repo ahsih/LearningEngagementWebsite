@@ -94,7 +94,7 @@ $(document).ready(function () {
             if (data == "true") {
                 $('#modules').append("'" + moduleName + "'");
                 $('#moduleSuccess').css("visibility", "visible");
-            } else {
+            } else if(data == "false"){
                 $('#moduleError').css("visibility", "visible");
             }
         });

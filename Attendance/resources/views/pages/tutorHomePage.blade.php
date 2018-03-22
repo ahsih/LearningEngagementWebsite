@@ -33,49 +33,49 @@
         <div id="popup-wrapper">
             <div class="alert alert-warning">
                 <a class="pull-right glyphicon glyphicon-remove" id="closeModuleAlert"></a>
-                <p class="text-center"> Module already existed!</p>
+                <p class="text-center"> Module already existed or is empty!</p>
             </div>
         </div>
     </div>
 @stop
 @section('polling feature')
-    <div class="container lightBlue">
-        <div class="panel panel-heading">
-            <h2 class="module-bottom-zero font-navy">@if ($moduleName != null)Classroom Polling Result For Module:
-                {{ $moduleName }}
-                @else You have No Classroom Polling Module
-                @endif
-                <button class="btn btn-warning pull-right" id="directToPolling">Create classroom polling</button>
-            </h2>
-            <div class="panel-body">
-                @if($questions != null)
-                    @foreach($questions as $question)
-                        <?php
-                        //get list of option
-                        $optional = $question->optionalAnswers;
-                        //Create an array to store the amount
-                        $amountArray = array();
-                        //Create an array to store the optional answer
-                        $answerArray = array();
-                        foreach ($optional as $option) {
-                            $answer = $option->optional_answer;
-                            $amount = \attendance\Response::where('optionalAnswer_id', '=', $option->id)->count();
-                            array_push($amountArray, $amount);
-                            array_push($answerArray, $answer);
-                        }
-                        //encode the amount
-                        $amountArray = json_encode($amountArray);
-                        //encode the answer
-                        $answerArray = json_encode($answerArray);
+    <!-- Tutor polling -->
+    <div class="panel panel-heading">
+        <h2 class="module-bottom-zero font-navy">@if ($moduleName != null)Polling Result For Module:
+            {{ $moduleName }}
+            @else You have No Classroom Polling Module
+            @endif
+        </h2>
+        <button class="btn btn-primary center-block" id="directToPolling">Create classroom polling</button>
+        <br>
+        <div class="panel-body">
+            @if($questions != null)
+                @foreach($questions as $question)
+                    <?php
+                    //get list of option
+                    $optional = $question->optionalAnswers;
+                    //Create an array to store the amount
+                    $amountArray = array();
+                    //Create an array to store the optional answer
+                    $answerArray = array();
+                    foreach ($optional as $option) {
+                        $answer = $option->optional_answer;
+                        $amount = \attendance\Response::where('optionalAnswer_id', '=', $option->id)->count();
+                        array_push($amountArray, $amount);
+                        array_push($answerArray, $answer);
+                    }
+                    //encode the amount
+                    $amountArray = json_encode($amountArray);
+                    //encode the answer
+                    $answerArray = json_encode($answerArray);
 
-                        ?>
-                        <div id="tutorQuestionPolling"
-                             onmouseover="createChart({{$question}},{{ $answerArray }},{{ $amountArray }});">
-                            <canvas id="pollingChart{{$question->id}}"></canvas>
-                        </div>
-                    @endforeach
-                @endif
-            </div>
+                    ?>
+                    <div id="tutorQuestionPolling" class="center-block"
+                         onmouseover="createChart({{$question}},{{ $answerArray }},{{ $amountArray }});">
+                        <canvas id="pollingChart{{$question->id}}"></canvas>
+                    </div>
+                @endforeach
+            @endif
         </div>
     </div>
 @stop

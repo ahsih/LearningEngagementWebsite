@@ -9,7 +9,7 @@
                             Module:{{ $response->question->modules->module_name }}</p>
                         <p class="textNormal noMarginBottom">
                             <b>{{ $response->optionalAnswers->optional_answer }}</b> @if($response->question->correct_id == 0)
-                                <b class="glyphicon glyphicon-info-sign"></b>
+                                <b class="text-primary glyphicon glyphicon-info-sign"></b>
                             @elseif($response->question->correct_id == $response->optionalAnswers->id)
                                 <b class="glyphicon glyphicon-ok greenIcon"></b>
                             @else
