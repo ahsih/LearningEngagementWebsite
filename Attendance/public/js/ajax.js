@@ -15,8 +15,8 @@ $(document).ready(function () {
     $('#closeModuleAlert').click(function () {
         $('#moduleError').css("visibility", "hidden");
     });
-    $('#closeModuleSuccess').click(function (){
-        $('#moduleSuccess').css("visibility","hidden");
+    $('#closeModuleSuccess').click(function () {
+        $('#moduleSuccess').css("visibility", "hidden");
     })
     //-------------------------------------------------------------
 
@@ -93,7 +93,7 @@ $(document).ready(function () {
         request.done(function (data) {
             if (data == "true") {
                 $('#modules').append("'" + moduleName + "'");
-                $('#moduleSuccess').css("visibility","visible");
+                $('#moduleSuccess').css("visibility", "visible");
             } else {
                 $('#moduleError').css("visibility", "visible");
             }
@@ -162,7 +162,7 @@ $(document).ready(function () {
                 //Inappropriate word is not allowed
                 $('#sendTextChat').val('');
                 $('#messageConfirmation').text('Inappropriate word is not permitted');
-            } else if(data == "empty"){
+            } else if (data == "empty") {
                 //Empty text not permitted
                 $('#sendTextChat').val('');
                 $('#messageConfirmation').text('Text message cannot be empty');
@@ -277,7 +277,7 @@ $(document).ready(function () {
     //--------------------------------------------------------------
 
     //Ajax for saving the student response
-   $('.optionSelected').click(function () {
+    $('.optionSelected').click(function () {
 
         var optionalAnswerValue = $(this).find('input:hidden').val();
         var questionValue = $(this).find('input.questionID').val();
@@ -286,20 +286,20 @@ $(document).ready(function () {
         var request = $.ajax({
             type: 'POST',
             url: '/saveResponse',
-           data: {
-               'optionalAnswerValue' :optionalAnswerValue,
-               'questionValue' : questionValue,
-           }
-      });
+            data: {
+                'optionalAnswerValue': optionalAnswerValue,
+                'questionValue': questionValue,
+            }
+        });
 
         //If the ajax request is completed.
-        request.done(function (data){
-            if(data == 'optionalNotExist'){
+        request.done(function (data) {
+            if (data == 'optionalNotExist') {
                 $('#studentPollingNotifications').append("<p class='text-danger'>Oh no, look like somebody change the questionID or optional ID!</p>");
-            }else if(data == 'responseExist'){
+            } else if (data == 'responseExist') {
                 $('#studentPollingNotifications').append("<p class='text-danger'>This user has already respond to this poll!</p>")
-            }else{
-                $('div#question'+ data).remove();
+            } else {
+                $('div#question' + data).remove();
             }
         });
 
@@ -327,5 +327,16 @@ $(document).ready(function () {
         });
     }, 10000);
 
+    //--------------------------------------------------------------
+    //--------------------------------------------------------------
+
+    //Every 10 seconds, update tutor classroom polling
+    window.setInterval(function (){
+
+    },10000)
+
+
+    //--------------------------------------------------------------
+    //--------------------------------------------------------------
 
 });

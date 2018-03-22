@@ -42,10 +42,10 @@ class PollingController extends Controller
 
 
         //Check if they are: student/tutor/admin
-        if($user->hasRole('student')){
+        if ($user->hasRole('student')) {
 
-           $responses = Response::latest('created_at')
-            ->where('user_id','=',$user->id)->get();
+            $responses = Response::latest('created_at')
+                ->where('user_id', '=', $user->id)->get();
 
             $data = array(
                 'responses' => $responses,
@@ -55,7 +55,7 @@ class PollingController extends Controller
 
             return view('pages.pollingPage-student')->with($data);
 
-        }else if($user->hasRole('tutor')){
+        } else if ($user->hasRole('tutor')) {
             //Store the detail that will pass to the view
             $data = array(
                 'role' => 'tutor',
@@ -65,7 +65,7 @@ class PollingController extends Controller
             );
 
             return view('pages.pollingPage-tutor')->with($data);
-        }else{
+        } else {
             //Store the detail that will pass to the view
             $data = array(
                 'role' => 'admin',
@@ -92,6 +92,7 @@ class PollingController extends Controller
         //Add the module id
         $pollQuestion->module_id = $post['moduleList'];
         $pollQuestion->user_id = Auth::user()->id;
+        $pollQuestion->correct_id = $post['correctAnswerOption'];
 
         //Store the error list
         $error = array();
@@ -241,7 +242,8 @@ class PollingController extends Controller
      * @param $questionCount
      * @return $data
      */
-    private function checkPollingCountSession($questionCount){
+    private function checkPollingCountSession($questionCount)
+    {
         //Check if session exist, if not, then create a new one
         //The session used to store amount of classroom polling in
         if (session()->has('pollingCount')) {
@@ -252,7 +254,7 @@ class PollingController extends Controller
             if ($pollingCount != $questionCount) {
                 session(['pollingCount' => $questionCount]);
                 $data = 'data';
-            }else{
+            } else {
                 $data = 'No Data';
             }
 

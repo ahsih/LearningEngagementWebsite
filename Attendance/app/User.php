@@ -50,6 +50,14 @@ class User extends Authenticatable
     }
 
     /**
+     * This has many conversations
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function conversations(){
+        return $this->hasMany(Conversation::class);
+    }
+
+    /**
      * This has many rewards
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */

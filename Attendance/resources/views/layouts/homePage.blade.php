@@ -48,7 +48,17 @@
                                     {!! Form::open(['action'=>'ConversationController@deleteMessage']) !!}
                                     <input type="hidden" value="{{ $conversation->id }}" name="deleteValue"/>
                                     <ul class="list-inline setToZero">
-                                        <li><p class="pull-left text-danger">{{ $conversation->fullName }}:</p></li>
+                                        <li>
+                                            @if($conversation->users != null)
+                                                @if($conversation->users->hasRole('tutor'))
+                                                    <p class="pull-left text-danger">
+                                                        <b class="glyphicon glyphicon-king">{{ $conversation->fullName }}:</b></p>
+                                                        @else
+                                                    <p class="pull-left text-danger">{{ $conversation->fullName }}:</p>
+                                                @endif
+                                            @else
+                                                <p class="pull-left text-danger">{{ $conversation->fullName }}:</p>
+                                            @endif</li>
                                         <li><p class="pull-left text-success">{{ $conversation->message }}</p></li>
                                         <li><p class="pull-left text-info">{{ $conversation->created_at }}</p></li>
                                         @if($role == 'tutor')
@@ -69,10 +79,10 @@
                         </div>
                         <label class="label-font-big"> Send Text </label>
                         @if ($moduleName != null)
-                        <input type="text" id="sendTextChat" placeholder="Type the message you want to send here"
-                               class="moduleBoxLarge"/>
+                            <input type="text" id="sendTextChat" placeholder="Type the message you want to send here"
+                                   class="moduleBoxLarge"/>
                             <input type="button" id="SendText" value="Send Message" class="btn btn-success"/>
-                            @else
+                        @else
                             <input type="text" id="sendTextChat" placeholder="Type the message you want to send here"
                                    class="moduleBoxLarge" disabled/>
                             <input type="button" id="SendText" value="Send Message" class="btn btn-success" disabled/>
@@ -90,6 +100,6 @@
 @yield('polling feature')
 @yield('notifications')
 <!-- Scripts -->
-    <script src="{{ asset('js/app.js') }}"></script>
+<script src="{{ asset('js/app.js') }}"></script>
 </body>
 </html>
