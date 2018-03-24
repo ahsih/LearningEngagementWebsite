@@ -64,7 +64,7 @@ class HomeController extends Controller
             $moduleName = $module->module_name;
 
             //Get the not filled questions
-            $questions = $this->getNotFilledQuestions($user_id, $firstChoiceModule);
+            //$questions = $this->getNotFilledQuestions($user_id, $firstChoiceModule);
 
         }
 
@@ -88,7 +88,8 @@ class HomeController extends Controller
 
             //Get list of tutor questions
             if($firstChoiceModule != null) {
-                $questions = question::latest('created_at')->where('module_id', '=', $firstChoiceModule->module_id)->get();
+                $questions = null;
+             //   $questions = question::latest('created_at')->where('module_id', '=', $firstChoiceModule->module_id)->get();
             }else{
                 $questions = null;
             }

@@ -3,6 +3,8 @@
 namespace attendance\Http\Controllers;
 
 use attendance\FirstChoiceUserModule;
+use attendance\Lesson;
+use attendance\Module;
 use attendance\optionalAnswers;
 use attendance\question;
 use attendance\Response;
@@ -30,7 +32,6 @@ class PollingController extends Controller
      */
     public function index(Request $request)
     {
-
         //Get the path
         $path = $request->path();
 
@@ -39,6 +40,12 @@ class PollingController extends Controller
 
         //Get the users module
         $modules = User::find($request->user()->id)->modules;
+
+        //Get the total amount of lesson on first module in $modules
+        $totalAmountLesson = Lesson::where('module_id', '=', $modules[0]->id)->count();
+
+        //Get a list of lesson from the first choice of the $modules
+        $lessons = Lesson::where('module_id', '=', $modules[0]->id)->get();
 
 
         //Check if they are: student/tutor/admin
@@ -58,6 +65,8 @@ class PollingController extends Controller
         } else if ($user->hasRole('tutor')) {
             //Store the detail that will pass to the view
             $data = array(
+                'lessons' => $lessons,
+                'totalAmountLesson' => $totalAmountLesson,
                 'role' => 'tutor',
                 'modules' => $modules,
                 'path' => $path,
@@ -65,6 +74,7 @@ class PollingController extends Controller
             );
 
             return view('pages.pollingPage-tutor')->with($data);
+
         } else {
             //Store the detail that will pass to the view
             $data = array(
@@ -78,7 +88,63 @@ class PollingController extends Controller
     }
 
     /**
-     * @param Request $request
+     * Create a lesson
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+     */
+    public function createLesson()
+    {
+        $moduleID = Input::get('moduleList');
+        $totalAmountOfLesson = Input::get('hiddenAmountOfLesson');
+        $lessonName = Input::get('lessonName');
+
+        //Check if the lesson amount is same as from the table
+        //Double validation
+        $error = $this->checkLessonError($moduleID, $totalAmountOfLesson, $lessonName);
+
+        if (empty($error)) {
+            //Save the lesson
+            $lesson = new Lesson();
+            $lesson->module_id = $moduleID;
+            $lesson->lesson_name = $lessonName;
+            $lesson->save();
+
+            //Created successfully
+            session(['pollingSuccess' => 'Lesson has been created successfully on module: ' . Module::find($moduleID)->module_name]);
+        } else {
+            session(['pollingError' => $error]);
+        }
+
+        return redirect('/polling');
+    }
+
+    /**
+     * Check if both module and lesson is fine.
+     * @param $moduleID
+     * @param $totalAmountOfLesson
+     * @return $error
+     */
+    private function checkLessonError($moduleID, $totalAmountOfLesson, $lessonName)
+    {
+        $error = array();
+        //Check if lesson name is not empty or space
+        if ($lessonName == "" || ctype_space($lessonName)) {
+            array_push($error, 'Lesson name is empty');
+        }
+        //Check if it a valid module
+        $moduleCount = Module::find($moduleID)->count();
+        if ($moduleCount == 0) {
+            array_push($error, 'Not a valid module');
+        }
+        //Check amount of lesson
+        $amountLesson = Lesson::where('module_id', '=', $moduleID)->count();
+        if ($amountLesson != $totalAmountOfLesson) {
+            array_push($error, 'Amount of the lesson is not the same, someone has change the value');
+        }
+
+        return $error;
+    }
+
+    /**
      * Create a polling for tutor to create a question
      * @return polling main page
      */
@@ -207,6 +273,14 @@ class PollingController extends Controller
     }
 
     /**
+     * Get the total amount of the lesson on the module that is being selected.
+     */
+    public function getTotalAmountLesson()
+    {
+        return Lesson::where('module_id', '=', request()->moduleID)->count();
+    }
+
+    /**
      * @return data if new classroom polling exist
      */
     public function getClassroomPolling()
@@ -312,5 +386,15 @@ class PollingController extends Controller
 
     }
 
+
+    /**
+     * @return a list of lesson from this module
+     */
+    public function getLessonsFromModule()
+    {
+        $lessons = Lesson::where('module_id', '=', request()->moduleID)->get();
+
+        return $lessons;
+    }
 
 }

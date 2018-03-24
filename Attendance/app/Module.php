@@ -28,8 +28,8 @@ class Module extends Model
     /**
      * This model has many questions
      */
-    public function question(){
-       return $this->hasMany(question::class);
+    public function lessons(){
+       return $this->hasMany(Lesson::class);
     }
 
     /**

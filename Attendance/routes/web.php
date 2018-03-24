@@ -20,16 +20,26 @@ Route::get('/polling','PollingController@index');
 Route::get('/reward','RewardController@index');
 Auth::routes();
 
+//Add the module
 Route::post('/addModule', 'ModuleController@addModule');
 Route::post('/changeLiveChatModule', 'ModuleController@changeLiveChatModule');
+Route::post('/selectModule','ModuleController@selectModule');
+
+//Conversation controller
 Route::post('/sendLiveChatText','ConversationController@sendLiveChatMessage');
 Route::get('/getChatMessage','ConversationController@getMessage');
-Route::post('/selectModule','ModuleController@selectModule');
+Route::post('/deleteMessage','ConversationController@deleteMessage');
+
+//Management controller
 Route::post('/acceptRequest','ManagementController@acceptRequest');
 Route::post('/addStudentToModule','ManagementController@addStudentToModule');
 Route::post('/deleteStudentInModule','ManagementController@deleteStudentInModule');
-Route::post('/deleteMessage','ConversationController@deleteMessage');
-Route::post('/createPoll','PollingController@createPoll');
 Route::post('/createTutor','ManagementController@createTutor');
+
+//Polling controller
+Route::post('/createPoll','PollingController@createPoll');
+Route::post('/createLesson','PollingController@createLesson');
 Route::post('/saveResponse','PollingController@saveResponse');
 Route::get('/getClassroomPolling','PollingController@getClassroomPolling');
+Route::get('/getTotalAmountLesson','PollingController@getTotalAmountLesson');
+Route::get('/getLessonsFromModule','PollingController@getLessonsFromModule');

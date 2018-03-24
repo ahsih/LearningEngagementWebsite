@@ -94,7 +94,7 @@ $(document).ready(function () {
             if (data == "true") {
                 $('#modules').append("'" + moduleName + "'");
                 $('#moduleSuccess').css("visibility", "visible");
-            } else if(data == "false"){
+            } else if (data == "false") {
                 $('#moduleError').css("visibility", "visible");
             }
         });
@@ -196,29 +196,6 @@ $(document).ready(function () {
                         location.reload();
                     }
                 }
-                /*
-              if (data != "No Data") {
-                  //Get the conversations
-                  var conversations = data.conversations;
-                  var csrf_token = $('meta[name="csrf-token"]').attr('content');
-
-                  conversations.forEach(function (index) {
-                      var ChatMessage = "<form method=\'POST\' action=\'http://attendances.local:8008/deleteMessage\' accept-charset=\'UTF-8\'>";
-                      ChatMessage += "<input type='hidden' value=" + index.id + " name='deleteValue'/>";
-                      ChatMessage += "<input type='hidden' value='"+ csrf_token + "' name='_token'>";
-                      ChatMessage += "<ul class=\'list-inline setToZero\'>";
-                      //Append the UL
-                      ChatMessage += "<li><p class='pull-left text-danger'>" + index.fullName + "</p></li>";
-                      ChatMessage += "<li><p class=\'pull-left text-success\'>" + index.message + "</p></li>";
-                      ChatMessage += "<li><p class=\'pull-left text-info\'>" + index.created_at + "</p></li>";
-                      ChatMessage += "<li class='invisibleDeleteMessage pull-left text-info'><button type='submit' class='glyphicon glyphicon-minus-sign set-red buttonWithoutButtonlayout'></button></li>";
-                      ChatMessage += "</ul>";
-                      ChatMessage += "</form>";
-
-                      $('#live-chat-messages').append(ChatMessage);
-
-                  });
-                  */
             }
         });
     }, 2000);
@@ -330,13 +307,57 @@ $(document).ready(function () {
     //--------------------------------------------------------------
     //--------------------------------------------------------------
 
-    //Every 10 seconds, update tutor classroom polling
-    window.setInterval(function (){
+    //Get the total amount of lesson
+    $('#moduleListLesson').change(function () {
+        //Get the module ID and find out how many lesson are there in this module
+        var moduleID = $('#moduleListLesson').val();
+        //Get the total amount of the lesson
+        //call ajax
+        $.ajax({
+            type: 'GET',
+            url: '/getTotalAmountLesson',
+            data: {
+                'moduleID': moduleID,
+            },
 
-    },10000)
-
+            //if it successful, then we need to find
+            success: function (data) {
+                $('#hiddenAmountOfLesson').val(data);
+                $('#amountOfLesson').empty();
+                $('#amountOfLesson').append(data);
+            }
+        });
+    });
 
     //--------------------------------------------------------------
     //--------------------------------------------------------------
+
+    //Does the same thing as above except it getting all the lesson from this module
+    $('#moduleListPolling').change(function () {
+        //Get the module ID and find out how many lesson are there in this module
+        var moduleID = $('#moduleListPolling').val();
+        //Get the total amount of the lesson
+        //call ajax
+        $.ajax({
+            type: 'GET',
+            url: '/getLessonsFromModule',
+            data: {
+                'moduleID': moduleID,
+            },
+
+            //if it successful, then we need to find
+            success: function (data) {
+                //Remove all the option
+                $('#lessonList').find('option').remove();
+                if (data.length > 0) {
+                    for (var i = 0; i < data.length; i++) {
+                        var lessonOption = "<option value=" + data[i].id + ">" + data[i].lesson_name + "</option>"
+                        $('#lessonList').append(lessonOption);
+                    }
+                }
+            }
+        });
+    });
+
 
 });
