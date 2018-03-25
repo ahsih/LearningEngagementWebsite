@@ -47,7 +47,6 @@ class PollingController extends Controller
         //Get a list of lesson from the first choice of the $modules
         $lessons = Lesson::where('module_id', '=', $modules[0]->id)->get();
 
-
         //Check if they are: student/tutor/admin
         if ($user->hasRole('student')) {
 
@@ -232,15 +231,15 @@ class PollingController extends Controller
             array_push($error, 'Lesson cannot be empty');
 
             //Check if this lesson belong to this module
-        }else {
+        } else {
             //Get the module ID and lesson ID
             $moduleID = $post['moduleList'];
             $lessonID = $post['lessonList'];
             //Get the lesson model
-            $lesson = Lesson::where('id','=',$lessonID)->first();
+            $lesson = Lesson::where('id', '=', $lessonID)->first();
             //Check if the lesson->module_ID is same as module_ID
-            if($lesson->module_id != $moduleID){
-                array_push($error,'This lesson do not belong to this module');
+            if ($lesson->module_id != $moduleID) {
+                array_push($error, 'This lesson do not belong to this module');
             }
         }
 
@@ -308,7 +307,21 @@ class PollingController extends Controller
     public function getLessonsFromModule()
     {
         $lessons = Lesson::where('module_id', '=', request()->moduleID)->get();
-        return $lessons;
+
+        //Get the first lesson all the questions
+        //if there are no lessons, then we should ignored
+        if(sizeof($lessons) > 0) {
+            $questions = $lessons[0]->questions;
+        }else{
+            $questions = null;
+        }
+
+        $data = array(
+            'lessons' => $lessons,
+            'questions' => $questions,
+        );
+
+        return $data;
     }
 
     /**
@@ -345,10 +358,37 @@ class PollingController extends Controller
      * For create new lesson
      * @return A list of the lessons
      */
-    public function getAllLessonsFromModule(){
-        $lessons = Lesson::where('module_id','=',request()->moduleID)->get();
-        return $lessons;
+    public function getAllLessonsFromModule()
+    {
+        $lessons = Lesson::where('module_id', '=', request()->moduleID)->get();
+        $moduleName = Module::find(request()->moduleID)->module_name;
+
+        $data = array(
+            'lessons' => $lessons,
+            'moduleName' => $moduleName,
+        );
+        return $data;
     }
+
+    /**
+     * return a list of questions from this lesson
+     * @return A list of questions from this lesson
+     */
+    public function getQuestionsFromLesson()
+    {
+        //Get the lesson ID
+        $lessonID = request()->lessonID;
+        $lessonName = Lesson::find($lessonID)->lesson_name;
+        $questions = Lesson::find($lessonID)->questions;
+
+        $data = array(
+            'lessonName' => $lessonName,
+            'questions' => $questions,
+        );
+
+        return $data;
+    }
+
 
     /**
      * Check if the polling count is same as the session

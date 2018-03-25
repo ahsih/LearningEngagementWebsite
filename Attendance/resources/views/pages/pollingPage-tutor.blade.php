@@ -100,9 +100,9 @@
                             </div>
                         </div>
                         <div class="col-sm-4 col-md-4 col-lg-4">
-                            <div id="QuestionInThisModule">
+                            <div id="LessonInThisModule">
                                 <br>
-                                <h4 class="module-bottom-zero margin-zero-top font-navy text-center">List of lesson in
+                                <h4 id="listOfLessonTitle" class="module-bottom-zero margin-zero-top font-navy text-center">List of lesson in
                                     this
                                     module: {{ $modules[0]->module_name }}</h4>
                                 <hr>
@@ -111,16 +111,18 @@
                                         <h5 class="margin-zero-top noMarginBottom font-navy">{{ $lesson->lesson_name }}</h5>
                                     @endforeach
                                 </div>
+                                <hr>
                             </div>
-                            <hr>
+
                             <div id="Questions in this Lesson">
-                                <h4 class="module-bottom-zero margin-zero-top font-navy text-center">List of question in
+                                <h4 id="questionTitle" class="module-bottom-zero margin-zero-top font-navy text-center">List of questions in
                                     this
                                     lesson: {{ $lessons[0]->lesson_name }}</h4>
+                                <small>This will change as you change the 'lesson' drop down in 'create new question'</small>
                                 <hr>
                                 <div id="listOfQuestions">
                                     @foreach($lessons[0]->questions as $question)
-                                        <h5 class="margin-zero-top noMarginBottom font-navy">{{ $question->question_name }}</h5>
+                                        <h5 class="margin-zero-top noMarginBottom font-navy">{{ $question->question }}</h5>
                                     @endforeach
                                 </div>
                             </div>

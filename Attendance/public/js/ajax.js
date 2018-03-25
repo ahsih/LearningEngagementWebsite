@@ -344,10 +344,13 @@ $(document).ready(function () {
             //if it successful, then we need to find
             success: function (data) {
                 $('#listOfLessons').find('h5').remove();
+                //Change the module name
+                $('#listOfLessonTitle').empty();
+                $('#listOfLessonTitle').append("List of lesson in this module: " + data.moduleName);
                 //If data length is more than 1
-                if (data.length > 0) {
-                    for (var i = 0; i < data.length; i++) {
-                        var headingFive = "<h5 class='margin-zero-top noMarginBottom font-navy'>" + data[i].lesson_name + "</h5>";
+                if (data.lessons.length > 0) {
+                    for (var i = 0; i < data.lessons.length; i++) {
+                        var headingFive = "<h5 class='margin-zero-top noMarginBottom font-navy'>" + data.lessons[i].lesson_name + "</h5>";
                         $('#listOfLessons').append(headingFive);
                     }
                 }
@@ -373,14 +376,65 @@ $(document).ready(function () {
 
             //if it successful, then we need to find
             success: function (data) {
+                //Remove all previous questions
+                $('#listOfQuestions').find('h5').remove();
                 //Remove all the option
                 $('#lessonList').find('option').remove();
-                if (data.length > 0) {
-                    for (var i = 0; i < data.length; i++) {
-                        var lessonOption = "<option value=" + data[i].id + ">" + data[i].lesson_name + "</option>"
+
+                //DEFAULT QUESTION TITLE
+                //Empty the question title
+                $('#questionTitle').empty();
+                //Set the lesson title
+                $('#questionTitle').append("There is no lesson in this module at the moment!");
+                //Set the questions
+                if (data.questions.length > 0) {
+                    for (var i = 0; i < data.questions.length; i++) {
+                        var headingFive = "<h5 class='margin-zero-top noMarginBottom font-navy'>" + data.questions[i].question + "</h5>";
+                        $('#listOfQuestions').append(headingFive);
+                    }
+                }
+                //Append all the lesson
+                if (data.lessons.length > 0) {
+                    //Empty the question title
+                    $('#questionTitle').empty();
+                    //Set the lesson title
+                    $('#questionTitle').append('List of questions in this lesson: ' + data.lessons[0].lesson_name);
+                    for (var i = 0; i < data.lessons.length; i++) {
+                        var lessonOption = "<option value=" + data.lessons[i].id + ">" + data.lessons[i].lesson_name + "</option>"
                         $('#lessonList').append(lessonOption);
                     }
                 }
+            }
+        });
+    });
+
+    //Once the lesson has change, we should update the list on the list of question
+    $('#lessonList').change(function () {
+        //Get the module ID and find out how many lesson are there in this module
+        var lessonID = $('#lessonList').val();
+        //Get the total amount of the lesson
+        //call ajax
+        $.ajax({
+            type: 'GET',
+            url: '/getQuestionsFromLesson',
+            data: {
+                'lessonID': lessonID,
+            },
+            //if it successful, then we need to find
+            success: function (data) {
+                //Remove all previous questions
+                $('#listOfQuestions').find('h5').remove();
+                //Set the lesson title
+                $('#questionTitle').empty();
+                $('#questionTitle').append('List of questions in this lesson: ' + data.lessonName);
+                //Set the questions
+                if (data.questions.length > 0) {
+                    for (var i = 0; i < data.questions.length; i++) {
+                        var headingFive = "<h5 class='margin-zero-top noMarginBottom font-navy'>" + data.questions[i].question + "</h5>";
+                        $('#listOfQuestions').append(headingFive);
+                    }
+                }
+
             }
         });
     });
