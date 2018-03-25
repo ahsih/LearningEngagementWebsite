@@ -12,6 +12,7 @@ use attendance\User;
 use Illuminate\Http\Request;
 use Auth;
 use Illuminate\Support\Facades\Input;
+use Illuminate\Support\Facades\Session;
 
 class PollingController extends Controller
 {
@@ -45,7 +46,12 @@ class PollingController extends Controller
         $totalAmountLesson = Lesson::where('module_id', '=', $modules[0]->id)->count();
 
         //Get a list of lesson from the first choice of the $modules
-        $lessons = Lesson::where('module_id', '=', $modules[0]->id)->get();
+        //If there is session, then we need to change it.
+        if (Session::has('moduleID')) {
+            $lessons = Lesson::where('module_id', '=', Session::get('moduleID'))->get();
+        } else {
+            $lessons = Lesson::where('module_id', '=', $modules[0]->id)->get();
+        }
 
         //Check if they are: student/tutor/admin
         if ($user->hasRole('student')) {
@@ -207,6 +213,9 @@ class PollingController extends Controller
 
             //Create a session that tell the tutor they have successfully created a polling.
             session(['pollingSuccess' => 'Polling has been created successfully']);
+            //Create a session for module and lesson
+            session(['lessonID' => $post['lessonList']]);
+            session(['moduleID' => $post['moduleList']]);
 
         } else {
             session(['pollingError' => $error]);
@@ -310,9 +319,9 @@ class PollingController extends Controller
 
         //Get the first lesson all the questions
         //if there are no lessons, then we should ignored
-        if(sizeof($lessons) > 0) {
+        if (sizeof($lessons) > 0) {
             $questions = $lessons[0]->questions;
-        }else{
+        } else {
             $questions = null;
         }
 
@@ -326,6 +335,7 @@ class PollingController extends Controller
 
     /**
      * @return data if new classroom polling exist
+     * Use for student to check if there is new polling to fill.
      */
     public function getClassroomPolling()
     {

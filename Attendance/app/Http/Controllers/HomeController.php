@@ -71,6 +71,9 @@ class HomeController extends Controller
         //Return two different views for students and tutors
         if ($request->user()->hasRole('student')) {
 
+            //TEMP
+            $questions = null;
+
             //Pass to the view
             $data = array(
                 'questions' => $questions,

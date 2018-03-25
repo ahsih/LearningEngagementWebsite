@@ -55,7 +55,17 @@
                                     <label>Module:</label>
                                     <select class="form-control" name="moduleList" id="moduleListPolling">
                                         @foreach($modules as $module)
-                                            <option value="{{ $module->id }}">{{ $module->module_name }}</option>
+                                            @if(Session::has('moduleID'))
+                                                @if(Session::get('moduleID') == $module->id)
+                                                    <option value="{{ $module->id }}"
+                                                            selected>{{ $module->module_name }}</option>
+                                                @else
+                                                    <option value="{{ $module->id }}">{{ $module->module_name }}</option>
+                                                @endif
+                                            @else
+                                                <option value="{{ $module->id }}">{{ $module->module_name }}</option>
+                                            @endif
+
                                         @endforeach
                                     </select>
                                 </div>
@@ -63,7 +73,16 @@
                                     <label>Lesson:</label>
                                     <select class="form-control" name="lessonList" id="lessonList">
                                         @foreach($lessons as $lesson)
-                                            <option value="{{ $lesson->id }}">{{ $lesson->lesson_name }}</option>
+                                            @if(Session::has('lessonID'))
+                                                @if(Session::get('lessonID') == $lesson->id)
+                                                    <option value="{{ $lesson->id }}"
+                                                            selected>{{ $lesson->lesson_name }}</option>
+                                                @else
+                                                    <option value="{{ $lesson->id }}">{{ $lesson->lesson_name }}</option>
+                                                @endif
+                                            @else
+                                                <option value="{{ $lesson->id }}">{{ $lesson->lesson_name }}</option>
+                                            @endif
                                         @endforeach
                                     </select>
                                 </div>
@@ -102,7 +121,8 @@
                         <div class="col-sm-4 col-md-4 col-lg-4">
                             <div id="LessonInThisModule">
                                 <br>
-                                <h4 id="listOfLessonTitle" class="module-bottom-zero margin-zero-top font-navy text-center">List of lesson in
+                                <h4 id="listOfLessonTitle"
+                                    class="module-bottom-zero margin-zero-top font-navy text-center">List of lesson in
                                     this
                                     module: {{ $modules[0]->module_name }}</h4>
                                 <hr>
@@ -115,15 +135,24 @@
                             </div>
 
                             <div id="Questions in this Lesson">
-                                <h4 id="questionTitle" class="module-bottom-zero margin-zero-top font-navy text-center">List of questions in
+                                <h4 id="questionTitle" class="module-bottom-zero margin-zero-top font-navy text-center">
+                                    List of questions in
                                     this
                                     lesson: {{ $lessons[0]->lesson_name }}</h4>
-                                <small>This will change as you change the 'lesson' drop down in 'create new question'</small>
+                                <small>This will change as you change the 'lesson' drop down in 'create new question'
+                                </small>
                                 <hr>
                                 <div id="listOfQuestions">
-                                    @foreach($lessons[0]->questions as $question)
-                                        <h5 class="margin-zero-top noMarginBottom font-navy">{{ $question->question }}</h5>
-                                    @endforeach
+                                    @if(Session::has('lessonID'))
+                                        @foreach(\attendance\Lesson::find(Session::get('lessonID'))->questions as $question)
+                                            <h5 class="margin-zero-top noMarginBottom font-navy">{{ $question->question }}</h5>
+                                        @endforeach
+                                    @else
+                                        @foreach($lessons[0]->questions as $question)
+                                            <h5 class="margin-zero-top noMarginBottom font-navy">{{ $question->question }}</h5>
+                                        @endforeach
+                                    @endif
+
                                 </div>
                             </div>
                         </div>
