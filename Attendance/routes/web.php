@@ -43,3 +43,4 @@ Route::post('/saveResponse','PollingController@saveResponse');
 Route::get('/getClassroomPolling','PollingController@getClassroomPolling');
 Route::get('/getTotalAmountLesson','PollingController@getTotalAmountLesson');
 Route::get('/getLessonsFromModule','PollingController@getLessonsFromModule');
+Route::get('/getAllLessonsFromModule','PollingController@getAllLessonsFromModule');

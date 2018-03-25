@@ -93,7 +93,7 @@ class PollingController extends Controller
      */
     public function createLesson()
     {
-        $moduleID = Input::get('moduleList');
+        $moduleID = Input::get('moduleListLesson');
         $totalAmountOfLesson = Input::get('hiddenAmountOfLesson');
         $lessonName = Input::get('lessonName');
 
@@ -121,6 +121,7 @@ class PollingController extends Controller
      * Check if both module and lesson is fine.
      * @param $moduleID
      * @param $totalAmountOfLesson
+     * @param $lessonName
      * @return $error
      */
     private function checkLessonError($moduleID, $totalAmountOfLesson, $lessonName)
@@ -132,7 +133,7 @@ class PollingController extends Controller
         }
         //Check if it a valid module
         $moduleCount = Module::find($moduleID)->count();
-        if ($moduleCount == 0) {
+        if ($moduleCount == null) {
             array_push($error, 'Not a valid module');
         }
         //Check amount of lesson
@@ -155,10 +156,6 @@ class PollingController extends Controller
 
         //Add to the database
         $pollQuestion = new question();
-        //Add the module id
-        $pollQuestion->module_id = $post['moduleList'];
-        $pollQuestion->user_id = Auth::user()->id;
-        $pollQuestion->correct_id = $post['correctAnswerOption'];
 
         //Store the error list
         $error = array();
@@ -168,13 +165,20 @@ class PollingController extends Controller
 
         //If there is no error
         if (empty($error)) {
+
+            //Add the user ID and the correct optional answer ID
+            $pollQuestion->user_id = Auth::user()->id;
+            $pollQuestion->correct_id = $post['correctAnswerOption'];
+            //Save the lesson
+            $pollQuestion->lesson_id = $post['lessonList'];
             //Save the main question
             $pollQuestion->question = $post['mainQuestion'];
+            $pollQuestion->timestamps = true;
             //Save the question
             $pollQuestion->save();
 
             //Save all the optional answers
-            for ($i = 1; $i <= sizeof($post) - 4; $i++) {
+            for ($i = 1; $i <= sizeof($post) - 5; $i++) {
                 if ($i == $post['correctAnswerOption']) {
                     //Create optional answer
                     $optionalAnswers = new optionalAnswers();
@@ -194,6 +198,7 @@ class PollingController extends Controller
 
             //If the correct answer option value is 0
             //then we will make it as N/A
+            //Save the question model again
             if ($post['correctAnswerOption'] == 0) {
                 $pollQuestion->correct_id = 0;
                 $pollQuestion->save();
@@ -208,7 +213,7 @@ class PollingController extends Controller
             session(['pollingError' => $error]);
         }
 
-
+        //Redirect back to the polling page
         return redirect('/polling');
 
     }
@@ -222,14 +227,30 @@ class PollingController extends Controller
      */
     private function checkError($post, $error)
     {
+        //Check if the lesson is null
+        if (!Input::has('lessonList')) {
+            array_push($error, 'Lesson cannot be empty');
+
+            //Check if this lesson belong to this module
+        }else {
+            //Get the module ID and lesson ID
+            $moduleID = $post['moduleList'];
+            $lessonID = $post['lessonList'];
+            //Get the lesson model
+            $lesson = Lesson::where('id','=',$lessonID)->first();
+            //Check if the lesson->module_ID is same as module_ID
+            if($lesson->module_id != $moduleID){
+                array_push($error,'This lesson do not belong to this module');
+            }
+        }
+
         //Check if there is a question for the polling, if not , return a error.
         if ($post['mainQuestion'] == null) {
             array_push($error, 'Please fill in the main question');
-        } else {
         }
 
         //Check if all the optional answer is not empty
-        for ($i = 1; $i <= sizeof($post) - 4; $i++) {
+        for ($i = 1; $i <= sizeof($post) - 5; $i++) {
             $optionalAnswers = $post['optionalAnswers' . $i];
             if ($optionalAnswers == null) {
                 array_push($error, 'optional Answer ' . $i . ' has no answer');
@@ -281,6 +302,16 @@ class PollingController extends Controller
     }
 
     /**
+     * This is used for the one for create new question
+     * @return a list of lesson from this module
+     */
+    public function getLessonsFromModule()
+    {
+        $lessons = Lesson::where('module_id', '=', request()->moduleID)->get();
+        return $lessons;
+    }
+
+    /**
      * @return data if new classroom polling exist
      */
     public function getClassroomPolling()
@@ -308,6 +339,15 @@ class PollingController extends Controller
         }
 
         return $data;
+    }
+
+    /**
+     * For create new lesson
+     * @return A list of the lessons
+     */
+    public function getAllLessonsFromModule(){
+        $lessons = Lesson::where('module_id','=',request()->moduleID)->get();
+        return $lessons;
     }
 
     /**
@@ -386,15 +426,5 @@ class PollingController extends Controller
 
     }
 
-
-    /**
-     * @return a list of lesson from this module
-     */
-    public function getLessonsFromModule()
-    {
-        $lessons = Lesson::where('module_id', '=', request()->moduleID)->get();
-
-        return $lessons;
-    }
 
 }

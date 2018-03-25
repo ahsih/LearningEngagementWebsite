@@ -6,7 +6,7 @@
                 </h2>
                 <div class="panel-body">
                     <div class="row">
-                        <div class="col-sm-7 col-md-7 col-lg-7">
+                        <div class="col-sm-8 col-md-8 col-lg-8">
                             <div class="text-danger">
                                 @if(Session::has('pollingError'))
                                     @foreach(Session::get('pollingError') as $error)
@@ -29,7 +29,7 @@
                                 <hr>
                                 <div class="form-group">
                                     <label>Module:</label>
-                                    <select class="form-control" name="moduleList" id="moduleListLesson">
+                                    <select class="form-control" name="moduleListLesson" id="moduleListLesson">
                                         @foreach($modules as $module)
                                             <option value="{{ $module->id }}">{{ $module->module_name }}</option>
                                         @endforeach
@@ -93,14 +93,37 @@
                                         <option value="2">Optional Answer 2</option>
                                     </select>
                                 </div>
-                                <br><br>
                                 <button type="submit" class="pull-right btn btn-success">Create new classroom polling
                                 </button>
+                                <br>
                                 {!! Form::close() !!}
                             </div>
                         </div>
-                        <div class="col-sm-3 col-md-3 col-lg-3">
-                        <p>asdasd</p>
+                        <div class="col-sm-4 col-md-4 col-lg-4">
+                            <div id="QuestionInThisModule">
+                                <br>
+                                <h4 class="module-bottom-zero margin-zero-top font-navy text-center">List of lesson in
+                                    this
+                                    module: {{ $modules[0]->module_name }}</h4>
+                                <hr>
+                                <div id="listOfLessons">
+                                    @foreach($lessons as $lesson)
+                                        <h5 class="margin-zero-top noMarginBottom font-navy">{{ $lesson->lesson_name }}</h5>
+                                    @endforeach
+                                </div>
+                            </div>
+                            <hr>
+                            <div id="Questions in this Lesson">
+                                <h4 class="module-bottom-zero margin-zero-top font-navy text-center">List of question in
+                                    this
+                                    lesson: {{ $lessons[0]->lesson_name }}</h4>
+                                <hr>
+                                <div id="listOfQuestions">
+                                    @foreach($lessons[0]->questions as $question)
+                                        <h5 class="margin-zero-top noMarginBottom font-navy">{{ $question->question_name }}</h5>
+                                    @endforeach
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

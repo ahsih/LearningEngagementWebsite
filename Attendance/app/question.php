@@ -15,11 +15,11 @@ class question extends Model
     }
 
     /**
-     * This belong to the module
+     * This belong to the lessons
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function modules()
-    {
-        return $this->belongsTo(Module::class,'module_id');
+    public function lessons(){
+        return $this->belongsTo(Lesson::class);
     }
 
     /**

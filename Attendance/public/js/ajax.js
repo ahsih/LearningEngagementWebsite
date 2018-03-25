@@ -329,6 +329,32 @@ $(document).ready(function () {
         });
     });
 
+    //Get all the lesson belong to this module
+    $('#moduleListLesson').change(function () {
+        //Get the module ID and find out how many lesson are there in this module
+        var moduleID = $('#moduleListLesson').val();
+        //Get the total amount of the lesson
+        //call ajax
+        $.ajax({
+            type: 'GET',
+            url: '/getAllLessonsFromModule',
+            data: {
+                'moduleID': moduleID,
+            },
+            //if it successful, then we need to find
+            success: function (data) {
+                $('#listOfLessons').find('h5').remove();
+                //If data length is more than 1
+                if (data.length > 0) {
+                    for (var i = 0; i < data.length; i++) {
+                        var headingFive = "<h5 class='margin-zero-top noMarginBottom font-navy'>" + data[i].lesson_name + "</h5>";
+                        $('#listOfLessons').append(headingFive);
+                    }
+                }
+            }
+        });
+    });
+
     //--------------------------------------------------------------
     //--------------------------------------------------------------
 

@@ -13,4 +13,12 @@ class Lesson extends Model
     public function modules(){
         return $this->belongsTo(Module::class);
     }
+
+    /**
+     * This has many questions
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function questions(){
+        return $this->hasMany(question::class);
+    }
 }
