@@ -21,4 +21,12 @@ class Lesson extends Model
     public function questions(){
         return $this->hasMany(question::class);
     }
+
+    /**
+     * This has one lesson pointer
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function lessonPointer(){
+        return $this->hasOne(LessonPointer::class);
+    }
 }

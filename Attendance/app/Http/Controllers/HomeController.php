@@ -5,6 +5,8 @@ namespace attendance\Http\Controllers;
 use attendance\Conversation;
 use attendance\declineModules;
 use attendance\FirstChoiceUserModule;
+use attendance\Lesson;
+use attendance\LessonPointer;
 use attendance\Module;
 use attendance\question;
 use attendance\Response;
@@ -53,7 +55,7 @@ class HomeController extends Controller
         if ($firstChoiceModule == null) {
             $conversations = null;
             $moduleName = null;
-            $questions = null;
+            $lessons = null;
 
         } else {
             $conversations = Conversation::orderBy('created_at')
@@ -63,6 +65,12 @@ class HomeController extends Controller
             $module = Module::find($firstChoiceModule->module_id);
             $moduleName = $module->module_name;
 
+            //Get a list of lesson from this modules
+            $lessons = Lesson::where('module_id','=',$firstChoiceModule->module_id)->get();
+
+            //Check if there is currently a lesson ongoing for polling
+            $lessonPointer = LessonPointer::where('module_id', '=', $firstChoiceModule->module_id)->first();
+
             //Get the not filled questions
             //$questions = $this->getNotFilledQuestions($user_id, $firstChoiceModule);
 
@@ -71,12 +79,8 @@ class HomeController extends Controller
         //Return two different views for students and tutors
         if ($request->user()->hasRole('student')) {
 
-            //TEMP
-            $questions = null;
-
             //Pass to the view
             $data = array(
-                'questions' => $questions,
                 'path' => $path,
                 'allModules' => $notAvailableModules,
                 'modules' => $modules,
@@ -89,17 +93,14 @@ class HomeController extends Controller
             return view('pages.studentHome')->with($data);
         } else if ($request->user()->hasRole('tutor')) {
 
-            //Get list of tutor questions
-            if($firstChoiceModule != null) {
-                $questions = null;
-             //   $questions = question::latest('created_at')->where('module_id', '=', $firstChoiceModule->module_id)->get();
-            }else{
-                $questions = null;
-            }
+            //TEMP
+            $questions = null;
 
             //Pass to the view
             $data = array(
+                'lessonPointer' => $lessonPointer,
                 'questions' => $questions,
+                'lessons' => $lessons,
                 'path' => $path,
                 'allModules' => $notAvailableModules,
                 'modules' => $modules,

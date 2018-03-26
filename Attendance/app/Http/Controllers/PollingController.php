@@ -4,6 +4,7 @@ namespace attendance\Http\Controllers;
 
 use attendance\FirstChoiceUserModule;
 use attendance\Lesson;
+use attendance\LessonPointer;
 use attendance\Module;
 use attendance\optionalAnswers;
 use attendance\question;
@@ -148,6 +149,46 @@ class PollingController extends Controller
         }
 
         return $error;
+    }
+
+
+    /**
+     * Create a lesson pointer according to the lesson user has pick
+     * @return back to the homepage once it has been picked
+     */
+    public function createLessonPointer()
+    {
+
+        //Get the lesson ID
+        $lessonID = Input::get('firstModuleLessList');
+        //Get the first choice of the module the student/tutor pick
+        $firstChoiceModule = FirstChoiceUserModule::where('user_id', '=', Auth::user()->id)->first();
+
+        $lessonPointer = LessonPointer::where('module_id', '=', $firstChoiceModule->module_id)->first();
+
+        // If lesson ID is not empty
+        if ($lessonID != null) {
+            //If $lesson pointer is null
+            if ($lessonPointer == null) {
+                //Create a new pointer and store those data in.
+                $lessonPointer = new LessonPointer();
+                $lessonPointer->module_id = $firstChoiceModule->module_id;
+                $lessonPointer->lesson_id = $lessonID;
+                $lessonPointer->question_count = 1;
+                //No timestamps
+                $lessonPointer->timestamps = false;
+                $lessonPointer->save();
+
+            } else {
+                //Update the current lesson pointer with new lesson
+                $lessonPointer->lesson_id = $lessonID;
+                //No timestamps
+                $lessonPointer->timestamps = false;
+                $lessonPointer->save();
+            }
+        }
+
+        return redirect('/');
     }
 
     /**

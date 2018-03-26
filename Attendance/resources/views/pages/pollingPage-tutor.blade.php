@@ -152,7 +152,6 @@
                                             <h5 class="margin-zero-top noMarginBottom font-navy">{{ $question->question }}</h5>
                                         @endforeach
                                     @endif
-
                                 </div>
                             </div>
                         </div>

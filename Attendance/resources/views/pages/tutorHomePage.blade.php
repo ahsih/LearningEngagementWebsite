@@ -47,10 +47,30 @@
             @endif
         </h2>
         <button class="btn btn-primary center-block" id="directToPolling">Create classroom polling</button>
-        <br>
-        <div class="panel-body">
-            @if($questions != null)
-                @foreach($questions as $question)
+        <div id="selectLessonList">
+            @if($lessonPointer != null || $lessonPointer != 0)
+                <button type="submit" class="btn btn-success btn-lg">Next</button>
+                <button type="submit" class="btn btn-danger btn-lg">Stop</button>
+            @else
+                @if(sizeof($lessons) > 0)
+                    <h4 class="noMarginBottom margin-zero-top font-navy">Pick A Lesson</h4>
+                    {!! Form::open(['action' => 'PollingController@createLessonPointer']) !!}
+                    {!! Form::token() !!}
+                    <select id="firstModuleLessonList" name="firstModuleLessList">
+                        @foreach($lessons as $lesson)
+                            <option value="{{ $lesson->id }}">{{ $lesson->lesson_name }}</option>
+                        @endforeach
+                    </select>
+                    <button type="submit" class="btn btn-primary">Start the lesson</button>
+                    {!! Form::close() !!}
+                @else
+                    <h5> No lessons in this module at the moment!</h5>
+                @endif
+            @endif
+        </div>
+        <div class="panel-body" id="pollingGraph">
+            @if($lessonPointer->lesson->questions != null)
+                @foreach($lessonPointer->lesson->questions as $question)
                     <?php
                     //get list of option
                     $optional = $question->optionalAnswers;

@@ -33,6 +33,14 @@ class Module extends Model
     }
 
     /**
+     * This has one lesson pointer
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function lessonPointer(){
+        return $this->hasOne(LessonPointer::class);
+    }
+
+    /**
      * This has many rewards
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */

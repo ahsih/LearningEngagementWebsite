@@ -100,7 +100,8 @@ class ModuleController extends Controller
         //Get the request module
         $moduleName = request()->moduleName;
 
-        if ($moduleName == "" || $moduleName == " ") {
+        //If module name is empty or space
+        if ($moduleName == "" || ctype_space($moduleName)) {
             return "false";
         }
 
