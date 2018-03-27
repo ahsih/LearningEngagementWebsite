@@ -74,7 +74,7 @@
         </div>
         <div class="panel-body" id="pollingGraph">
             @if($lessonPointer != null)
-                @if($lessonPointer->lesson->questions != null)
+                @if($lessonPointer->lesson->questions != null && sizeof($lessonPointer->lesson->questions) > 0)
                     @for($i = $lessonPointer->question_count;$i > -1; $i--)
                         <?php
                         $question = $lessonPointer->lesson->questions[$i];
@@ -101,6 +101,8 @@
                             <canvas id="pollingChart{{$question->id}}"></canvas>
                         </div>
                     @endfor
+                @else
+                    <p> You don't have any questions in this module at the moment!</p>
                 @endif
             @endif
         </div>

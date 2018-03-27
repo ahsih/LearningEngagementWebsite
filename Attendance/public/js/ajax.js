@@ -92,6 +92,8 @@ $(document).ready(function () {
 
         request.done(function (data) {
             if (data == "true") {
+                //Reload the page
+                location.reload();
                 $('#modules').append("'" + moduleName + "'");
                 $('#moduleSuccess').css("visibility", "visible");
             } else if (data == "false") {
@@ -452,4 +454,20 @@ $(document).ready(function () {
             }
         });
     });
+
+
+    //Click stop lesson to reset the
+    $('#stopLesson').click(function () {
+        //Get the total amount of the lesson
+        //call ajax
+        $.ajax({
+            type: 'GET',
+            url: '/stopLesson',
+            data: null,
+            success:function(){
+                location.reload();
+            }
+        });
+    });
+
 });

@@ -145,7 +145,7 @@
                                 <label class="label-font-big"> Send Text </label>
                                 @if ($moduleName != null)
                                     <input type="text" id="sendTextChat"
-                                           placeholder="Type the message you want to send here"
+                                           placeholder="Message here"
                                            class="moduleBoxLarge"/>
                                     <input type="button" id="SendText" value="Send Message" class="btn btn-primary"/>
                                 @else

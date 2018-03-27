@@ -142,7 +142,7 @@
                             </div>
                             <div id="Questions in this Lesson">
                                 <h4 id="questionTitle" class="module-bottom-zero margin-zero-top font-navy text-center">
-                                    @if($lessons != null)
+                                    @if($lessons != null && sizeof($lessons) > 0)
                                         List of questions in
                                         this
                                         lesson: {{ $lessons[0]->lesson_name }}
@@ -158,7 +158,7 @@
                                             <h5 class="margin-zero-top noMarginBottom font-navy">{{ $question->question }}</h5>
                                         @endforeach
                                     @else
-                                        @if($lessons != null)
+                                        @if($lessons != null && sizeof($lessons) > 0)
                                             @foreach($lessons[0]->questions as $question)
                                                 <h5 class="margin-zero-top noMarginBottom font-navy">{{ $question->question }}</h5>
                                             @endforeach

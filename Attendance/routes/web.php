@@ -47,3 +47,4 @@ Route::get('/getTotalAmountLesson','PollingController@getTotalAmountLesson');
 Route::get('/getLessonsFromModule','PollingController@getLessonsFromModule');
 Route::get('/getAllLessonsFromModule','PollingController@getAllLessonsFromModule');
 Route::get('/getQuestionsFromLesson','PollingController@getQuestionsFromLesson');
+Route::get('/stopLesson','PollingController@stopLesson');

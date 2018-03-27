@@ -214,10 +214,24 @@ class PollingController extends Controller
             //increment 1 on question count in lesson pointer
             $this->addingQuestionCount($lessonPointer);
             //If the current lessonPointer is already the same as total amount of questions available in lesson
-            if ($totalQuestions == $lessonPointer->question_count + 1)
+            if ($totalQuestions <= $lessonPointer->question_count + 1)
                 $this->setEndPoint($lessonPointer);
         }
 
+    }
+
+    /**
+     * Stop the lesson, so that tutor can start another lesson
+     */
+    public function stopLesson(){
+        //Get the first choice of the module the student/tutor pick
+        $firstChoiceModule = FirstChoiceUserModule::where('user_id', '=', Auth::user()->id)->first();
+        //Get the lesson pointer
+        $lessonPointer = LessonPointer::where('module_id', '=', $firstChoiceModule->module_id)->first();
+
+        if($lessonPointer != null){
+            $lessonPointer->delete();
+        }
     }
 
     /**
