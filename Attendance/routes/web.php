@@ -41,6 +41,7 @@ Route::post('/createPoll','PollingController@createPoll');
 Route::post('/createLesson','PollingController@createLesson');
 Route::post('/saveResponse','PollingController@saveResponse');
 Route::post('/createLessonPointer','PollingController@createLessonPointer');
+Route::get('/nextLessonQuestion','PollingController@nextLessonQuestion');
 Route::get('/getClassroomPolling','PollingController@getClassroomPolling');
 Route::get('/getTotalAmountLesson','PollingController@getTotalAmountLesson');
 Route::get('/getLessonsFromModule','PollingController@getLessonsFromModule');

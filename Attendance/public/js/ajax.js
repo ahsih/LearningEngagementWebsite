@@ -439,5 +439,17 @@ $(document).ready(function () {
         });
     });
 
-
+    //Click next question to activate the next lesson
+    $('#nextQuestion').click(function () {
+        //Get the total amount of the lesson
+        //call ajax
+        $.ajax({
+            type: 'GET',
+            url: '/nextLessonQuestion',
+            data: null,
+            success:function(){
+                location.reload();
+            }
+        });
+    });
 });

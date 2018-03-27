@@ -163,7 +163,7 @@ class PollingController extends Controller
         $lessonID = Input::get('firstModuleLessList');
         //Get the first choice of the module the student/tutor pick
         $firstChoiceModule = FirstChoiceUserModule::where('user_id', '=', Auth::user()->id)->first();
-
+        //Get the lesson pointer
         $lessonPointer = LessonPointer::where('module_id', '=', $firstChoiceModule->module_id)->first();
 
         // If lesson ID is not empty
@@ -174,7 +174,9 @@ class PollingController extends Controller
                 $lessonPointer = new LessonPointer();
                 $lessonPointer->module_id = $firstChoiceModule->module_id;
                 $lessonPointer->lesson_id = $lessonID;
-                $lessonPointer->question_count = 1;
+                $lessonPointer->question_count = 0;
+                //Set the end point
+                $lessonPointer->end_point = false;
                 //No timestamps
                 $lessonPointer->timestamps = false;
                 $lessonPointer->save();
@@ -189,6 +191,52 @@ class PollingController extends Controller
         }
 
         return redirect('/');
+    }
+
+    /**
+     * When tutor press 'Next' on his classroom polling, it should display next question to the student.
+     */
+    public function nextLessonQuestion()
+    {
+        //Get the first choice of the module the student/tutor pick
+        $firstChoiceModule = FirstChoiceUserModule::where('user_id', '=', Auth::user()->id)->first();
+        //Get the lesson pointer
+        $lessonPointer = LessonPointer::where('module_id', '=', $firstChoiceModule->module_id)->first();
+
+        //add the size of the 1
+        if ($lessonPointer != null) {
+            $totalQuestions = $lessonPointer->lesson->questions->count();
+            //increment 1 on question count in lesson pointer
+            $this->addingQuestionCount($lessonPointer);
+            //If the current lessonPointer is already the same as total amount of questions available in lesson
+            if ($totalQuestions == $lessonPointer->question_count + 1)
+                $this->setEndPoint($lessonPointer);
+        }
+
+    }
+
+    /**
+     * Set true on the end point of the lesson pointer
+     * @param $lessonPointer
+     */
+    private function setEndPoint($lessonPointer)
+    {
+        //Set the end point to be true.
+        $lessonPointer->timestamps = false;
+        $lessonPointer->end_point = true;
+        $lessonPointer->save();
+    }
+
+    /**
+     * Adding question count by 1 in the lesson pointer
+     * @param $lessonPointer
+     */
+    private function addingQuestionCount($lessonPointer)
+    {
+        //Check the question count compared to the size of the lesson total questions
+        $lessonPointer->question_count = $lessonPointer->question_count + 1;
+        $lessonPointer->timestamps = false;
+        $lessonPointer->save();
     }
 
     /**

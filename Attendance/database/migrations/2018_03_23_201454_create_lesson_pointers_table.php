@@ -17,6 +17,7 @@ class CreateLessonPointersTable extends Migration
             $table->integer('module_id');
             $table->integer('lesson_id');
             $table->integer('question_count');
+            $table->boolean('end_point');
         });
     }
 
