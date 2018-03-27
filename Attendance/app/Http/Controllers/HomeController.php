@@ -56,6 +56,7 @@ class HomeController extends Controller
             $conversations = null;
             $moduleName = null;
             $lessons = null;
+            $lessonPointer = null;
 
         } else {
             $conversations = Conversation::orderBy('created_at')
@@ -93,13 +94,10 @@ class HomeController extends Controller
             return view('pages.studentHome')->with($data);
         } else if ($request->user()->hasRole('tutor')) {
 
-            //TEMP
-            $questions = null;
 
             //Pass to the view
             $data = array(
                 'lessonPointer' => $lessonPointer,
-                'questions' => $questions,
                 'lessons' => $lessons,
                 'path' => $path,
                 'allModules' => $notAvailableModules,

@@ -72,18 +72,20 @@
                                 <div class="form-group">
                                     <label>Lesson:</label>
                                     <select class="form-control" name="lessonList" id="lessonList">
-                                        @foreach($lessons as $lesson)
-                                            @if(Session::has('lessonID'))
-                                                @if(Session::get('lessonID') == $lesson->id)
-                                                    <option value="{{ $lesson->id }}"
-                                                            selected>{{ $lesson->lesson_name }}</option>
+                                        @if($lessons != null)
+                                            @foreach($lessons as $lesson)
+                                                @if(Session::has('lessonID'))
+                                                    @if(Session::get('lessonID') == $lesson->id)
+                                                        <option value="{{ $lesson->id }}"
+                                                                selected>{{ $lesson->lesson_name }}</option>
+                                                    @else
+                                                        <option value="{{ $lesson->id }}">{{ $lesson->lesson_name }}</option>
+                                                    @endif
                                                 @else
                                                     <option value="{{ $lesson->id }}">{{ $lesson->lesson_name }}</option>
                                                 @endif
-                                            @else
-                                                <option value="{{ $lesson->id }}">{{ $lesson->lesson_name }}</option>
-                                            @endif
-                                        @endforeach
+                                            @endforeach
+                                        @endif
                                     </select>
                                 </div>
                                 <label for="question">Main Question:</label>
@@ -122,23 +124,31 @@
                             <div id="LessonInThisModule">
                                 <br>
                                 <h4 id="listOfLessonTitle"
-                                    class="module-bottom-zero margin-zero-top font-navy text-center">List of lesson in
-                                    this
-                                    module: {{ $modules[0]->module_name }}</h4>
+                                    class="module-bottom-zero margin-zero-top font-navy text-center">@if(sizeof($modules) > 0)
+                                        List of lesson in
+                                        this
+                                        module: {{ $modules[0]->module_name }}
+                                    @else You do not have modules!
+                                    @endif</h4>
                                 <hr>
                                 <div id="listOfLessons">
-                                    @foreach($lessons as $lesson)
-                                        <h5 class="margin-zero-top noMarginBottom font-navy">{{ $lesson->lesson_name }}</h5>
-                                    @endforeach
+                                    @if($lessons != null)
+                                        @foreach($lessons as $lesson)
+                                            <h5 class="margin-zero-top noMarginBottom font-navy">{{ $lesson->lesson_name }}</h5>
+                                        @endforeach
+                                    @endif
                                 </div>
                                 <hr>
                             </div>
-
                             <div id="Questions in this Lesson">
                                 <h4 id="questionTitle" class="module-bottom-zero margin-zero-top font-navy text-center">
-                                    List of questions in
-                                    this
-                                    lesson: {{ $lessons[0]->lesson_name }}</h4>
+                                    @if($lessons != null)
+                                        List of questions in
+                                        this
+                                        lesson: {{ $lessons[0]->lesson_name }}
+                                    @else
+                                        You do not have a lesson yet!
+                                    @endif</h4>
                                 <small>This will change as you change the 'lesson' drop down in 'create new question'
                                 </small>
                                 <hr>
@@ -148,9 +158,11 @@
                                             <h5 class="margin-zero-top noMarginBottom font-navy">{{ $question->question }}</h5>
                                         @endforeach
                                     @else
-                                        @foreach($lessons[0]->questions as $question)
-                                            <h5 class="margin-zero-top noMarginBottom font-navy">{{ $question->question }}</h5>
-                                        @endforeach
+                                        @if($lessons != null)
+                                            @foreach($lessons[0]->questions as $question)
+                                                <h5 class="margin-zero-top noMarginBottom font-navy">{{ $question->question }}</h5>
+                                            @endforeach
+                                        @endif
                                     @endif
                                 </div>
                             </div>

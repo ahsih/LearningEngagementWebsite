@@ -44,14 +44,19 @@ class PollingController extends Controller
         $modules = User::find($request->user()->id)->modules;
 
         //Get the total amount of lesson on first module in $modules
-        $totalAmountLesson = Lesson::where('module_id', '=', $modules[0]->id)->count();
+        //if there isn't any module, then we should put both total amount lesson and lesson to null
+        if (sizeof($modules) > 0) {
+            $totalAmountLesson = Lesson::where('module_id', '=', $modules[0]->id)->count();
+            $lessons = Lesson::where('module_id', '=', $modules[0]->id)->get();
+        } else {
+            $totalAmountLesson = null;
+            $lessons = null;
+        }
 
         //Get a list of lesson from the first choice of the $modules
         //If there is session, then we need to change it.
         if (Session::has('moduleID')) {
             $lessons = Lesson::where('module_id', '=', Session::get('moduleID'))->get();
-        } else {
-            $lessons = Lesson::where('module_id', '=', $modules[0]->id)->get();
         }
 
         //Check if they are: student/tutor/admin
