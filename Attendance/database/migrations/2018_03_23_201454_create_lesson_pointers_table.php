@@ -13,7 +13,7 @@ class CreateLessonPointersTable extends Migration
      */
     public function up()
     {
-        Schema::create('lesson_pointers', function (Blueprint $table) {
+        Schema::create('active_lessons', function (Blueprint $table) {
             $table->integer('module_id');
             $table->integer('lesson_id');
             $table->integer('question_count');

@@ -6,7 +6,7 @@ use attendance\Conversation;
 use attendance\declineModules;
 use attendance\FirstChoiceUserModule;
 use attendance\Lesson;
-use attendance\LessonPointer;
+use attendance\ActiveLesson;
 use attendance\Module;
 use attendance\question;
 use attendance\Response;
@@ -67,13 +67,12 @@ class HomeController extends Controller
             $moduleName = $module->module_name;
 
             //Get a list of lesson from this modules
-            $lessons = Lesson::where('module_id','=',$firstChoiceModule->module_id)->get();
+            $lessons = Lesson::where('module_id', '=', $firstChoiceModule->module_id)->get();
 
             //Check if there is currently a lesson ongoing for polling
-            $lessonPointer = LessonPointer::where('module_id', '=', $firstChoiceModule->module_id)->first();
+            $lessonPointer = ActiveLesson::where('module_id', '=', $firstChoiceModule->module_id)->first();
 
-            //Get the not filled questions
-            //$questions = $this->getNotFilledQuestions($user_id, $firstChoiceModule);
+            $questions = $this->getNotFilledQuestions($user_id, $lessonPointer);
 
         }
 
@@ -82,6 +81,8 @@ class HomeController extends Controller
 
             //Pass to the view
             $data = array(
+                'lessonPointer' => $lessonPointer,
+                'questions' => $questions,
                 'path' => $path,
                 'allModules' => $notAvailableModules,
                 'modules' => $modules,
@@ -127,25 +128,30 @@ class HomeController extends Controller
 
     /**
      * Get the questions that are not filled
+     * @param $user_id
+     * @param $lessonPointer
+     * @return the answer
      */
-    private function getNotFilledQuestions($user_id, $firstChoiceModule)
+    private function getNotFilledQuestions($user_id, $lessonPointer)
     {
         //Get the question that are related to this module
-        $questions = question::where('module_id', '=', $firstChoiceModule->module_id)->get();
+        if ($lessonPointer != null) {
+            $questions = question::where('lesson_id', '=', $lessonPointer->lesson_id)->get();
+            //Get all the responses from this user
+            $responses = Response::where('user_id', '=', $user_id)->get();
 
-        $responses = Response::where('user_id', '=', $user_id)->get();
-
+        //Key location of the array
         $keyLocation = array();
 
         //Loop the response
         //Check if the response has already got the question id
         //if it is, remove the question from the question array
-        if($questions != null) {
+        if ($questions != null && sizeof($questions) > 0) {
             if ($responses != null) {
                 foreach ($responses as $response) {
                     for ($i = 0; $i < sizeof($questions); $i++) {
                         if ($response->question_id == $questions[$i]->id) {
-                           array_push($keyLocation,$i);
+                            array_push($keyLocation, $i);
                         }
                     }
                 }
@@ -153,12 +159,16 @@ class HomeController extends Controller
         }
 
         //Unset the location
-        foreach($keyLocation as $key){
+        foreach ($keyLocation as $key) {
             unset($questions[$key]);
         }
 
         //Reindex the questions
         $questions = $questions->values();
+        }else{
+            $questions = null;
+        }
+
 
         return $questions;
     }
@@ -197,12 +207,12 @@ class HomeController extends Controller
         foreach ($modules as $module) {
             for ($i = 0; $i < sizeof($allModules); $i++) {
                 if ($module->id == $allModules[$i]->id) {
-                    array_push($keyLocation,$i);
+                    array_push($keyLocation, $i);
                 }
             }
         }
 
-        foreach($keyLocation as $key){
+        foreach ($keyLocation as $key) {
             unset($allModules[$key]);
         }
 

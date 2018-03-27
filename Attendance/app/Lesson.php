@@ -27,6 +27,6 @@ class Lesson extends Model
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
     public function lessonPointer(){
-        return $this->hasOne(LessonPointer::class);
+        return $this->hasOne(ActiveLesson::class);
     }
 }

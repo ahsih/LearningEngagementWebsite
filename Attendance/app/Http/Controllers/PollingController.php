@@ -4,7 +4,7 @@ namespace attendance\Http\Controllers;
 
 use attendance\FirstChoiceUserModule;
 use attendance\Lesson;
-use attendance\LessonPointer;
+use attendance\ActiveLesson;
 use attendance\Module;
 use attendance\optionalAnswers;
 use attendance\question;
@@ -169,14 +169,14 @@ class PollingController extends Controller
         //Get the first choice of the module the student/tutor pick
         $firstChoiceModule = FirstChoiceUserModule::where('user_id', '=', Auth::user()->id)->first();
         //Get the lesson pointer
-        $lessonPointer = LessonPointer::where('module_id', '=', $firstChoiceModule->module_id)->first();
+        $lessonPointer = ActiveLesson::where('module_id', '=', $firstChoiceModule->module_id)->first();
 
         // If lesson ID is not empty
         if ($lessonID != null) {
             //If $lesson pointer is null
             if ($lessonPointer == null) {
                 //Create a new pointer and store those data in.
-                $lessonPointer = new LessonPointer();
+                $lessonPointer = new ActiveLesson();
                 $lessonPointer->module_id = $firstChoiceModule->module_id;
                 $lessonPointer->lesson_id = $lessonID;
                 $lessonPointer->question_count = 0;
@@ -206,7 +206,7 @@ class PollingController extends Controller
         //Get the first choice of the module the student/tutor pick
         $firstChoiceModule = FirstChoiceUserModule::where('user_id', '=', Auth::user()->id)->first();
         //Get the lesson pointer
-        $lessonPointer = LessonPointer::where('module_id', '=', $firstChoiceModule->module_id)->first();
+        $lessonPointer = ActiveLesson::where('module_id', '=', $firstChoiceModule->module_id)->first();
 
         //add the size of the 1
         if ($lessonPointer != null) {
@@ -227,7 +227,7 @@ class PollingController extends Controller
         //Get the first choice of the module the student/tutor pick
         $firstChoiceModule = FirstChoiceUserModule::where('user_id', '=', Auth::user()->id)->first();
         //Get the lesson pointer
-        $lessonPointer = LessonPointer::where('module_id', '=', $firstChoiceModule->module_id)->first();
+        $lessonPointer = ActiveLesson::where('module_id', '=', $firstChoiceModule->module_id)->first();
 
         if($lessonPointer != null){
             $lessonPointer->delete();
@@ -451,13 +451,17 @@ class PollingController extends Controller
         $user = User::find(Auth::user()->id);
         //Find their first choice module
         $firstChoiceModule = FirstChoiceUserModule::where('user_id', '=', $user->id)->first();
+        //Get the lesson pointer
+        $lessonPointer = ActiveLesson::where('module_id', '=', $firstChoiceModule->module_id)->first();
 
         //If user is a student, then we start to check whether to reload the page
         if ($user->hasRole('student')) {
 
             //Check if this user has his main module
-            if ($firstChoiceModule != null) {
-                $questionCount = question::where('module_id', '=', $firstChoiceModule->module_id)->count();
+            //And the lesson is active
+            if ($firstChoiceModule != null && $lessonPointer != null) {
+                //Get total amount of questions in the active lesson
+                $questionCount = $lessonPointer->question_count;
 
                 //check polling count session and $question count
                 $data = $this->checkPollingCountSession($questionCount);
