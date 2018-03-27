@@ -56,7 +56,8 @@ class HomeController extends Controller
             $conversations = null;
             $moduleName = null;
             $lessons = null;
-            $lessonPointer = null;
+            $activeLesson = null;
+            $questions = null;
 
         } else {
             $conversations = Conversation::orderBy('created_at')
@@ -70,10 +71,9 @@ class HomeController extends Controller
             $lessons = Lesson::where('module_id', '=', $firstChoiceModule->module_id)->get();
 
             //Check if there is currently a lesson ongoing for polling
-            $lessonPointer = ActiveLesson::where('module_id', '=', $firstChoiceModule->module_id)->first();
-
-            $questions = $this->getNotFilledQuestions($user_id, $lessonPointer);
-
+            $activeLesson = ActiveLesson::where('module_id', '=', $firstChoiceModule->module_id)->first();
+            //Get all the questions from this active lesson
+            $questions = $this->getQuestions($activeLesson);
         }
 
         //Return two different views for students and tutors
@@ -81,7 +81,7 @@ class HomeController extends Controller
 
             //Pass to the view
             $data = array(
-                'lessonPointer' => $lessonPointer,
+                'activeLesson' => $activeLesson,
                 'questions' => $questions,
                 'path' => $path,
                 'allModules' => $notAvailableModules,
@@ -98,7 +98,7 @@ class HomeController extends Controller
 
             //Pass to the view
             $data = array(
-                'lessonPointer' => $lessonPointer,
+                'activeLesson' => $activeLesson,
                 'lessons' => $lessons,
                 'path' => $path,
                 'allModules' => $notAvailableModules,
@@ -129,43 +129,15 @@ class HomeController extends Controller
     /**
      * Get the questions that are not filled
      * @param $user_id
-     * @param $lessonPointer
+     * @param $activeLesson
      * @return the answer
      */
-    private function getNotFilledQuestions($user_id, $lessonPointer)
+    private function getQuestions($activeLesson)
     {
         //Get the question that are related to this module
-        if ($lessonPointer != null) {
-            $questions = question::where('lesson_id', '=', $lessonPointer->lesson_id)->get();
-            //Get all the responses from this user
-            $responses = Response::where('user_id', '=', $user_id)->get();
-
-        //Key location of the array
-        $keyLocation = array();
-
-        //Loop the response
-        //Check if the response has already got the question id
-        //if it is, remove the question from the question array
-        if ($questions != null && sizeof($questions) > 0) {
-            if ($responses != null) {
-                foreach ($responses as $response) {
-                    for ($i = 0; $i < sizeof($questions); $i++) {
-                        if ($response->question_id == $questions[$i]->id) {
-                            array_push($keyLocation, $i);
-                        }
-                    }
-                }
-            }
-        }
-
-        //Unset the location
-        foreach ($keyLocation as $key) {
-            unset($questions[$key]);
-        }
-
-        //Reindex the questions
-        $questions = $questions->values();
-        }else{
+        if ($activeLesson != null) {
+            $questions = question::where('lesson_id', '=', $activeLesson->lesson_id)->get();
+        } else {
             $questions = null;
         }
 

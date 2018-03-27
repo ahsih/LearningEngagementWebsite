@@ -71,6 +71,7 @@ class ConversationController extends Controller
 
     /**
      * @param $textMessage
+     * @return bool
      */
     private function checkEmptyWord($textMessage)
     {
@@ -83,7 +84,8 @@ class ConversationController extends Controller
 
     /**
      * Check if the text message contains inappropriate word
-     * @param $textMessage - text message
+     * @param $textMessage
+     * @return bool
      */
     private function checkInappropriateWord($textMessage)
     {

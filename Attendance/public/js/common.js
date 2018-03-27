@@ -1,11 +1,11 @@
-function createChart(question, optionalAnswers, amountArray) {
+function createChart(question,questionName, optionalAnswers, amountArray) {
 
     //Question ID
-    var pollingQuestionID = 'pollingChart' + question.id;
+    var pollingQuestionID = 'pollingChart' + question;
 
-    var myChart = document.getElementById(pollingQuestionID).getContext('2d');
+    var location = document.getElementById(pollingQuestionID).getContext('2d');
 
-    var massPopChart = new Chart(myChart, {
+    new Chart(location, {
         type: 'horizontalBar', // bar , horizontalBar, pie, line, doughnut, radar
         data: {
             labels: optionalAnswers,
@@ -49,7 +49,7 @@ function createChart(question, optionalAnswers, amountArray) {
 
             title: {
                 display: true,
-                text: question.question,
+                text: questionName,
                 fontSize: 25,
                 fontColor: 'red',
             },

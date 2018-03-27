@@ -156,12 +156,11 @@ class PollingController extends Controller
         return $error;
     }
 
-
     /**
      * Create a lesson pointer according to the lesson user has pick
      * @return back to the homepage once it has been picked
      */
-    public function createLessonPointer()
+    public function createActiveLesson()
     {
 
         //Get the lesson ID
@@ -169,29 +168,29 @@ class PollingController extends Controller
         //Get the first choice of the module the student/tutor pick
         $firstChoiceModule = FirstChoiceUserModule::where('user_id', '=', Auth::user()->id)->first();
         //Get the lesson pointer
-        $lessonPointer = ActiveLesson::where('module_id', '=', $firstChoiceModule->module_id)->first();
+        $activeLesson = ActiveLesson::where('module_id', '=', $firstChoiceModule->module_id)->first();
 
         // If lesson ID is not empty
         if ($lessonID != null) {
             //If $lesson pointer is null
-            if ($lessonPointer == null) {
+            if ($activeLesson == null) {
                 //Create a new pointer and store those data in.
-                $lessonPointer = new ActiveLesson();
-                $lessonPointer->module_id = $firstChoiceModule->module_id;
-                $lessonPointer->lesson_id = $lessonID;
-                $lessonPointer->question_count = 0;
+                $activeLesson = new ActiveLesson();
+                $activeLesson->module_id = $firstChoiceModule->module_id;
+                $activeLesson->lesson_id = $lessonID;
+                $activeLesson->question_count = 0;
                 //Set the end point
-                $lessonPointer->end_point = false;
+                $activeLesson->end_point = false;
                 //No timestamps
-                $lessonPointer->timestamps = false;
-                $lessonPointer->save();
+                $activeLesson->timestamps = false;
+                $activeLesson->save();
 
             } else {
                 //Update the current lesson pointer with new lesson
-                $lessonPointer->lesson_id = $lessonID;
+                $activeLesson->lesson_id = $lessonID;
                 //No timestamps
-                $lessonPointer->timestamps = false;
-                $lessonPointer->save();
+                $activeLesson->timestamps = false;
+                $activeLesson->save();
             }
         }
 
@@ -206,16 +205,16 @@ class PollingController extends Controller
         //Get the first choice of the module the student/tutor pick
         $firstChoiceModule = FirstChoiceUserModule::where('user_id', '=', Auth::user()->id)->first();
         //Get the lesson pointer
-        $lessonPointer = ActiveLesson::where('module_id', '=', $firstChoiceModule->module_id)->first();
+        $activeLesson = ActiveLesson::where('module_id', '=', $firstChoiceModule->module_id)->first();
 
         //add the size of the 1
-        if ($lessonPointer != null) {
-            $totalQuestions = $lessonPointer->lesson->questions->count();
+        if ($activeLesson != null) {
+            $totalQuestions = $activeLesson->lesson->questions->count();
             //increment 1 on question count in lesson pointer
-            $this->addingQuestionCount($lessonPointer);
+            $this->addingQuestionCount($activeLesson);
             //If the current lessonPointer is already the same as total amount of questions available in lesson
-            if ($totalQuestions <= $lessonPointer->question_count + 1)
-                $this->setEndPoint($lessonPointer);
+            if ($totalQuestions <= $activeLesson->question_count + 1)
+                $this->setEndPoint($activeLesson);
         }
 
     }
@@ -223,39 +222,40 @@ class PollingController extends Controller
     /**
      * Stop the lesson, so that tutor can start another lesson
      */
-    public function stopLesson(){
+    public function stopLesson()
+    {
         //Get the first choice of the module the student/tutor pick
         $firstChoiceModule = FirstChoiceUserModule::where('user_id', '=', Auth::user()->id)->first();
         //Get the lesson pointer
-        $lessonPointer = ActiveLesson::where('module_id', '=', $firstChoiceModule->module_id)->first();
+        $activeLesson = ActiveLesson::where('module_id', '=', $firstChoiceModule->module_id)->first();
 
-        if($lessonPointer != null){
-            $lessonPointer->delete();
+        if ($activeLesson != null) {
+            $activeLesson->delete();
         }
     }
 
     /**
      * Set true on the end point of the lesson pointer
-     * @param $lessonPointer
+     * @param $activeLesson
      */
-    private function setEndPoint($lessonPointer)
+    private function setEndPoint($activeLesson)
     {
         //Set the end point to be true.
-        $lessonPointer->timestamps = false;
-        $lessonPointer->end_point = true;
-        $lessonPointer->save();
+        $activeLesson->timestamps = false;
+        $activeLesson->end_point = true;
+        $activeLesson->save();
     }
 
     /**
      * Adding question count by 1 in the lesson pointer
-     * @param $lessonPointer
+     * @param $activeLesson
      */
-    private function addingQuestionCount($lessonPointer)
+    private function addingQuestionCount($activeLesson)
     {
         //Check the question count compared to the size of the lesson total questions
-        $lessonPointer->question_count = $lessonPointer->question_count + 1;
-        $lessonPointer->timestamps = false;
-        $lessonPointer->save();
+        $activeLesson->question_count = $activeLesson->question_count + 1;
+        $activeLesson->timestamps = false;
+        $activeLesson->save();
     }
 
     /**
@@ -335,11 +335,10 @@ class PollingController extends Controller
     }
 
     /**
-     * Check if there are any error on the submitting polling form.
+     * Check if there is any error on submitting polling
      * @param $post
      * @param $error
-     * @param $question
-     * @return if there is an error
+     * @return mixed
      */
     private function checkError($post, $error)
     {
@@ -445,23 +444,23 @@ class PollingController extends Controller
      * @return data if new classroom polling exist
      * Use for student to check if there is new polling to fill.
      */
-    public function getClassroomPolling()
+    public function getUpdatePolling()
     {
         //Get the current user
         $user = User::find(Auth::user()->id);
         //Find their first choice module
         $firstChoiceModule = FirstChoiceUserModule::where('user_id', '=', $user->id)->first();
         //Get the lesson pointer
-        $lessonPointer = ActiveLesson::where('module_id', '=', $firstChoiceModule->module_id)->first();
+        $activeLesson = ActiveLesson::where('module_id', '=', $firstChoiceModule->module_id)->first();
 
         //If user is a student, then we start to check whether to reload the page
         if ($user->hasRole('student')) {
 
             //Check if this user has his main module
             //And the lesson is active
-            if ($firstChoiceModule != null && $lessonPointer != null) {
+            if ($firstChoiceModule != null && $activeLesson != null) {
                 //Get total amount of questions in the active lesson
-                $questionCount = $lessonPointer->question_count;
+                $questionCount = $activeLesson->question_count;
 
                 //check polling count session and $question count
                 $data = $this->checkPollingCountSession($questionCount);
@@ -511,12 +510,11 @@ class PollingController extends Controller
         return $data;
     }
 
-
     /**
      * Check if the polling count is same as the session
      * If not, then we should reload the page for new classroom polling content
      * @param $questionCount
-     * @return $data
+     * @return string
      */
     private function checkPollingCountSession($questionCount)
     {
@@ -536,7 +534,6 @@ class PollingController extends Controller
 
         } else {
             session(['pollingCount' => $questionCount]);
-            $data = 'No Data';
         }
 
         return $data;
@@ -585,6 +582,40 @@ class PollingController extends Controller
         }
 
         return $optionalExist;
+
+    }
+
+    /**
+     * Create the graph to display the result
+     */
+    public function createGraph()
+    {
+        //Get question ID
+        $questionID = request()->questionID;
+        $question = question::find($questionID);
+
+        //get list of option
+        $optional = $question->optionalAnswers;
+        //Create an array to store the amount
+        $amountsArray = array();
+        //Create an array to store the optional answer
+        $answersArray = array();
+        foreach ($optional as $option) {
+            $answer = $option->optional_answer;
+            $amount = Response::where('optionalAnswer_id', '=', $option->id)->count();
+            array_push($amountsArray, $amount);
+            array_push($answersArray, $answer);
+        }
+
+        //Put both array into one array
+        $data = array(
+            'questionName' => $question->question,
+            'amountsArray' => $amountsArray,
+            'answersArray' => $answersArray,
+        );
+
+        return $data;
+
 
     }
 

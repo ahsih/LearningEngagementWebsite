@@ -12,6 +12,8 @@
     <link rel="stylesheet" href="{{asset('css/common.css')}}">
     <!-- Javascript for Ajax -->
     <script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
+    <!-- Javascript for chart js to create chart -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.min.js"></script>
     <script src="{{ asset('js/ajax.js') }}"></script>
     <script src="{{ asset('js/common.js') }}"></script>
     <title>Learning Engagement</title>

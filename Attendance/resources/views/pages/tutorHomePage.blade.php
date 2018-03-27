@@ -48,8 +48,8 @@
         </h2>
         <button class="btn btn-primary center-block" id="directToPolling">Create classroom polling</button>
         <div id="selectLessonList">
-            @if($lessonPointer != null || $lessonPointer != 0)
-                @if(!$lessonPointer->end_point)
+            @if($activeLesson != null || $activeLesson != 0)
+                @if(!$activeLesson->end_point)
                     <button type="submit" class="btn btn-success btn-lg" id="nextQuestion">Next</button>
                 @else
                     <small>If you click on the stop button now, other students may not receive your questions!</small>
@@ -58,7 +58,7 @@
             @else
                 @if(sizeof($lessons) > 0)
                     <h4 class="noMarginBottom margin-zero-top font-navy">Pick A Lesson</h4>
-                    {!! Form::open(['action' => 'PollingController@createLessonPointer']) !!}
+                    {!! Form::open(['action' => 'PollingController@createActiveLesson']) !!}
                     {!! Form::token() !!}
                     <select id="firstModuleLessonList" name="firstModuleLessList">
                         @foreach($lessons as $lesson)
@@ -73,32 +73,12 @@
             @endif
         </div>
         <div class="panel-body" id="pollingGraph">
-            @if($lessonPointer != null)
-                @if($lessonPointer->lesson->questions != null && sizeof($lessonPointer->lesson->questions) > 0)
-                    @for($i = $lessonPointer->question_count;$i > -1; $i--)
-                        <?php
-                        $question = $lessonPointer->lesson->questions[$i];
-                        //get list of option
-                        $optional = $question->optionalAnswers;
-                        //Create an array to store the amount
-                        $amountArray = array();
-                        //Create an array to store the optional answer
-                        $answerArray = array();
-                        foreach ($optional as $option) {
-                            $answer = $option->optional_answer;
-                            $amount = \attendance\Response::where('optionalAnswer_id', '=', $option->id)->count();
-                            array_push($amountArray, $amount);
-                            array_push($answerArray, $answer);
-                        }
-                        //encode the amount
-                        $amountArray = json_encode($amountArray);
-                        //encode the answer
-                        $answerArray = json_encode($answerArray);
-
-                        ?>
-                        <div id="tutorQuestionPolling" class="center-block"
-                             onmouseover="createChart({{$question}},{{ $answerArray }},{{ $amountArray }});">
-                            <canvas id="pollingChart{{$question->id}}"></canvas>
+            @if($activeLesson != null)
+                @if($activeLesson->lesson->questions != null && sizeof($activeLesson->lesson->questions) > 0)
+                    @for($i = $activeLesson->question_count;$i > -1; $i--)
+                        <div class="tutorQuestionPolling">
+                            <input type="hidden" value="{{ $activeLesson->lesson->questions[$i]->id }}" />
+                            <canvas id="pollingChart{{$activeLesson->lesson->questions[$i]->id}}"></canvas>
                         </div>
                     @endfor
                 @else

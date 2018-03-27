@@ -25,24 +25,30 @@
         <div class="panel-body">
             <div id="studentPollingNotifications"></div>
             @if($questions != null && sizeof($questions) > 0)
-                @for($i = 0;$i <= $lessonPointer->question_count;$i++)
-                    <div id="question{{ $questions[$i]->id }}">
-                        <div class="panel-heading classroomHeading">
-                            <p class="noMarginBottom">{{ $questions[$i]->question }}</p>
+                @for($i = 0;$i <= $activeLesson->question_count;$i++)
+                    @if(!\attendance\Response::where('question_id','=',$questions[$i]->id)
+                ->where('user_id','=',Auth::user()->id)
+                ->exists())
+                        <div id="question{{ $questions[$i]->id }}">
+                            <div class="panel-heading classroomHeading">
+                                <p class="noMarginBottom">{{ $questions[$i]->question }}</p>
+                            </div>
+                            @foreach($questions[$i]->optionalAnswers as $optionalAnswer)
+                                <a href="#" class="optionSelected">
+                                    <input type="hidden" value="{{ $optionalAnswer->id }}"/>
+                                    <input type="hidden" class="questionID" value="{{ $questions[$i]->id }}"/>
+                                    <div class="classroomAnswer">
+                                        <p class="marginBottomByFive">{{ $optionalAnswer->optional_answer }}</p>
+                                    </div>
+                                </a>
+                            @endforeach
                         </div>
-                        @foreach($questions[$i]->optionalAnswers as $optionalAnswer)
-                            <a href="#" class="optionSelected">
-                                <input type="hidden" value="{{ $optionalAnswer->id }}"/>
-                                <input type="hidden" class="questionID" value="{{ $questions[$i]->id }}"/>
-                                <div class="classroomAnswer">
-                                    <p class="marginBottomByFive">{{ $optionalAnswer->optional_answer }}</p>
-                                </div>
-                            </a>
-                        @endforeach
-                    </div>
+                        @else
+                        <p class="text-primary"> You have already filled the question: <span class="text-danger">{{ $questions[$i]->question }}</span></p>
+                    @endif
                 @endfor
             @else
-                    <p> No lesson polling has been started yet</p>
+                <p> No lesson polling has been started yet</p>
             @endif
         </div>
     </div>

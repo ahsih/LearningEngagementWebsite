@@ -201,8 +201,27 @@ $(document).ready(function () {
             }
         });
     }, 2000);
-    //--------------------------------------------------------------
 
+    //Every 2 seconds check if there are new classroom polling for student to fill in
+    window.setInterval(function () {
+        //Get the classroom polling data
+        $.ajax({
+            type: 'GET',
+            url: '/getUpdatePolling',
+            data: null,
+            //If it success
+            success: function (data) {
+
+                if (data != "No Data") {
+                    if (window.location.pathname == '/' || window.location.pathname == '/home') {
+                        location.reload();
+                    }
+                }
+            }
+        });
+    }, 2000);
+
+    //--------------------------------------------------------------
     //--------------------------------------------------------------
     //Make the delete message invisible/visible
     $('.conversationMessage').mouseover(function () {
@@ -283,28 +302,6 @@ $(document).ready(function () {
         });
 
     });
-
-    //--------------------------------------------------------------
-    //--------------------------------------------------------------
-
-    //Every 10 seconds check if there are new classroom polling for student to fill in
-    window.setInterval(function () {
-        //Get the classroom polling data
-        $.ajax({
-            type: 'GET',
-            url: '/getClassroomPolling',
-            data: null,
-            //If it success
-            success: function (data) {
-
-                if (data != "No Data") {
-                    if (window.location.pathname == '/' || window.location.pathname == '/home') {
-                        location.reload();
-                    }
-                }
-            }
-        });
-    }, 10000);
 
     //--------------------------------------------------------------
     //--------------------------------------------------------------
@@ -455,7 +452,6 @@ $(document).ready(function () {
         });
     });
 
-
     //Click stop lesson to reset the
     $('#stopLesson').click(function () {
         //Get the total amount of the lesson
@@ -466,6 +462,25 @@ $(document).ready(function () {
             data: null,
             success:function(){
                 location.reload();
+            }
+        });
+    });
+
+    //Click stop lesson to reset the
+    $('.tutorQuestionPolling').mouseover(function () {
+        //Get the question ID
+        var questionID = $(this).find('input:hidden').val();
+        //Get the total amount of the lesson
+        //call ajax
+        $.ajax({
+            type: 'POST',
+            url: '/createGraph',
+            data: {
+                'questionID': questionID
+            },
+            success: function(data){
+                //Create the chart
+                createChart(questionID,data.questionName,data.answersArray,data.amountsArray);
             }
         });
     });
