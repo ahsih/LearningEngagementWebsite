@@ -18,8 +18,8 @@ class question extends Model
      * This belong to the lessons
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function lessons(){
-        return $this->belongsTo(Lesson::class);
+    public function lesson(){
+        return $this->belongsTo(Lesson::class,'lesson_id');
     }
 
     /**

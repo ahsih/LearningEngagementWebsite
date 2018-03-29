@@ -35,6 +35,7 @@ Route::post('/acceptRequest','ManagementController@acceptRequest');
 Route::post('/addStudentToModule','ManagementController@addStudentToModule');
 Route::post('/deleteStudentInModule','ManagementController@deleteStudentInModule');
 Route::post('/createTutor','ManagementController@createTutor');
+Route::post('/addListOfStudents','ManagementController@addListOfStudents');
 
 //Polling controller
 Route::post('/createPoll','PollingController@createPoll');

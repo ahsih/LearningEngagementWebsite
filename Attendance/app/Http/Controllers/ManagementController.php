@@ -170,29 +170,30 @@ class ManagementController extends Controller
      * Delete the student from this module
      * @return management page.
      */
-   public function deleteStudentInModule(){
+    public function deleteStudentInModule()
+    {
 
-       //Get the module that is currently being managed
-       $firstChoice = FirstChoiceUserModule::where('user_id', '=', Auth::user()->id)->first();
-       $users = User::all();
-       foreach ($users as $user) {
-           //if user has this module
-        if($user->hasModule($firstChoice->module_id)){
-            //Get the checkbox detail
-            $checkbox = Input::get($user->id);
-            if($checkbox == 'true'){
-                User::find($user->id)->modules()->detach($firstChoice->module_id);
-               $userFirstChoiceModule = FirstChoiceUserModule::where('user_id','=',$user->id)->
-                where('module_id','=',$firstChoice->module_id)->first();
-               if($userFirstChoiceModule != null){
-                   $userFirstChoiceModule->delete();
-               }
+        //Get the module that is currently being managed
+        $firstChoice = FirstChoiceUserModule::where('user_id', '=', Auth::user()->id)->first();
+        $users = User::all();
+        foreach ($users as $user) {
+            //if user has this module
+            if ($user->hasModule($firstChoice->module_id)) {
+                //Get the checkbox detail
+                $checkbox = Input::get($user->id);
+                if ($checkbox == 'true') {
+                    User::find($user->id)->modules()->detach($firstChoice->module_id);
+                    $userFirstChoiceModule = FirstChoiceUserModule::where('user_id', '=', $user->id)->
+                    where('module_id', '=', $firstChoice->module_id)->first();
+                    if ($userFirstChoiceModule != null) {
+                        $userFirstChoiceModule->delete();
+                    }
+                }
             }
         }
-       }
 
-       return redirect('/management');
-   }
+        return redirect('/management');
+    }
 
     /**
      * Add the student to the module
@@ -231,25 +232,73 @@ class ManagementController extends Controller
     }
 
     /**
-     * @param Request $request
-     * Assign the user to become a tutor.
+     * Create tutor
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
-    public function createTutor(Request $request){
+    public function createTutor()
+    {
         //Get all the users
         $users = User::all();
-        foreach($users as $user){
-            if($user->hasRole('student')){
-                    $checkbox = Input::get($user->id);
-                    if($checkbox == 'true'){
-                        $studentRole = Role::where('name','=','student')->first();
-                        $tutorRole = Role::where('name','=','tutor')->first();
-                        $user->roles()->detach($studentRole->id);
-                        $user->roles()->attach($tutorRole->id);
-                    }
+        foreach ($users as $user) {
+            if ($user->hasRole('student')) {
+                $checkbox = Input::get($user->id);
+                if ($checkbox == 'true') {
+                    $studentRole = Role::where('name', '=', 'student')->first();
+                    $tutorRole = Role::where('name', '=', 'tutor')->first();
+                    $user->roles()->detach($studentRole->id);
+                    $user->roles()->attach($tutorRole->id);
+                }
             }
         }
 
         return redirect('/');
     }
 
+    /**
+     * Add a list of students from CSV file
+     */
+    public function addListOfStudents(Request $request)
+    {
+        //By default if it didn't pass the CSV then the file is invalid
+        session(['fileError' => 'The file you upload is invalid']);
+
+        //Validation for CSV
+        $this->validate($request, [
+                'file' => 'required|mimes:csv,txt',
+            ]
+        );
+
+        //Check if the file exist
+        if (Input::has('file')) {
+            //Get the file
+            $file = Input::file('file');
+            //Get handler
+            $handle = fopen($file->getRealPath(), "r");
+
+            //Find the indexOfEmail - by default is 0
+            $indexEmail = 0;
+            //Boolean to check if email is found
+            $emailFound = false;
+            //An array to store email
+            $listOfEmails = array();
+
+            while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) {
+
+                //Find the $data which contains email title
+                if (!$emailFound) {
+                    for ($i = 0; $i < sizeof($data); $i++) {
+                        if (strpos($data[$i], 'Email') !== false) {
+                            $indexEmail = $i;
+                            $emailFound = true;
+                        }
+                    }
+                }
+                //Add the email into the array
+                array_push($listOfEmails,$data[$indexEmail]);
+
+            }
+        }
+
+        return redirect('/management');
+    }
 }
