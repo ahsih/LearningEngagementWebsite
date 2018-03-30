@@ -3,6 +3,7 @@
 namespace attendance\Http\Controllers;
 
 use attendance\declineModules;
+use attendance\EmailRequestModule;
 use attendance\FirstChoiceUserModule;
 use attendance\Module;
 use attendance\requestModule;
@@ -270,35 +271,115 @@ class ManagementController extends Controller
 
         //Check if the file exist
         if (Input::has('file')) {
+            //Forget the session
+            session()->forget('fileError');
+            //Get the moduleID
+            $moduleID = FirstChoiceUserModule::where('user_id', '=', $request->user()->id)->first()->module_id;
+
             //Get the file
             $file = Input::file('file');
-            //Get handler
-            $handle = fopen($file->getRealPath(), "r");
 
-            //Find the indexOfEmail - by default is 0
-            $indexEmail = 0;
-            //Boolean to check if email is found
-            $emailFound = false;
-            //An array to store email
-            $listOfEmails = array();
+            //Read the CSV
+            $listOfEmails = $this->readCSV($file);
 
-            while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) {
-
-                //Find the $data which contains email title
-                if (!$emailFound) {
-                    for ($i = 0; $i < sizeof($data); $i++) {
-                        if (strpos($data[$i], 'Email') !== false) {
-                            $indexEmail = $i;
-                            $emailFound = true;
+            //Loop the list of emails
+            if (sizeof($listOfEmails) > 0) {
+                foreach ($listOfEmails as $email) {
+                    //Add user to the module
+                    $userExists = $this->addUserToModule($moduleID, $email);
+                    //if user not exist, then we will store this email and the moduleID in the email request module model.
+                    if (!$userExists) {
+                        //If the email is not exist in the email request module yet, then we need to add it into the table
+                        if (!EmailRequestModule::where('email', '=', $email)->exists()) {
+                            $emailRequestModule = new EmailRequestModule();
+                            $emailRequestModule->timestamps = false;
+                            $emailRequestModule->email = $email;
+                            $emailRequestModule->module_id = $moduleID;
+                            $emailRequestModule->save();
                         }
                     }
                 }
-                //Add the email into the array
-                array_push($listOfEmails,$data[$indexEmail]);
-
             }
+            //Add file success
+            session(['fileSuccess' => 'File added successfully']);
         }
 
         return redirect('/management');
+    }
+
+    /**
+     * Add the user to the module
+     * @param $moduleID
+     * @param $email
+     * @return bool - true if found and add, otherwise keep it.
+     */
+    private function addUserToModule($moduleID, $email)
+    {
+        //Check if email is exist in the user
+        $user = User::where('email', '=', $email)->first();
+        //If the user exist
+        if ($user != null) {
+            //Check user already contains this module
+            $alreadyExist = $this->checkUserAlreadyContainsThisModule($moduleID, $user);
+            if (!$alreadyExist) {
+                $user->modules()->attach($moduleID);
+            }
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    private function checkUserAlreadyContainsThisModule($moduleID, $user)
+    {
+        //Get list of the modules this user has
+        $userModules = $user->modules()->get();
+        //Loop and check if user has already this module ID
+        if ($userModules != null && sizeof($userModules) > 0) {
+            foreach ($userModules as $module) {
+                if ($module->id == $moduleID) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Read the CSV file
+     * @param $file
+     * @return mixed - an array contains list of email in this module
+     */
+    private function readCSV($file)
+    {
+        //Get handler
+        $handle = fopen($file->getRealPath(), "r");
+        //Find the indexOfEmail - by default is 0
+        $indexEmail = 0;
+        //Boolean to check if email is found
+        $emailFound = false;
+        //Create array
+        $listOfEmails = array();
+
+        while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) {
+
+            //Find the $data which contains email title
+            if (!$emailFound) {
+                for ($i = 0; $i < sizeof($data); $i++) {
+                    if (strpos($data[$i], 'Email') !== false) {
+                        $indexEmail = $i;
+                        $emailFound = true;
+                    }
+                }
+            }
+            //Filter email
+            if (filter_var($data[$indexEmail], FILTER_VALIDATE_EMAIL)) {
+                //Add the email into the array
+                array_push($listOfEmails, $data[$indexEmail]);
+            }
+        }
+
+        //Return list of emails
+        return $listOfEmails;
     }
 }

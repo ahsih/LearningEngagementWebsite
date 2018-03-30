@@ -2,6 +2,7 @@
 
 namespace attendance\Http\Controllers\Auth;
 
+use attendance\EmailRequestModule;
 use attendance\User;
 use attendance\Role;
 use attendance\Http\Controllers\Controller;
@@ -73,6 +74,15 @@ class RegisterController extends Controller
         $user
         ->roles()
         ->attach(Role::where("name", "student")->first());
+
+        //Check if the user has any modules that need to be added
+        $emailRequestModule = EmailRequestModule::where('email','=',$user->email)->get();
+        if($emailRequestModule != null && sizeof($emailRequestModule) > 0){
+            foreach($emailRequestModule as $module){
+                //Attach the module ID
+                $user->modules()->attach($module->module_id);
+            }
+        }
 
         return $user;
     }

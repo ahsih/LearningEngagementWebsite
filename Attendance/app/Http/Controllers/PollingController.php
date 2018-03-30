@@ -360,14 +360,14 @@ class PollingController extends Controller
         }
 
         //Check if there is a question for the polling, if not , return a error.
-        if ($post['mainQuestion'] == null) {
+        if ($post['mainQuestion'] == null || ctype_space($post['mainQuestion'])) {
             array_push($error, 'Please fill in the main question');
         }
 
         //Check if all the optional answer is not empty
         for ($i = 1; $i <= sizeof($post) - 5; $i++) {
             $optionalAnswers = $post['optionalAnswers' . $i];
-            if ($optionalAnswers == null) {
+            if ($optionalAnswers == null || ctype_space($optionalAnswers)) {
                 array_push($error, 'optional Answer ' . $i . ' has no answer');
             }
         }

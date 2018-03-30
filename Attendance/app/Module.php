@@ -6,9 +6,20 @@ use Illuminate\Database\Eloquent\Model;
 
 class Module extends Model
 {
-    //This module belong to many user class
+    /**
+     * This has many users
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
     public function users(){
         return $this->belongsToMany(User::class);
+    }
+
+    /**
+     * This module has many emailRequestModules class
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function emailRequestModules(){
+        return $this->hasMany(EmailRequestModule::class);
     }
 
     /**
