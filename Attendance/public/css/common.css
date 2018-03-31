@@ -191,3 +191,12 @@
 .smallText{
     font-size: 10px;
 }
+
+.circleNumber{
+    padding: 3px;
+    border-radius: 50%;
+    background: #fff;
+    border: 3px solid red;
+    color: red;
+    text-align: center;
+}

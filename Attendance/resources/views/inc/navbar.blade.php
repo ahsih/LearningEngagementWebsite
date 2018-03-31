@@ -12,16 +12,27 @@
             </button>
 
             <!-- Branding Image -->
-          <a class="navbar-brand" href="{{ url('/') }}">
+            <a class="navbar-brand" href="{{ url('/') }}">
                 Attendance
-               </a>
+            </a>
         </div>
 
         <ul class="nav navbar-nav navbar-left">
-            <li class="{{ $path == '/' ? 'active' : '' }}{{ $path == 'home' ? 'active' : '' }}"><a class="navbar-brand" href="{{ url('/') }}">Home</a></li>
-            <li class="{{ $path == 'reward' ? 'active' : '' }}"><a class="navbar-brand" href="{{ url('/reward') }}">Reward</a></li>
-            <li class="{{ $path == 'polling' ? 'active' : '' }}"><a class="navbar-brand" href="{{ url('/polling') }}">Polling</a></li>
-            <li class="{{ $path == 'management' ? 'active' : '' }}"><a class="navbar-brand" href="{{ url('/management') }}">Module management</a></li>
+            <li class="{{ $path == '/' ? 'active' : '' }}{{ $path == 'home' ? 'active' : '' }}"><a class="navbar-brand"
+                                                                                                   href="{{ url('/') }}">Home</a>
+            </li>
+            <li class="{{ $path == 'reward' ? 'active' : '' }}"><a class="navbar-brand" href="{{ url('/reward') }}">Reward</a>
+            </li>
+            <li class="{{ $path == 'polling' ? 'active' : '' }}"><a class="navbar-brand" href="{{ url('/polling') }}">Polling</a>
+            </li>
+            <li class="{{ $path == 'management' ? 'active' : '' }}"><a class="navbar-brand"
+                                                                       href="{{ url('/management') }}">Module management
+                    @if(Session::has('requestModulesCount'))
+                        @if(Session::get('requestModulesCount') > 0)
+                            <span class="text-danger glyphicon glyphicon-exclamation-sign"></span>
+                        @endif
+                    @endif
+                </a></li>
         </ul>
 
         <!-- Right Side Of Navbar -->

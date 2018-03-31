@@ -32,6 +32,11 @@ class ManagementController extends Controller
      */
     public function index(Request $request)
     {
+        //Forget the session of the count if exist.
+        if(session()->has('requestModulesCount')){
+            session()->forget('requestModulesCount');
+        }
+
         //init all the approve request
         $listApprovedModules = array();
 
@@ -101,15 +106,19 @@ class ManagementController extends Controller
     public function getTutorValidRequestModules(Request $request)
     {
 
+        //List of approve module
         $listApprovedModules = array();
+        //List of the tutor
         $listOfTutorModules = array();
 
         $user = User::find($request->user()->id);
 
+        //Get a list of module that this tutor has
         foreach ($user->modules()->get() as $module) {
             array_push($listOfTutorModules, $module->id);
         }
 
+        //Loop all the request modules, then check if this tutor teaches.
         $allRequestModules = requestModule::all();
         foreach ($allRequestModules as $requestModules) {
             //If request module is same as what the tutor teaches, then this information should be stored into new array
@@ -257,6 +266,8 @@ class ManagementController extends Controller
 
     /**
      * Add a list of students from CSV file
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
     public function addListOfStudents(Request $request)
     {
@@ -330,6 +341,12 @@ class ManagementController extends Controller
         }
     }
 
+    /**
+     * Check if this user already contain in this module
+     * @param $moduleID
+     * @param $user
+     * @return bool
+     */
     private function checkUserAlreadyContainsThisModule($moduleID, $user)
     {
         //Get list of the modules this user has

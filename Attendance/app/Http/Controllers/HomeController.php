@@ -9,6 +9,7 @@ use attendance\Lesson;
 use attendance\ActiveLesson;
 use attendance\Module;
 use attendance\question;
+use attendance\requestModule;
 use attendance\Response;
 use Illuminate\Http\Request;
 use Auth;
@@ -74,6 +75,10 @@ class HomeController extends Controller
             $activeLesson = ActiveLesson::where('module_id', '=', $firstChoiceModule->module_id)->first();
             //Get all the questions from this active lesson
             $questions = $this->getQuestions($activeLesson);
+
+            //Get a list of the request module
+            $managementController = new ManagementController();
+
         }
 
         //Return two different views for students and tutors
@@ -95,6 +100,9 @@ class HomeController extends Controller
             return view('pages.studentHome')->with($data);
         } else if ($request->user()->hasRole('tutor')) {
 
+            //List of the approve modules by tutor
+            $listOfApprovedModules = $managementController->getTutorValidRequestModules($request);
+            session(['requestModulesCount' => sizeof($listOfApprovedModules)]);
 
             //Pass to the view
             $data = array(

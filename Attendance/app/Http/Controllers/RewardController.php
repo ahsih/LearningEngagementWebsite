@@ -31,7 +31,6 @@ class RewardController extends Controller
         //Get the path
         $path = $request->path();
 
-
         $data = array(
             'path' => $path,
             'title' => 'Reward'
