@@ -22,7 +22,6 @@
 <h1 class="text-center titleText">Learning Engagement</h1>
 @include('inc.navbar')
 @include('inc.notifications')
-@yield('reward')
 @yield('module')
 <div class="container lightBlue">
     <button class="center-block btn btn-primary" id="changeLiveChat">Change Main Module <span
@@ -169,7 +168,7 @@
             </div>
         </div>
     </div>
-
+    @yield('reward')
 </div>
 </div>
 <!-- Scripts -->

@@ -11,7 +11,7 @@ class Reward extends Model
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function modules(){
-        return $this->belongsTo(Module::class);
+        return $this->belongsTo(Module::class,'module_id');
     }
 
     /**

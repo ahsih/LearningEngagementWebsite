@@ -4,7 +4,8 @@
     @else
         <div class="container lightBlue">
             <div class="panel panel-default">
-                <div class="panel-heading"><h3 class="text-center titleText">Approve student request</h3></div>
+                <div class="panel-heading"><h3 class="text-center titleText">Approve student request</h3>
+                </div>
                 <div class="panel-body">
                     {!! Form::open(['action' => 'ManagementController@acceptRequest']) !!}
                     {!! Form::token() !!}
@@ -52,14 +53,14 @@
                     <h3 class="text-center titleText">Modify students in your
                         module: <b class="text-danger">{{ $moduleName }}</b></h3>
                 </div>
-                @if(Session::has('fileError'))
-                    <p class="noMarginBottom text-danger"><b>{{ Session::get('fileError') }}</b></p>
+                @if(Session::has('managementError'))
+                    <p class="noMarginBottom text-danger"><b>{{ Session::get('managementError') }}</b></p>
                 @endif
-                {{ Session::forget('fileError') }}
-                @if(Session::has('fileSuccess'))
-                    <p class="noMarginBottom text-success"><b>{{ Session::get('fileSuccess') }}</b></p>
+                {{ Session::forget('managementError') }}
+                @if(Session::has('managementSuccess'))
+                    <p class="noMarginBottom text-success"><b>{{ Session::get('managementSuccess') }}</b></p>
                 @endif
-                {{ Session::forget('fileSuccess') }}
+                {{ Session::forget('managementSuccess') }}
                 <div class="row">
                     <div class="col-lg-6 col-md-6 col-sm-6">
                         <h4 class="text-danger text-center">Add new students to the module</h4>

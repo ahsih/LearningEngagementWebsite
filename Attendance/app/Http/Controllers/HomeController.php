@@ -11,6 +11,8 @@ use attendance\Module;
 use attendance\question;
 use attendance\requestModule;
 use attendance\Response;
+use attendance\Reward;
+use attendance\RewardAchieve;
 use Illuminate\Http\Request;
 use Auth;
 use attendance\User;
@@ -59,6 +61,8 @@ class HomeController extends Controller
             $lessons = null;
             $activeLesson = null;
             $questions = null;
+            $rewardList = null;
+            $rewardAchieve = null;
 
         } else {
             $conversations = Conversation::orderBy('created_at')
@@ -79,6 +83,12 @@ class HomeController extends Controller
             //Get a list of the request module
             $managementController = new ManagementController();
 
+            //Get list of reward
+            $rewardList = Reward::where('module_id','=',$firstChoiceModule->module_id)->get();
+
+            //Get this user reward achieve
+           $rewardAchieve = RewardAchieve::where('user_id','=',$user_id)->where('module_id','=',$firstChoiceModule->module_id)->first();
+
         }
 
         //Return two different views for students and tutors
@@ -86,6 +96,8 @@ class HomeController extends Controller
 
             //Pass to the view
             $data = array(
+                'rewardAchieve' => $rewardAchieve,
+                'rewardList' => $rewardList,
                 'activeLesson' => $activeLesson,
                 'questions' => $questions,
                 'path' => $path,
@@ -122,11 +134,15 @@ class HomeController extends Controller
 
         } else if ($request->user()->hasRole('admin')) {
 
+            //Get a list of students user
             $studentUsers = $this->getAllStudentUser();
+            //Get a list of tutors user
+            $tutorUsers = $this->getAllTutorUser();
 
             $data = array(
                 'title' => 'Admin Page',
                 'path' => $path,
+                'tutorUsers' => $tutorUsers,
                 'studentUsers' => $studentUsers,
             );
 
@@ -135,10 +151,9 @@ class HomeController extends Controller
     }
 
     /**
-     * Get the questions that are not filled
-     * @param $user_id
+     * Get a list of questions from active lesson
      * @param $activeLesson
-     * @return the answer
+     * @return null
      */
     private function getQuestions($activeLesson)
     {
@@ -151,6 +166,23 @@ class HomeController extends Controller
 
 
         return $questions;
+    }
+
+    /**
+     * Return all users which are tutor
+     * @return array
+     */
+    private function getAllTutorUser(){
+        //Get all the users in the database
+        $users = User::all();
+        $tutorUsers = array();
+        foreach ($users as $user) {
+            if ($user->hasRole('tutor')) {
+                array_push($tutorUsers, $user);
+            }
+        }
+
+        return $tutorUsers;
     }
 
     /**

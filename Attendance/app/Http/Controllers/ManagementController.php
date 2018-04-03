@@ -186,12 +186,16 @@ class ManagementController extends Controller
         //Get the module that is currently being managed
         $firstChoice = FirstChoiceUserModule::where('user_id', '=', Auth::user()->id)->first();
         $users = User::all();
+        //Check how many been delete.
+        $deleteAmount = 0;
         foreach ($users as $user) {
             //if user has this module
             if ($user->hasModule($firstChoice->module_id)) {
                 //Get the checkbox detail
                 $checkbox = Input::get($user->id);
                 if ($checkbox == 'true') {
+                    //Increment by 1
+                    $deleteAmount++;
                     User::find($user->id)->modules()->detach($firstChoice->module_id);
                     $userFirstChoiceModule = FirstChoiceUserModule::where('user_id', '=', $user->id)->
                     where('module_id', '=', $firstChoice->module_id)->first();
@@ -202,6 +206,13 @@ class ManagementController extends Controller
             }
         }
 
+        if($deleteAmount == 0) {
+            session(['managementError' => 'No student has been deleted']);
+        }else{
+            session(['managementSuccess' => 'Total ' . $deleteAmount . ' students has been deleted']);
+        }
+
+        //Return redirect to the management
         return redirect('/management');
     }
 
@@ -214,18 +225,29 @@ class ManagementController extends Controller
         //Get the module that is currently being managed
         $firstChoice = FirstChoiceUserModule::where('user_id', '=', Auth::user()->id)->first();
         $users = User::all();
+        //Total students that has been added
+        $addAmount = 0;
         foreach ($users as $user) {
             //If user do not have this module, then check whether you have select to add them to the module
             if ($user->hasRole('student')) {
                 if (!$user->hasModule($firstChoice->module_id)) {
                     $checkbox = Input::get($user->id);
                     if ($checkbox == 'true') {
+                        //Increment
+                        $addAmount++;
                         //Add the user to the module
                         User::find($user->id)->modules()->attach($firstChoice->module_id);
                     }
                 }
             }
         }
+
+        if($addAmount == 0) {
+            session(['managementError' => 'No student has been added']);
+        }else{
+            session(['managementSuccess' => 'Total ' . $addAmount . ' students has been added']);
+        }
+
 
         return redirect('/management');
     }
@@ -242,7 +264,7 @@ class ManagementController extends Controller
     }
 
     /**
-     * Create tutor
+     * Create tutor from a student profile
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
     public function createTutor()
@@ -265,6 +287,31 @@ class ManagementController extends Controller
     }
 
     /**
+     * Change from tutor profile to student
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+     */
+    public function changeToStudent(){
+
+        //Get all the users
+        //change from tutor profile to student profile
+        $users = User::all();
+        foreach ($users as $user) {
+            if ($user->hasRole('tutor')) {
+                $checkbox = Input::get($user->id);
+                if ($checkbox == 'true') {
+                    $tutorRole = Role::where('name', '=', 'tutor')->first();
+                    $studentRole = Role::where('name', '=', 'student')->first();
+                    $user->roles()->detach($tutorRole->id);
+                    $user->roles()->attach($studentRole->id);
+                }
+            }
+        }
+
+        //Return to home page
+        return redirect('/');
+    }
+
+    /**
      * Add a list of students from CSV file
      * @param Request $request
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
@@ -272,7 +319,7 @@ class ManagementController extends Controller
     public function addListOfStudents(Request $request)
     {
         //By default if it didn't pass the CSV then the file is invalid
-        session(['fileError' => 'The file you upload is invalid']);
+        session(['managementError' => 'The file you upload is invalid']);
 
         //Validation for CSV
         $this->validate($request, [
@@ -312,7 +359,7 @@ class ManagementController extends Controller
                 }
             }
             //Add file success
-            session(['fileSuccess' => 'File added successfully']);
+            session(['managementSuccess' => 'File added successfully']);
         }
 
         return redirect('/management');

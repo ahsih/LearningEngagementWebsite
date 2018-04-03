@@ -193,10 +193,9 @@
 }
 
 .circleNumber{
-    padding: 3px;
+    width: 120px;
+    line-height: 120px;
     border-radius: 50%;
-    background: #fff;
-    border: 3px solid red;
-    color: red;
+    border: 2px solid red;
     text-align: center;
 }

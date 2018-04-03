@@ -35,6 +35,7 @@ Route::post('/acceptRequest','ManagementController@acceptRequest');
 Route::post('/addStudentToModule','ManagementController@addStudentToModule');
 Route::post('/deleteStudentInModule','ManagementController@deleteStudentInModule');
 Route::post('/createTutor','ManagementController@createTutor');
+Route::post('/changeToStudent','ManagementController@changeToStudent');
 Route::post('/addListOfStudents','ManagementController@addListOfStudents');
 
 //Polling controller
@@ -50,3 +51,7 @@ Route::get('/getLessonsFromModule','PollingController@getLessonsFromModule');
 Route::get('/getAllLessonsFromModule','PollingController@getAllLessonsFromModule');
 Route::get('/getQuestionsFromLesson','PollingController@getQuestionsFromLesson');
 Route::get('/stopLesson','PollingController@stopLesson');
+
+//Reward controller
+Route::post('/createReward','RewardController@createReward');
+Route::post('/deleteReward','RewardController@deleteReward');

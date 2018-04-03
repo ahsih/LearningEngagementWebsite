@@ -9,6 +9,8 @@ use attendance\Module;
 use attendance\optionalAnswers;
 use attendance\question;
 use attendance\Response;
+use attendance\Reward;
+use attendance\RewardAchieve;
 use attendance\User;
 use Illuminate\Http\Request;
 use Auth;
@@ -385,26 +387,95 @@ class PollingController extends Controller
         //Get the question value
         $questionValue = request()->questionValue;
 
+        //Check if this question already exist in user response
         $responseExist = $this->checkQuestionExistInUserResponse($questionValue);
         //Optional answer value belong to the question
         $optionalExist = $this->checkOptionalExistInQuestion($questionValue, $optionalAnswerValue);
 
+        //If optional exist in this question and they isn't respond to this question yet
+        //Then we can add a new response
         if ($optionalExist) {
             if (!$responseExist) {
-                //Create a new response
-                //And put all the data inside here
-                // Save
-                $response = new Response();
-                $response->optionalAnswer_id = $optionalAnswerValue;
-                $response->question_id = $questionValue;
-                $response->user_id = Auth::user()->id;
-                $response->save();
+                //Save to reward achieve, if it's necessary
+                $this->saveReward($questionValue, $optionalAnswerValue);
+                //Save the response
+                $this->addResponse($questionValue, $optionalAnswerValue);
+
                 return $questionValue;
             } else {
                 return 'responseExist';
             }
         } else {
             return 'optionalNotExist';
+        }
+    }
+
+    /**
+     * Add the response to this user
+     * @param $questionValue
+     * @param $optionalAnswerValue
+     */
+    private function addResponse($questionValue, $optionalAnswerValue)
+    {
+        //Create a new response
+        //And put all the data inside here
+        // Save
+        $response = new Response();
+        $response->optionalAnswer_id = $optionalAnswerValue;
+        $response->question_id = $questionValue;
+        $response->user_id = Auth::user()->id;
+        $response->save();
+    }
+
+    /**
+     * Save reward for this student if it's necessary
+     * @param $questionValue
+     * @param $optionalAnswerValue
+     */
+    private function saveReward($questionValue, $optionalAnswerValue)
+    {
+        //Get this question that link to the module
+        $question = question::find($questionValue);
+        $moduleID = $question->lesson->modules->id;
+
+        $correctAnswer = $this->checkCorrectAnswer($question, $optionalAnswerValue);
+
+        if ($correctAnswer) {
+            //Get reward achieve if there is one
+            $rewardAchieve = RewardAchieve::where('user_id', '=', Auth::user()->id)
+                ->where('module_id', '=', $moduleID)->first();
+
+            //Check if reward achieve is empty
+            if ($rewardAchieve != null) {
+                //increment by 1
+                $rewardAchieve->amount = $rewardAchieve->amount + 1;
+                $rewardAchieve->save();
+            } else {
+                //Create a new reward achieve
+                $rewardAchieve = new RewardAchieve();
+                $rewardAchieve->module_id = $moduleID;
+                $rewardAchieve->user_id = Auth::user()->id;
+                $rewardAchieve->amount = 1;
+                $rewardAchieve->save();
+            }
+        }
+
+
+    }
+
+    /**
+     * Check if it's a correct answer for the user to answer
+     * @param $question
+     * @param $optionalAnswerValue
+     * @return bool
+     */
+    private function checkCorrectAnswer($question, $optionalAnswerValue)
+    {
+        //Check if the question
+        if ($question->correct_id == $optionalAnswerValue || $question->correct_id == 0) {
+            return true;
+        } else {
+            return false;
         }
     }
 
@@ -451,7 +522,9 @@ class PollingController extends Controller
         //Find their first choice module
         $firstChoiceModule = FirstChoiceUserModule::where('user_id', '=', $user->id)->first();
         //Get the lesson pointer
-        $activeLesson = ActiveLesson::where('module_id', '=', $firstChoiceModule->module_id)->first();
+        if ($firstChoiceModule != null) {
+            $activeLesson = ActiveLesson::where('module_id', '=', $firstChoiceModule->module_id)->first();
+        }
 
         //If user is a student, then we start to check whether to reload the page
         if ($user->hasRole('student')) {
@@ -466,6 +539,8 @@ class PollingController extends Controller
                 $data = $this->checkPollingCountSession($questionCount);
 
             } else {
+                //Create a temp session that stated no active lesson
+                session(['pollingCount' => 'No Active Lesson']);
                 $data = 'No Data';
             }
         } else {
@@ -521,19 +596,36 @@ class PollingController extends Controller
         //Check if session exist, if not, then create a new one
         //The session used to store amount of classroom polling in
         if (session()->has('pollingCount')) {
-            //Get the polling count total
-            $pollingCount = session()->get('pollingCount');
-
-            //Check if polling count from session is same as $question->count()
-            if ($pollingCount != $questionCount) {
-                session(['pollingCount' => $questionCount]);
+            // If the session was no active lesson, then return the $data as data
+            if (session()->get('pollingCount') == 'No Active Lesson') {
                 $data = 'data';
             } else {
-                $data = 'No Data';
+                $data = $this->checkPollCountAndQuestionCount($questionCount);
             }
 
         } else {
             session(['pollingCount' => $questionCount]);
+        }
+
+        return $data;
+    }
+
+    /**
+     * Check if poll count and question count is not the same
+     * @param $questionCount
+     * @return string
+     */
+    private function checkPollCountAndQuestionCount($questionCount)
+    {
+        //Get the polling count total
+        $pollingCount = session()->get('pollingCount');
+
+        //Check if polling count from session is same as $question->count()
+        if ($pollingCount != $questionCount) {
+            session(['pollingCount' => $questionCount]);
+            $data = 'data';
+        } else {
+            $data = 'No Data';
         }
 
         return $data;
