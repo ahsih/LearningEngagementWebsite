@@ -58,15 +58,53 @@
     <div class="container lightBlue">
         <div class="panel panel-heading">
             <h2 class="noMarginBottom margin-zero-top font-navy text-center">Reward</h2>
-            <div class="panel-body">
-                    @if($rewardAchieve != null)
-                    <h4 class="margin-zero-top">Your current reward point on this module: {{ $moduleName }} is: <b class="text-danger circleNumber">{{ $rewardAchieve->amount }}</b></h4>
+            <div class="panel-body noPadding">
+                <div id="rewardAmountTitle">
+                    @if($rewardPoint > 0)
+                        <p class="noMarginBottom">Your current reward point on this module: {{ $moduleName }} is: <b
+                                    class="text-danger circleNumber">{{ $rewardPoint }}</b></p>
+                    @else
+                        <p class="margin-zero-top noMarginBottom"> You have no reward point on this
+                            module: {{ $moduleName }}</p>
                     @endif
-                @if($rewardList != null && sizeof($rewardList) > 0)
-                    @foreach($rewardList as $reward)
-                        <p class="pull-left">Prize: {{ $reward->reward_name }}</p>
-                    @endforeach
-                @endif
+                    <small class="margin-zero-top">You lose your reward point once you claim!</small>
+                </div>
+                <div class="scrollable-rewardList">
+                    <table class="table table-condensed fixLayout">
+                        <tr>
+                            <th>Reward Name</th>
+                            <th>Amount to achieve</th>
+                            <th>Required</th>
+                            <th>Claim</th>
+                        </tr>
+                        @if($rewardList != null && sizeof($rewardList) > 0)
+                            @foreach($rewardList as $reward)
+                                <tr>
+
+                                    <td>Prize: {{ $reward->reward_name }}</td>
+                                    <td>{{ $reward->amount_to_achieve }}</td>
+                                    @if($rewardPoint >= $reward->amount_to_achieve)
+                                        <td class="text-success">You Are Ready To Claim!</td>
+                                        <td id="reward{{ $reward->id }}">
+                                            <a class="rewardClaim">
+                                                <input type="hidden" value="{{ $reward->id }}" id="reward"/>
+                                                <button class="btn btn-success" id="claimTheReward">Claim Now</button>
+                                            </a>
+                                        </td>
+                                    @else
+                                        <td class="text-danger">You
+                                            Required: {{ $reward->amount_to_achieve - $rewardPoint }} more points
+                                        </td>
+                                        <td>
+                                            <button class="btn btn-danger" disabled>Cannot Claim</button>
+                                        </td>
+                                    @endif
+
+                                </tr>
+                            @endforeach
+                        @endif
+                    </table>
+                </div>
             </div>
         </div>
     </div>

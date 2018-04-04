@@ -62,7 +62,7 @@ class HomeController extends Controller
             $activeLesson = null;
             $questions = null;
             $rewardList = null;
-            $rewardAchieve = null;
+            $rewardPoint = null;
 
         } else {
             $conversations = Conversation::orderBy('created_at')
@@ -89,6 +89,13 @@ class HomeController extends Controller
             //Get this user reward achieve
            $rewardAchieve = RewardAchieve::where('user_id','=',$user_id)->where('module_id','=',$firstChoiceModule->module_id)->first();
 
+           //Get the amount of reward achieve for this user.
+           if($rewardAchieve != null){
+                $rewardPoint = $rewardAchieve->amount;
+            }else{
+               $rewardPoint = 0;
+           }
+
         }
 
         //Return two different views for students and tutors
@@ -96,7 +103,7 @@ class HomeController extends Controller
 
             //Pass to the view
             $data = array(
-                'rewardAchieve' => $rewardAchieve,
+                'rewardPoint' => $rewardPoint,
                 'rewardList' => $rewardList,
                 'activeLesson' => $activeLesson,
                 'questions' => $questions,

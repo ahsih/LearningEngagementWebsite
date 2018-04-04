@@ -16,6 +16,11 @@
     height: 320px;
 }
 
+.scrollable-rewardList {
+    overflow: auto;
+    height: 100px;
+}
+
 .scrollable-tutor {
     overflow-y: auto;
     height: 1000px;
@@ -193,9 +198,11 @@
 }
 
 .circleNumber{
-    width: 120px;
-    line-height: 120px;
     border-radius: 50%;
     border: 2px solid red;
     text-align: center;
+}
+
+.noPadding {
+    padding: 0px;
 }

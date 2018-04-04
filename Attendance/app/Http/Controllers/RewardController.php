@@ -2,8 +2,11 @@
 
 namespace attendance\Http\Controllers;
 
+use attendance\Award;
+use attendance\FirstChoiceUserModule;
 use attendance\Module;
 use attendance\Reward;
+use attendance\RewardAchieve;
 use attendance\User;
 use Illuminate\Http\Request;
 use Auth;
@@ -52,13 +55,65 @@ class RewardController extends Controller
     }
 
     /**
+     * Claim this specific reward from this user
+     */
+    public function claimReward()
+    {
+        //Get the user
+        $user = User::find(Auth::user()->id);
+        //Get the ID
+        $rewardID = request()->rewardID;
+        //Get the reward model
+        $reward = Reward::find($rewardID);
+        //Get the first choice of the module the student/tutor pick
+        $firstChoiceModule = FirstChoiceUserModule::where('user_id', '=', $user->id)->first();
+
+        //If the reward is not empty, then we can add to award table
+        if ($reward != null) {
+            $rewardAchieve = RewardAchieve::where('user_id', '=', $user->id)
+                ->where('module_id', '=', $firstChoiceModule->module_id)->first();
+            if ($rewardAchieve->amount >= $reward->amount_to_achieve) {
+                //Save the award
+                $this->saveAward($firstChoiceModule->module_id, $user->id, $rewardID);
+                //minus the user reward point by the reward amount to achieve
+                //And save
+                $rewardAchieve->amount = $rewardAchieve->amount - $reward->amount_to_achieve;
+                $rewardAchieve->save();
+
+                //Result link to the reward ID, so we know which reward the user has claimed
+                $result = $rewardID;
+
+            } else {
+                $result = 'fail';
+            }
+        }
+        return $result;
+    }
+
+    /**
+     * Save the award
+     * @param $moduleID
+     * @param $userID
+     * @param $rewardID
+     */
+    private function saveAward($moduleID, $userID, $rewardID)
+    {
+        //Save award
+        $award = new Award();
+        $award->module_id = $moduleID;
+        $award->user_id = $userID;
+        $award->reward_id = $rewardID;
+        $award->save();
+    }
+
+    /**
      * Delete the reward from the module
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
     public function deleteReward()
     {
         //get the reward ID
-        $rewardID = request()->deleteReward;
+        $rewardID = request()->deleteRewardID;
 
         //Find the reward
         $reward = Reward::find($rewardID);
@@ -124,7 +179,7 @@ class RewardController extends Controller
             array_push($error, 'ModuleID is invalid');
         }
         //Check reward name
-        if ($rewardName != null || $rewardName == "" || ctype_space($rewardName)) {
+        if ($rewardName == null || $rewardName == "" || ctype_space($rewardName)) {
             array_push($error, 'Reward name is empty');
         }
         //Check amount to achieve

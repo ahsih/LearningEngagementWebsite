@@ -605,6 +605,7 @@ class PollingController extends Controller
 
         } else {
             session(['pollingCount' => $questionCount]);
+            $data = 'No data';
         }
 
         return $data;

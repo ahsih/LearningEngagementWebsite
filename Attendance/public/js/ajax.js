@@ -306,6 +306,40 @@ $(document).ready(function () {
     //--------------------------------------------------------------
     //--------------------------------------------------------------
 
+    //Ajax for claiming the reward
+    $('.rewardClaim').click(function () {
+
+        //Find the reward ID
+        var rewardID = $(this).find('#reward').val();
+
+        //Call the Ajax to save the response
+        var request = $.ajax({
+            type: 'POST',
+            url: '/claimReward',
+            data: {
+                'rewardID' : rewardID,
+            }
+        });
+
+        //If the ajax request is completed.
+        request.done(function (data) {
+            // If the result did not fail, then we should change the claim now to already claim
+            if(data != 'fail'){
+                $('#rewardAmountTitle')
+
+
+                //Remove and add new button
+                var button = "<button class='btn btn-primary'>Already Claim</button>"
+                $('#reward' + data).find('.rewardClaim').remove();
+                $('#reward' + data).append(button);
+            }
+        });
+
+    });
+
+    //--------------------------------------------------------------
+    //--------------------------------------------------------------
+
     //Get the total amount of lesson
     $('#moduleListLesson').change(function () {
         //Get the module ID and find out how many lesson are there in this module
