@@ -56,3 +56,4 @@ Route::get('/stopLesson','PollingController@stopLesson');
 Route::post('/createReward','RewardController@createReward');
 Route::post('/deleteReward','RewardController@deleteReward');
 Route::post('/claimReward','RewardController@claimReward');
+Route::post('/removeAward','RewardController@removeAward');

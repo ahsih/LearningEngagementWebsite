@@ -80,26 +80,44 @@
                         @if($rewardList != null && sizeof($rewardList) > 0)
                             @foreach($rewardList as $reward)
                                 <tr>
-
                                     <td>Prize: {{ $reward->reward_name }}</td>
                                     <td>{{ $reward->amount_to_achieve }}</td>
-                                    @if($rewardPoint >= $reward->amount_to_achieve)
-                                        <td class="text-success">You Are Ready To Claim!</td>
-                                        <td id="reward{{ $reward->id }}">
-                                            <a class="rewardClaim">
-                                                <input type="hidden" value="{{ $reward->id }}" id="reward"/>
-                                                <button class="btn btn-success" id="claimTheReward">Claim Now</button>
-                                            </a>
-                                        </td>
-                                    @else
-                                        <td class="text-danger">You
-                                            Required: {{ $reward->amount_to_achieve - $rewardPoint }} more points
-                                        </td>
-                                        <td>
-                                            <button class="btn btn-danger" disabled>Cannot Claim</button>
-                                        </td>
+                                    @if(sizeof($award) > 0)
+                                        <?php
+                                        $foundAward = false;
+                                        ?>
+                                        @foreach($award as $index)
+                                            @if($index->reward_id == $reward->id && $index->prize_taken == false)
+                                                <td class="text-success">Please notify your module tutor</td>
+                                                <td id="reward{{ $reward->id }}">
+                                                    <button class="btn btn-primary">Already Claimed</button>
+                                                </td>
+                                                <?php
+                                                $foundAward = true;
+                                                ?>
+                                            @endif
+                                        @endforeach
                                     @endif
-
+                                    @if(!$foundAward)
+                                        @if($rewardPoint >= $reward->amount_to_achieve)
+                                            <td class="text-success">You Are Ready To Claim!</td>
+                                            <td id="reward{{ $reward->id }}">
+                                                <a class="rewardClaim">
+                                                    <input type="hidden" value="{{ $reward->id }}" id="reward"/>
+                                                    <button class="btn btn-success" id="claimTheReward">Claim Now
+                                                    </button>
+                                                </a>
+                                            </td>
+                                        @else
+                                            <td class="text-danger">You
+                                                Required: {{ $reward->amount_to_achieve - $rewardPoint }} more
+                                                points
+                                            </td>
+                                            <td>
+                                                <button class="btn btn-danger" disabled>Cannot Claim</button>
+                                            </td>
+                                        @endif
+                                    @endif
                                 </tr>
                             @endforeach
                         @endif

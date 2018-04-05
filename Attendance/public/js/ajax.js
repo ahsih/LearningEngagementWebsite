@@ -325,13 +325,7 @@ $(document).ready(function () {
         request.done(function (data) {
             // If the result did not fail, then we should change the claim now to already claim
             if(data != 'fail'){
-                $('#rewardAmountTitle')
-
-
-                //Remove and add new button
-                var button = "<button class='btn btn-primary'>Already Claim</button>"
-                $('#reward' + data).find('.rewardClaim').remove();
-                $('#reward' + data).append(button);
+               location.reload();
             }
         });
 

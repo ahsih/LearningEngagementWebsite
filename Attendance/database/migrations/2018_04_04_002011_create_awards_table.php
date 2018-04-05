@@ -18,6 +18,7 @@ class CreateAwardsTable extends Migration
             $table->integer('module_id');
             $table->integer('user_id');
             $table->integer('reward_id');
+            $table->boolean('prize_taken');
             $table->timestamps();
         });
     }

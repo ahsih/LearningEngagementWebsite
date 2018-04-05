@@ -10,6 +10,7 @@ use attendance\RewardAchieve;
 use attendance\User;
 use Illuminate\Http\Request;
 use Auth;
+use Illuminate\Support\Facades\Input;
 
 class RewardController extends Controller
 {
@@ -50,12 +51,78 @@ class RewardController extends Controller
         );
 
         if ($user->hasRole('tutor')) {
+
+            //Get a list of awards which associate with them
+            $tutorAwards = $this->getListOfAwards($user);
+
+            //Push to the array
+            $data['tutorAwards'] = $tutorAwards;
+
             return view('pages.rewardPage-tutor')->with($data);
+        }else{
+            return view('pages.rewardPage-student')->with($data);
         }
     }
 
     /**
+     * Remove the award from the list
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+     */
+    public function removeAward(){
+        //List of awards
+        $listAwards = Input::all();
+        //if the size of array is more than 1, then there is something to be deleted
+        if(sizeof($listAwards) > 1){
+            foreach($listAwards as $key => $value){
+                //if the value is on ( mean the checkbox is ticked)
+                //Then we need to delete it from the award list
+                if($value == 'on'){
+                    $awardID = str_replace("award","",$key);
+                    $award = Award::find($awardID);
+                    //update the award, that the prize has been taken
+                    $award->prize_taken = true;
+                    $award->save();
+                    session(['awardSuccess' => 'Award updated successfully']);
+                }
+            }
+        }else{
+            session(['awardError' => 'Award updated failed, maybe nothing to update?']);
+        }
+
+        //Redirect back to the award page
+        return redirect('/reward');
+
+    }
+
+    /**
+     * Get a list of awards which are associate with this tutor
+     * @param $user
+     * @return array
+     */
+    private function getListOfAwards($user)
+    {
+        $thisTutorAwards = array();
+        $thisTutorRewards = $user->rewards;
+        //get list of awards in module ID order
+        $listAwards = Award::orderBy('module_id')->get();
+
+        //For each award, check against the tutor reward
+        //Check whether this tutor has the responsible to take care of this award
+        foreach ($listAwards as $award) {
+            foreach ($thisTutorRewards as $reward) {
+                if ($award->reward_id == $reward->id) {
+                    array_push($thisTutorAwards, $award);
+                }
+            }
+        }
+
+        //return the list tutor awards array
+        return $thisTutorAwards;
+    }
+
+    /**
      * Claim this specific reward from this user
+     * @return mixed|string
      */
     public function claimReward()
     {
@@ -103,6 +170,7 @@ class RewardController extends Controller
         $award->module_id = $moduleID;
         $award->user_id = $userID;
         $award->reward_id = $rewardID;
+        $award->prize_taken = false;
         $award->save();
     }
 

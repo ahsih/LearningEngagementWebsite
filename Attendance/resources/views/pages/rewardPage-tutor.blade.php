@@ -51,18 +51,66 @@
                                 {!! Form::token() !!}
                                 <input type="hidden" value="{{ $reward->id }}" name="deleteRewardID"/>
                                 <p class="text-center"><b>
-                                    <button class="glyphicon glyphicon-minus-sign buttonWithoutButtonlayout set-red"></button>
-                                    <span
-                                            class="text-success">Module: {{ $reward->modules->module_name }}</span><span
-                                            class="text-warning">Reward: {{  $reward->reward_name }}</span>
+                                        <button class="glyphicon glyphicon-minus-sign buttonWithoutButtonlayout set-red"></button>
+                                        <span
+                                                class="text-success">Module: {{ $reward->modules->module_name }}</span><span
+                                                class="text-warning">Reward: {{  $reward->reward_name }}</span>
                                         <span>Amount to achieve:{{ $reward->amount_to_achieve }}</span></b></p>
                                 {!! Form::close() !!}
                             @endforeach
                         @endif
                     </div>
                 </div>
-
+                <div id="awardList">
+                    <h4 class="titleText">Award list</h4>
+                    <small>Only remove the one that you have given the prize to.</small>
+                    @if(Session::has('awardError'))
+                        <p class="noMarginBottom text-danger"><b>{{ Session::get('awardError') }}</b></p>
+                    @endif
+                    {{ Session::forget('awardError') }}
+                </div>
+                <div class="text-success">
+                    @if(Session::has('awardSuccess'))
+                        <p class="noMarginBottom text-success"><b>{{ Session::get('awardSuccess') }}</b></p>
+                    @endif
+                    {{ Session::forget('awardSuccess') }}
+                </div>
+                {!! Form::open(['action' => 'RewardController@removeAward']) !!}
+                {!! Form::token() !!}
+                <table class="table table-striped">
+                    <tr>
+                        <th>
+                            Student Name
+                        </th>
+                        <th>
+                            Module Name
+                        </th>
+                        <th>
+                            Reward Name
+                        </th>
+                        <th>
+                            Has the student collect his prize?
+                        </th>
+                    </tr>
+                    @if(sizeof($tutorAwards) > 0)
+                        @foreach($tutorAwards as $award)
+                            @if(!$award->prize_taken)
+                                <tr>
+                                    <td>{{ $award->user->name }}</td>
+                                    <td>{{ $award->module->module_name }}</td>
+                                    <td>{{ $award->reward->reward_name }}</td>
+                                    <td>
+                                        <input type="checkbox" name="award{{ $award->id }}"/>
+                                    </td>
+                                </tr>
+                            @endif
+                        @endforeach
+                    @endif
+                </table>
+                <button type="submit" class="pull-right btn btn-success">Submit</button>
+                {!! Form::close() !!}
             </div>
         </div>
+    </div>
     </div>
 @stop

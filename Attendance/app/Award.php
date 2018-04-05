@@ -27,6 +27,6 @@ class Award extends Model
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function reward(){
-        return $this->belongsTo(Reward::class);
+        return $this->belongsTo(Reward::class,'reward_id');
     }
 }

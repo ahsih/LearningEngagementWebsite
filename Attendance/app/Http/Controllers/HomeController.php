@@ -2,6 +2,7 @@
 
 namespace attendance\Http\Controllers;
 
+use attendance\Award;
 use attendance\Conversation;
 use attendance\declineModules;
 use attendance\FirstChoiceUserModule;
@@ -63,6 +64,7 @@ class HomeController extends Controller
             $questions = null;
             $rewardList = null;
             $rewardPoint = null;
+            $award = null;
 
         } else {
             $conversations = Conversation::orderBy('created_at')
@@ -96,6 +98,9 @@ class HomeController extends Controller
                $rewardPoint = 0;
            }
 
+           //Get list of rewards from this user
+           $award = Award::where('user_id','=',$user_id)->where('module_id','=',$firstChoiceModule->module_id)->get();
+
         }
 
         //Return two different views for students and tutors
@@ -113,7 +118,8 @@ class HomeController extends Controller
                 'conversations' => $conversations,
                 'moduleName' => $moduleName,
                 'listDeclineModules' => $listOfDeclineModules,
-                'role' => 'student'
+                'role' => 'student',
+                'award' => $award,
             );
 
             return view('pages.studentHome')->with($data);
