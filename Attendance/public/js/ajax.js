@@ -246,6 +246,8 @@ $(document).ready(function () {
         window.location.href = "/polling";
     });
 
+
+
     //--------------------------------------------------------------
     //--------------------------------------------------------------
 
@@ -371,6 +373,7 @@ $(document).ready(function () {
             //if it successful, then we need to find
             success: function (data) {
                 $('#listOfLessons').find('h5').remove();
+                $('#listOfLessons').find('button').remove();
                 //Change the module name
                 $('#listOfLessonTitle').empty();
                 $('#listOfLessonTitle').append("List of lesson in this module: " + data.moduleName);
@@ -509,6 +512,20 @@ $(document).ready(function () {
             success: function(data){
                 //Create the chart
                 createChart(questionID,data.questionName,data.answersArray,data.amountsArray);
+            }
+        });
+    });
+
+    //Click to delete the lesson
+    $('#nextQuestion').click(function () {
+        //Get the total amount of the lesson
+        //call ajax
+        $.ajax({
+            type: 'GET',
+            url: '/nextLessonQuestion',
+            data: null,
+            success:function(){
+                location.reload();
             }
         });
     });

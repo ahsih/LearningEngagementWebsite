@@ -15,6 +15,15 @@
         </div>
     </div>
 </div>
+<!-- hidden div, which display any notification -->
+<div class="popup-boxes">
+    <div id="popup-box">
+        <div>
+            <p> BITCONNECT</p>
+            <p>sadasd</p>
+        </div>
+    </div>
+</div>
 <!-- Hidden module selection -->
 <div id="moduleList" class="moduleList-popup">
     <div id="popup-wrapper">

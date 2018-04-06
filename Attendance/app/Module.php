@@ -15,6 +15,14 @@ class Module extends Model
     }
 
     /**
+     * This module has many reward achieved
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function rewardAchieved(){
+        return $this->hasMany(RewardAchieve::class);
+    }
+
+    /**
      * This module has many emailRequestModules class
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */

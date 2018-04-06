@@ -13,7 +13,7 @@
 
             <!-- Branding Image -->
             <a class="navbar-brand" href="{{ url('/') }}">
-                Attendance
+                <p class="text-primary">Learning Engagement</p>
             </a>
         </div>
 

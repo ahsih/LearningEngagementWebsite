@@ -40,6 +40,8 @@
     z-index: 1;
 }
 
+
+
 #popup-wrapper {
     width: 250px;
     margin: 300px auto;
@@ -47,8 +49,23 @@
 }
 
 #popup-box {
-    width: 100%;
+    width: 300px;
     margin: auto;
+    border-radius: 2px;
+}
+
+.popup-boxes {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+}
+
+#popup-box {
+    margin-left:85%;
+    margin-top: 15%;
     border-radius: 2px;
 }
 
@@ -98,6 +115,10 @@
 }
 
 .studentDeleteMessage {
+    visibility: hidden;
+}
+
+.deleteLesson {
     visibility: hidden;
 }
 

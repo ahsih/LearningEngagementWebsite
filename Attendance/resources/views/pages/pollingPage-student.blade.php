@@ -8,7 +8,8 @@
                         <p class="responseQuestion noMarginBottom "><b>{{ $response->question->question }}</b>
                             Module:{{ $response->question->lesson->modules->module_name }} Lesson: {{ $response->question->lesson->lesson_name }}</p>
                         <p class="textNormal noMarginBottom">
-                            <b>{{ $response->optionalAnswers->optional_answer }}</b> @if($response->question->correct_id == 0)
+                            <b>{{ $response->optionalAnswers->optional_answer }}</b>
+                            @if($response->question->correct_id == 0)
                                 <b class="text-primary glyphicon glyphicon-info-sign"></b>
                             @elseif($response->question->correct_id == $response->optionalAnswers->id)
                                 <b class="glyphicon glyphicon-ok greenIcon"></b>

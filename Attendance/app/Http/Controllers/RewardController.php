@@ -60,6 +60,16 @@ class RewardController extends Controller
 
             return view('pages.rewardPage-tutor')->with($data);
         }else{
+            //Get a list of the module this user has
+            $modules = $user->modules;
+
+            //Get a list of the module
+            $userAwards = Award::where('user_id','=',$user->id)->get();
+
+            //Push to the array
+            $data['userAwards'] = $userAwards;
+            $data['modules'] = $modules;
+
             return view('pages.rewardPage-student')->with($data);
         }
     }
