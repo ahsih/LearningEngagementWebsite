@@ -15,15 +15,34 @@
         </div>
     </div>
 </div>
-<!-- hidden div, which display any notification -->
-<div class="popup-boxes">
-    <div id="popup-box">
-        <div>
-            <p> BITCONNECT</p>
-            <p>sadasd</p>
+<!-- liveUser right box -->
+@if($role == 'tutor')
+    <div class="liveUser-box">
+        <div id="liveUser-innerBox">
+            <div id="liveUser">
+                <h2 class="font-navy">Live Users</h2>
+                <?php $userOnline = false;  $amountOfUsers = 0?>
+                @if($listUsersInThisModule != null)
+                    <ul id="listOfOnlineUsers">
+                        @foreach($listUsersInThisModule as $user)
+                            @if($user->loginTime != null)
+                                @if(!$user->loginTime->logout)
+                                    <li class="noMarginBottom text-primary">{{ $user->name }}</li>
+                                    <?php $userOnline = true; $amountOfUsers++; ?>
+                                @endif
+                            @endif
+                        @endforeach
+                    </ul>
+                @endif
+                @if(!$userOnline)
+                    <h4 class="font-navy">None of the users is online at the moment</h4>
+                @else
+                    <h5 class="text-success">Total Online: {{ $amountOfUsers }} users</h5>
+                @endif
+            </div>
         </div>
     </div>
-</div>
+@endif
 <!-- Hidden module selection -->
 <div id="moduleList" class="moduleList-popup">
     <div id="popup-wrapper">
@@ -48,6 +67,19 @@
                 @foreach($listDeclineModules as $module)
                     <h4>Your Request Module <b>{{$module->module_name}}</b> has been declined</h4>
                 @endforeach
+            </div>
+        </div>
+    </div>
+@endif
+<!-- Attendance notification -->
+@if($role == 'tutor' && $firstChoiceModule != null)
+    <div id="attendanceNotification">
+        <div id="popup-wrapper">
+            <div class="alert alert-info">
+                <a class="pull-right glyphicon glyphicon-remove" id="deleteAttendanceNotification"></a>
+                <div id="attendanceNotificationContent">
+
+                </div>
             </div>
         </div>
     </div>

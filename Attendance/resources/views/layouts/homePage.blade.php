@@ -26,6 +26,9 @@
 <div class="container lightBlue">
     <button class="center-block btn btn-primary" id="changeLiveChat">Change Main Module <span
                 class="glyphicon glyphicon-transfer"></span></button>
+    @if($role == 'tutor')
+        <button class="center-block btn btn-primary" id="recordAttendance">Record Attendance</button>
+    @endif
     <div class="row">
         <div class="col-sm-10 col-md-6 col-lg-6">
             <!-- live chat -->

@@ -48,25 +48,35 @@
     border-radius: 2px;
 }
 
+#popup-attendance{
+    width: 250px;
+    margin: 300px auto;
+    border-radius: 2px;
+}
+
 #popup-box {
-    width: 300px;
     margin: auto;
     border-radius: 2px;
 }
 
-.popup-boxes {
+.liveUser-box {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    z-index: 1;
+    z-index: -1;
 }
 
-#popup-box {
+#liveUser-innerBox {
     margin-left:85%;
     margin-top: 15%;
-    border-radius: 2px;
+    margin-right: 5%;
+}
+
+#liveUser{
+    border-style: solid;
+    border-radius: 5px;
 }
 
 .setToZero {
@@ -108,6 +118,15 @@
     left: 0;
     width: 100%;
     height: 100%;
+}
+
+#attendanceNotification {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    visibility: hidden;
 }
 
 .invisibleDeleteMessage {
@@ -226,4 +245,8 @@
 
 .noPadding {
     padding: 0px;
+}
+
+#liveUser {
+    background-color: #e3f2fd;
 }

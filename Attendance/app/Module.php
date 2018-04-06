@@ -66,4 +66,12 @@ class Module extends Model
     public function rewards(){
         return $this->hasMany(Reward::class);
     }
+
+    /**
+     * This has many lesson start
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function lessonStart(){
+        return $this->hasMany(LessonStart::class);
+    }
 }

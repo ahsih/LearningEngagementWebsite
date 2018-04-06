@@ -42,6 +42,14 @@ class User extends Authenticatable
     }
 
     /**
+     * This has many login time model
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function loginTime(){
+        return $this->hasOne(LoginTime::class);
+    }
+
+    /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      * Has many questions
      */

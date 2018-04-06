@@ -8,12 +8,14 @@ use attendance\declineModules;
 use attendance\FirstChoiceUserModule;
 use attendance\Lesson;
 use attendance\ActiveLesson;
+use attendance\LoginTime;
 use attendance\Module;
 use attendance\question;
 use attendance\requestModule;
 use attendance\Response;
 use attendance\Reward;
 use attendance\RewardAchieve;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Auth;
 use attendance\User;
@@ -31,6 +33,43 @@ class HomeController extends Controller
     }
 
     /**
+     * Set the user to the login if it's necessary
+     */
+    private function setUserToLogin($userID)
+    {
+
+        //Get the user detail
+        $user = User::find($userID);
+
+        if ($user->hasRole('student')) {
+            if (!session()->has('loginTime')) {
+
+                $loginTime = LoginTime::where('user_id', '=', $user->id)->first();
+
+                if ($loginTime == null) {
+                    //Add the user to the login time
+                    $loginTime = new LoginTime();
+                    $loginTime->user_id = $userID;
+                    $loginTime->login_time = Carbon::now();
+                    $loginTime->logout = false;
+                    $loginTime->timestamps = false;
+                    $loginTime->save();
+                } else {
+                    $loginTime->login_time = Carbon::now();
+                    $loginTime->logout = false;
+                    $loginTime->timestamps = false;
+                    $loginTime->save();
+                }
+
+                //Create a session that user has log into the application
+                session(['loginTime' => 'logged']);
+            }
+        }
+
+
+    }
+
+    /**
      * Show the application homepage
      * @param $request - the request from user
      * @return \Illuminate\Http\Response
@@ -39,6 +78,9 @@ class HomeController extends Controller
     {
         //get the user ID
         $user_id = $request->user()->id;
+
+        $this->setUserToLogin($user_id);
+
         //Get the module this user teaches/studies
         $modules = User::find($user_id)->modules;
 
@@ -65,8 +107,10 @@ class HomeController extends Controller
             $rewardList = null;
             $rewardPoint = null;
             $award = null;
+            $listUsersInThisModule = null;
 
         } else {
+            //Get a list of message from this module
             $conversations = Conversation::orderBy('created_at')
                 ->where('module_id', '=', $firstChoiceModule->module_id)->get();
 
@@ -86,20 +130,23 @@ class HomeController extends Controller
             $managementController = new ManagementController();
 
             //Get list of reward
-            $rewardList = Reward::where('module_id','=',$firstChoiceModule->module_id)->get();
+            $rewardList = Reward::where('module_id', '=', $firstChoiceModule->module_id)->get();
 
             //Get this user reward achieve
-           $rewardAchieve = RewardAchieve::where('user_id','=',$user_id)->where('module_id','=',$firstChoiceModule->module_id)->first();
+            $rewardAchieve = RewardAchieve::where('user_id', '=', $user_id)->where('module_id', '=', $firstChoiceModule->module_id)->first();
 
-           //Get the amount of reward achieve for this user.
-           if($rewardAchieve != null){
+            //Get the amount of reward achieve for this user.
+            if ($rewardAchieve != null) {
                 $rewardPoint = $rewardAchieve->amount;
-            }else{
-               $rewardPoint = 0;
-           }
+            } else {
+                $rewardPoint = 0;
+            }
 
-           //Get list of rewards from this user
-           $award = Award::where('user_id','=',$user_id)->where('module_id','=',$firstChoiceModule->module_id)->get();
+            //Get list of users in this module
+            $listUsersInThisModule = Module::find($firstChoiceModule->module_id)->users;
+
+            //Get list of rewards from this user
+            $award = Award::where('user_id', '=', $user_id)->where('module_id', '=', $firstChoiceModule->module_id)->get();
 
         }
 
@@ -131,6 +178,8 @@ class HomeController extends Controller
 
             //Pass to the view
             $data = array(
+                'firstChoiceModule' => $firstChoiceModule,
+                'listUsersInThisModule' => $listUsersInThisModule,
                 'activeLesson' => $activeLesson,
                 'lessons' => $lessons,
                 'path' => $path,
@@ -185,7 +234,8 @@ class HomeController extends Controller
      * Return all users which are tutor
      * @return array
      */
-    private function getAllTutorUser(){
+    private function getAllTutorUser()
+    {
         //Get all the users in the database
         $users = User::all();
         $tutorUsers = array();

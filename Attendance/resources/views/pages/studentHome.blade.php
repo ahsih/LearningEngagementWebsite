@@ -79,13 +79,13 @@
                         </tr>
                         @if($rewardList != null && sizeof($rewardList) > 0)
                             @foreach($rewardList as $reward)
+                                <?php
+                                $foundAward = false;
+                                ?>
                                 <tr>
                                     <td>Prize: {{ $reward->reward_name }}</td>
                                     <td>{{ $reward->amount_to_achieve }}</td>
                                     @if(sizeof($award) > 0)
-                                        <?php
-                                        $foundAward = false;
-                                        ?>
                                         @foreach($award as $index)
                                             @if($index->reward_id == $reward->id && $index->prize_taken == false)
                                                 <td class="text-success">Please notify your module tutor</td>

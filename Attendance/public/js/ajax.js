@@ -247,7 +247,6 @@ $(document).ready(function () {
     });
 
 
-
     //--------------------------------------------------------------
     //--------------------------------------------------------------
 
@@ -319,15 +318,15 @@ $(document).ready(function () {
             type: 'POST',
             url: '/claimReward',
             data: {
-                'rewardID' : rewardID,
+                'rewardID': rewardID,
             }
         });
 
         //If the ajax request is completed.
         request.done(function (data) {
             // If the result did not fail, then we should change the claim now to already claim
-            if(data != 'fail'){
-               location.reload();
+            if (data != 'fail') {
+                location.reload();
             }
         });
 
@@ -477,7 +476,7 @@ $(document).ready(function () {
             type: 'GET',
             url: '/nextLessonQuestion',
             data: null,
-            success:function(){
+            success: function () {
                 location.reload();
             }
         });
@@ -491,7 +490,7 @@ $(document).ready(function () {
             type: 'GET',
             url: '/stopLesson',
             data: null,
-            success:function(){
+            success: function () {
                 location.reload();
             }
         });
@@ -509,9 +508,9 @@ $(document).ready(function () {
             data: {
                 'questionID': questionID
             },
-            success: function(data){
+            success: function (data) {
                 //Create the chart
-                createChart(questionID,data.questionName,data.answersArray,data.amountsArray);
+                createChart(questionID, data.questionName, data.answersArray, data.amountsArray);
             }
         });
     });
@@ -524,10 +523,43 @@ $(document).ready(function () {
             type: 'GET',
             url: '/nextLessonQuestion',
             data: null,
-            success:function(){
+            success: function () {
                 location.reload();
             }
         });
+    });
+
+    //Record attendance
+    $('#recordAttendance').click(function () {
+        //Get the total amount of the lesson
+        //call ajax
+        $.ajax({
+            type: 'GET',
+            url: '/recordAttendance',
+            data: null,
+            success: function (data) {
+                //make the attendance notification visible
+                $('#attendanceNotification').css("visibility","visible");
+                if(data == 'true'){
+                    //Remove any content
+                    $('#attendanceNotificationContent').find('p').remove();
+                    //Append new content
+                    var paragraph = "<p class='text-success'>Start recording user attendance in this module</p>"
+                    $('#attendanceNotificationContent').append(paragraph);
+                }else{
+                    //Remove any content
+                    $('#attendanceNotificationContent').find('p').remove();
+                    //Append new content
+                    var paragraph = "<p class='text-danger'>Lesson has already started within 1 hour period of time</p>"
+                    $('#attendanceNotificationContent').append(paragraph);
+                }
+            }
+        });
+    });
+
+    //Make the attendance notification hidden
+    $('#deleteAttendanceNotification').click(function () {
+       $('#attendanceNotification').css("visibility","hidden");
     });
 
 });
