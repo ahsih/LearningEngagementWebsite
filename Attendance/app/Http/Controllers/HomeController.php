@@ -33,43 +33,6 @@ class HomeController extends Controller
     }
 
     /**
-     * Set the user to the login if it's necessary
-     */
-    private function setUserToLogin($userID)
-    {
-
-        //Get the user detail
-        $user = User::find($userID);
-
-        if ($user->hasRole('student')) {
-            if (!session()->has('loginTime')) {
-
-                $loginTime = LoginTime::where('user_id', '=', $user->id)->first();
-
-                if ($loginTime == null) {
-                    //Add the user to the login time
-                    $loginTime = new LoginTime();
-                    $loginTime->user_id = $userID;
-                    $loginTime->login_time = Carbon::now();
-                    $loginTime->logout = false;
-                    $loginTime->timestamps = false;
-                    $loginTime->save();
-                } else {
-                    $loginTime->login_time = Carbon::now();
-                    $loginTime->logout = false;
-                    $loginTime->timestamps = false;
-                    $loginTime->save();
-                }
-
-                //Create a session that user has log into the application
-                session(['loginTime' => 'logged']);
-            }
-        }
-
-
-    }
-
-    /**
      * Show the application homepage
      * @param $request - the request from user
      * @return \Illuminate\Http\Response
@@ -78,8 +41,6 @@ class HomeController extends Controller
     {
         //get the user ID
         $user_id = $request->user()->id;
-
-        $this->setUserToLogin($user_id);
 
         //Get the module this user teaches/studies
         $modules = User::find($user_id)->modules;
@@ -132,15 +93,8 @@ class HomeController extends Controller
             //Get list of reward
             $rewardList = Reward::where('module_id', '=', $firstChoiceModule->module_id)->get();
 
-            //Get this user reward achieve
-            $rewardAchieve = RewardAchieve::where('user_id', '=', $user_id)->where('module_id', '=', $firstChoiceModule->module_id)->first();
-
-            //Get the amount of reward achieve for this user.
-            if ($rewardAchieve != null) {
-                $rewardPoint = $rewardAchieve->amount;
-            } else {
-                $rewardPoint = 0;
-            }
+            //Get reward point
+            $rewardPoint = $this->getRewardPoint($user_id,$firstChoiceModule);
 
             //Get list of users in this module
             $listUsersInThisModule = Module::find($firstChoiceModule->module_id)->users;
@@ -152,6 +106,13 @@ class HomeController extends Controller
 
         //Return two different views for students and tutors
         if ($request->user()->hasRole('student')) {
+
+            //Set The Attendance for this student if's necessary.
+            $atttendanceController = new AttendanceController();
+            //Record this student is now online
+            $atttendanceController->setUserToLogin($user_id);
+            //Set this user attendance if the module has started a lesson
+            $atttendanceController->setAttendance($user_id);
 
             //Pass to the view
             $data = array(
@@ -169,7 +130,10 @@ class HomeController extends Controller
                 'award' => $award,
             );
 
+            //Return student page
             return view('pages.studentHome')->with($data);
+
+
         } else if ($request->user()->hasRole('tutor')) {
 
             //List of the approve modules by tutor
@@ -210,6 +174,26 @@ class HomeController extends Controller
 
             return view('pages.adminPage')->with($data);
         }
+    }
+
+    /**
+     * Get user reward point -> only for student
+     * @param $user_id
+     * @param $firstChoiceModule
+     * @return int - reward point
+     */
+    private function getRewardPoint($user_id,$firstChoiceModule){
+        //Get this user reward achieve
+        $rewardAchieve = RewardAchieve::where('user_id', '=', $user_id)->where('module_id', '=', $firstChoiceModule->module_id)->first();
+
+        //Get the amount of reward achieve for this user.
+        if ($rewardAchieve != null) {
+            $rewardPoint = $rewardAchieve->amount;
+        } else {
+            $rewardPoint = 0;
+        }
+
+        return $rewardPoint;
     }
 
     /**

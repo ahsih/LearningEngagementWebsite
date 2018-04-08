@@ -33,6 +33,9 @@
                         @endif
                     @endif
                 </a></li>
+            <li class="{{ $path == 'attendance' ? 'active' : '' }}"><a class="navbar-brand"
+                                                                       href="{{ url('/attendance') }}">Attendance</a>
+            </li>
         </ul>
 
         <!-- Right Side Of Navbar -->
