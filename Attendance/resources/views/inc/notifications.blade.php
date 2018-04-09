@@ -35,9 +35,9 @@
                     </ul>
                 @endif
                 @if(!$userOnline)
-                    <h4 class="font-navy">None of the users is online at the moment</h4>
+                    <h4 class="font-navy" id="NoUsersOnline">None of the users is online at the moment</h4>
                 @else
-                    <h5 class="text-success">Total Online: {{ $amountOfUsers }} users</h5>
+                    <h5 class="text-success" id="totalOnlineUsers">Total Online: {{ $amountOfUsers }} users</h5>
                 @endif
             </div>
         </div>

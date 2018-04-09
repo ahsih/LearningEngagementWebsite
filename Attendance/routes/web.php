@@ -11,6 +11,7 @@
 |
 */
 
+// Navigation bar
 Route::get('/', 'HomeController@index');
 Route::get('/home','HomeController@index');
 Route::get('/live-chat','LiveChatController@index');
@@ -18,6 +19,7 @@ Route::get('/management','ManagementController@index');
 Route::get('/deleteDeclineRequest','ModuleController@deleteDeclineRequest');
 Route::get('/polling','PollingController@index');
 Route::get('/reward','RewardController@index');
+Route::get('/attendance','AttendanceController@index');
 Auth::routes();
 
 //Add the module
@@ -60,3 +62,4 @@ Route::post('/removeAward','RewardController@removeAward');
 
 //Attendance controller
 Route::get('/recordAttendance','AttendanceController@recordAttendance');
+Route::get('/getLiveUsers','AttendanceController@getLiveUsers');

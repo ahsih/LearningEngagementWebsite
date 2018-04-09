@@ -5,6 +5,7 @@ namespace attendance\Http\Controllers;
 use attendance\FirstChoiceUserModule;
 use attendance\LessonStart;
 use attendance\LoginTime;
+use attendance\Module;
 use attendance\StudentAttendance;
 use attendance\User;
 use Auth;
@@ -20,6 +21,25 @@ class AttendanceController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
+    }
+
+    /**
+     * This method call when user direct to the attendance page
+     * @return $this return the student attendance page
+     */
+    public function index()
+    {
+        //Get user
+        $user = User::find(Auth::user()->id);
+
+
+
+        $data = array(
+            'title' => 'Attendance',
+            'path' => request()->path(),
+        );
+
+        return view('pages.attendance-student')->with($data);
     }
 
     /**
@@ -41,9 +61,9 @@ class AttendanceController extends Controller
                 //Check if this student has already register in this lesson
                 $studentAttendance = StudentAttendance::latest('lessonStart_id')->where('user_id', '=', $userID)->first();
                 if ($studentAttendance == null) {
-                    $withinTime = $this->checkUserWithinValidTime($userID,$lessonStart->start_time);
-                    if($withinTime){
-                        $this->recordUserIntoAttendance($userID,$firstChoice->module_id,$lessonStart->id);
+                    $withinTime = $this->checkUserWithinValidTime($userID, $lessonStart->start_time);
+                    if ($withinTime) {
+                        $this->recordUserIntoAttendance($userID, $firstChoice->module_id, $lessonStart->id);
                     }
                 }
             }
@@ -56,7 +76,8 @@ class AttendanceController extends Controller
      * @param $moduleID
      * @param $lessonStartID
      */
-    private function recordUserIntoAttendance($userID,$moduleID,$lessonStartID){
+    private function recordUserIntoAttendance($userID, $moduleID, $lessonStartID)
+    {
         //Save student attendance
         $studentAttendance = new StudentAttendance();
         $studentAttendance->user_id = $userID;
@@ -68,6 +89,7 @@ class AttendanceController extends Controller
     /**
      * Check if the user is within the valid time
      * @param $userID
+     * @param start time of the module
      * @return bool
      */
     private function checkUserWithinValidTime($userID, $startTime)
@@ -172,4 +194,31 @@ class AttendanceController extends Controller
         $lessonStart->save();
     }
 
+    /**
+     * Get amount of live user that are currently online
+     */
+    public function getLiveUsers()
+    {
+        //Get the user details
+        $user = User::find(Auth::user()->id);
+        //Get his first choice modules
+        $firstChoice = FirstChoiceUserModule::where('user_id', '=', $user->id)->first();
+        if ($firstChoice != null) {
+            $listOnlineUsers = array();
+            //get list of users in this module
+            $listOfUsersInThisModule = Module::find($firstChoice->module_id)->users;
+            //Check if each user are online, if it's then we can add them into the array
+            foreach ($listOfUsersInThisModule as $individually) {
+                $loginTime = LoginTime::where('user_id', '=', $individually->id)->first();
+                //If login time is not null and the logout is false
+                if ($loginTime != null && !$loginTime->logout) {
+                    //Push this user to the array
+                    array_push($listOnlineUsers, $individually);
+                }
+            }
+        }
+
+        //Return list of online user array
+        return $listOnlineUsers;
+    }
 }

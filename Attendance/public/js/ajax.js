@@ -539,14 +539,14 @@ $(document).ready(function () {
             data: null,
             success: function (data) {
                 //make the attendance notification visible
-                $('#attendanceNotification').css("visibility","visible");
-                if(data == 'true'){
+                $('#attendanceNotification').css("visibility", "visible");
+                if (data == 'true') {
                     //Remove any content
                     $('#attendanceNotificationContent').find('p').remove();
                     //Append new content
                     var paragraph = "<p class='text-success'>Start recording user attendance in this module</p>"
                     $('#attendanceNotificationContent').append(paragraph);
-                }else{
+                } else {
                     //Remove any content
                     $('#attendanceNotificationContent').find('p').remove();
                     //Append new content
@@ -559,7 +559,39 @@ $(document).ready(function () {
 
     //Make the attendance notification hidden
     $('#deleteAttendanceNotification').click(function () {
-       $('#attendanceNotification').css("visibility","hidden");
+        $('#attendanceNotification').css("visibility", "hidden");
     });
+
+    //Every 1 minute update the live user
+    window.setInterval(function () {
+        //Get the classroom polling data
+        $.ajax({
+            type: 'GET',
+            url: '/getLiveUsers',
+            data: null,
+            //If it success
+            success: function (data) {
+                if (data != null && data.length > 0) {
+                    $('#listOfOnlineUsers').find('li').remove();
+                    $('#liveUser').find('#NoUsersOnline').remove();
+                    for (var i = 0; i < data.length; i++) {
+                        var li = "<li class='noMarginBottom text-primary'>" + data[i].name + "</li>"
+                        $('#listOfOnlineUsers').append(li);
+                    }
+
+                    $('#liveUser').find('#totalOnlineUsers').remove();
+                    var totalUsersH3 = "<h5 class='text-success' id='totalOnlineUsers'>Total Online:" + data.length + " users</h5>"
+                    $('#liveUser').append(totalUsersH3)
+                } else {
+                    //remove all the information inside the live chat users
+                    $('#listOfOnlineUsers').find('li').remove();
+                    $('#liveUser').find('#totalOnlineUsers').remove();
+                    $('#liveUser').find('#NoUsersOnline').remove();
+                    var noUsersOnline = "<h4 class='font-navy' id='NoUsersOnline'>None of the users is online at the moment</h4>"
+                    $('#liveUser').append(noUsersOnline);
+                }
+            }
+        });
+    }, 60000);
 
 });
