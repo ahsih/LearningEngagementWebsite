@@ -10,6 +10,7 @@ use attendance\StudentAttendance;
 use attendance\User;
 use Auth;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class AttendanceController extends Controller
 {
@@ -29,17 +30,23 @@ class AttendanceController extends Controller
      */
     public function index()
     {
+
         //Get user
         $user = User::find(Auth::user()->id);
-
-
+        $modules = $user->modules()->get();
 
         $data = array(
             'title' => 'Attendance',
             'path' => request()->path(),
+            'user' => $user,
+            'modules' => $modules,
         );
 
-        return view('pages.attendance-student')->with($data);
+        if ($user->hasRole('student')) {
+            return view('pages.attendance-student')->with($data);
+        } else {
+            return view('pages.attendance-tutor')->with($data);
+        }
     }
 
     /**
@@ -58,15 +65,28 @@ class AttendanceController extends Controller
             $lessonStart = LessonStart::latest('start_time')
                 ->where('module_id', '=', $firstChoice->module_id)->first();
             if ($lessonStart != null) {
-                //Check if this student has already register in this lesson
-                $studentAttendance = StudentAttendance::latest('lessonStart_id')->where('user_id', '=', $userID)->first();
-                if ($studentAttendance == null) {
-                    $withinTime = $this->checkUserWithinValidTime($userID, $lessonStart->start_time);
-                    if ($withinTime) {
-                        $this->recordUserIntoAttendance($userID, $firstChoice->module_id, $lessonStart->id);
-                    }
-                }
+                $this->checkStudentAttendance($lessonStart, $firstChoice, $userID);
             }
+        }
+    }
+
+    /**
+     * Check if the current student has already register in the system
+     * @param $lessonStart
+     * @param $firstChoice
+     * @param $userID
+     */
+    private function checkStudentAttendance($lessonStart, $firstChoice, $userID)
+    {
+        //Check if this student has already register in this lesson
+        $studentAttendance = StudentAttendance::latest('lessonStart_id')->where('user_id', '=', $userID)->where('module_id',$firstChoice->module_id)->first();
+        if ($studentAttendance == null) {
+            $withinTime = $this->checkUserWithinValidTime($userID, $lessonStart->start_time);
+            if ($withinTime) {
+                $this->recordUserIntoAttendance($userID, $firstChoice->module_id, $lessonStart->id);
+            }
+        } else if ($studentAttendance->lessonStart_id != $lessonStart->id) {
+            $this->recordUserIntoAttendance($userID, $firstChoice->module_id, $lessonStart->id);
         }
     }
 

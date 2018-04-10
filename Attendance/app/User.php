@@ -42,6 +42,14 @@ class User extends Authenticatable
     }
 
     /**
+     * This user has many student attendance model
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function studentAttendance(){
+        return $this->hasMany(StudentAttendance::class);
+    }
+
+    /**
      * This has many login time model
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */

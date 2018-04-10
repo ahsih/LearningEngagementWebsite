@@ -15,6 +15,14 @@ class Module extends Model
     }
 
     /**
+     * This has many student attendance model
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function studentAttendance(){
+        return $this->hasMany(StudentAttendance::class);
+    }
+
+    /**
      * This module has many reward achieved
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */

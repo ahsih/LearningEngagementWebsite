@@ -27,7 +27,7 @@ class StudentAttendance extends Model
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function lessonStart(){
-        return $this->belongsTo(LessonStart::class);
+        return $this->belongsTo(LessonStart::class,'lessonStart_id');
     }
 
 }

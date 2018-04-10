@@ -21,6 +21,16 @@
     height: 100px;
 }
 
+.scrollable-attendance{
+    overflow:auto;
+    height:150px;
+}
+
+.scrollable-studentAttendance{
+    overflow:auto;
+    height:270px;
+}
+
 .scrollable-tutor {
     overflow-y: auto;
     height: 1000px;
