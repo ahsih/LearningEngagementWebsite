@@ -19,7 +19,7 @@
                             @endif
                             {{ Session::forget('rewardSuccess') }}
                         </div>
-                        <h4 class="titleText">Add new reward</h4>
+                        <h4 class="titleText">Add a new reward</h4>
                         {!! Form::open(['action' => 'RewardController@createReward']) !!}
                         {!! Form::token() !!}
                         <div class="form-group">
@@ -108,9 +108,30 @@
                     @endif
                 </table>
                 <button type="submit" class="pull-right btn btn-success">Submit</button>
+                <br>
                 {!! Form::close() !!}
+                <h4 class="titleText">Prize that has been taken by the student</h4>
+                <div class="reward-scrollable">
+                    <table class="table table-striped">
+                        <tr>
+                            <th>Student Name</th>
+                            <th>Module Name</th>
+                            <th>Reward Name</th>
+                        </tr>
+                        @if(sizeof($tutorAwards) > 0)
+                            @foreach($tutorAwards as $award)
+                                @if($award->prize_taken)
+                                    <tr>
+                                        <td>{{ $award->user->name }}</td>
+                                        <td>{{ $award->module->module_name }}</td>
+                                        <td>{{ $award->reward->reward_name }}</td>
+                                    </tr>
+                                @endif
+                            @endforeach
+                        @endif
+                    </table>
+                </div>
             </div>
         </div>
-    </div>
     </div>
 @stop

@@ -125,7 +125,7 @@
                                 <br>
                                 <h4 id="listOfLessonTitle"
                                     class="module-bottom-zero margin-zero-top font-navy text-center">@if(sizeof($modules) > 0)
-                                        List of lesson in
+                                        List of the lessons in
                                         this
                                         module: {{ $modules[0]->module_name }}
                                     @else You do not have modules!
@@ -143,7 +143,7 @@
                             <div id="Questions in this Lesson">
                                 <h4 id="questionTitle" class="module-bottom-zero margin-zero-top font-navy text-center">
                                     @if($lessons != null && sizeof($lessons) > 0)
-                                        List of questions in
+                                        List of the questions in
                                         this
                                         lesson: {{ $lessons[0]->lesson_name }}
                                     @else
