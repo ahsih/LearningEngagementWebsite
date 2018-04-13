@@ -129,6 +129,7 @@ class AttendanceController extends Controller
 
     /**
      * Record the attendance for this module - by tutor
+     * @return string
      */
     public function recordAttendance()
     {
@@ -158,6 +159,8 @@ class AttendanceController extends Controller
                     $result = 'false';
                 }
             }
+        }else{
+            $result = 'No Module';
         }
 
         return $result;

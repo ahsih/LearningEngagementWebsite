@@ -42,7 +42,7 @@
                                 <div class="scrollable-attendance">
                                     <table class="table table-striped">
                                         <tr>
-                                            <th class="text-center">Register On</th>
+                                            <th class="text-center">Registered On</th>
                                         </tr>
                                         @foreach($user->studentAttendance->where('module_id',$module->id) as $studentAttendance)
                                             <tr>

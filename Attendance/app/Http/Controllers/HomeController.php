@@ -39,6 +39,9 @@ class HomeController extends Controller
      */
     public function index(Request $request)
     {
+        //Get a list of the request module
+        $managementController = new ManagementController();
+
         //get the user ID
         $user_id = $request->user()->id;
 
@@ -86,9 +89,6 @@ class HomeController extends Controller
             $activeLesson = ActiveLesson::where('module_id', '=', $firstChoiceModule->module_id)->first();
             //Get all the questions from this active lesson
             $questions = $this->getQuestions($activeLesson);
-
-            //Get a list of the request module
-            $managementController = new ManagementController();
 
             //Get list of reward
             $rewardList = Reward::where('module_id', '=', $firstChoiceModule->module_id)->get();

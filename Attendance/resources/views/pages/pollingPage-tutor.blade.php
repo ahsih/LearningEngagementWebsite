@@ -51,6 +51,7 @@
                                 {!! Form::open(['action' => 'PollingController@createPoll']) !!}
                                 {!! Form::token() !!}
                                 <h4 class="module-bottom-zero margin-zero-top font-navy">Create new question </h4>
+                                <small>Student will receive one reward point in this module every time they answer the correct answer in the question</small>
                                 <div class="form-group">
                                     <label>Module:</label>
                                     <select class="form-control" name="moduleList" id="moduleListPolling">

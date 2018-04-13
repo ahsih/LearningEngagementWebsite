@@ -546,11 +546,17 @@ $(document).ready(function () {
                     //Append new content
                     var paragraph = "<p class='text-success'>Start recording user attendance in this module</p>"
                     $('#attendanceNotificationContent').append(paragraph);
-                } else {
+                } else if(data == 'false'){
                     //Remove any content
                     $('#attendanceNotificationContent').find('p').remove();
                     //Append new content
                     var paragraph = "<p class='text-danger'>Lesson has already started within 1 hour period of time</p>"
+                    $('#attendanceNotificationContent').append(paragraph);
+                }else{
+                    //Remove any content
+                    $('#attendanceNotificationContent').find('p').remove();
+                    //Append new content
+                    var paragraph = "<p class='text-danger'>No Module has been chosen to record the attendance</p>"
                     $('#attendanceNotificationContent').append(paragraph);
                 }
             }
