@@ -24,10 +24,18 @@
                                         $result = $user->studentAttendance->where('module_id', $module->id)->count() / $module->lessonStart->count() * 100;
                                         $result = number_format($result, 2, '.', "");
                                         ?>
-                                        @if($result > 70)
-                                            <td class="text-success">{{ $result }}</td>
+                                        @if($module->attendanceSetting != null)
+                                            @if($result < $module->attendanceSetting->percentRate)
+                                                <td class="text-danger">{{ $result }}</td>
+                                            @else
+                                                <td class="text-success">{{ $result }}</td>
+                                            @endif
                                         @else
-                                            <td class="text-danger">{{ $result }}</td>
+                                            @if($result < 80)
+                                                <td class="text-danger">{{ $result }}</td>
+                                            @else
+                                                <td class="text-success">{{ $result }}</td>
+                                            @endif
                                         @endif
                                     </tr>
                                 @endforeach

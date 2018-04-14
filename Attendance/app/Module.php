@@ -39,6 +39,14 @@ class Module extends Model
     }
 
     /**
+     * this has one attendance setting model
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function attendanceSetting(){
+        return $this->hasOne(AttendanceSetting::class);
+    }
+
+    /**
      * Has one first choice
      */
     public function firstChoice(){

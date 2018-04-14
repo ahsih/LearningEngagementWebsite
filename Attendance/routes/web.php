@@ -63,3 +63,4 @@ Route::post('/removeAward','RewardController@removeAward');
 //Attendance controller
 Route::get('/recordAttendance','AttendanceController@recordAttendance');
 Route::get('/getLiveUsers','AttendanceController@getLiveUsers');
+Route::post('/setAttendanceSetting','AttendanceController@setAttendanceSetting');

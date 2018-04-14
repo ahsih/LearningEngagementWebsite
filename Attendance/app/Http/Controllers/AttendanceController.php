@@ -2,6 +2,7 @@
 
 namespace attendance\Http\Controllers;
 
+use attendance\AttendanceSetting;
 use attendance\FirstChoiceUserModule;
 use attendance\LessonStart;
 use attendance\LoginTime;
@@ -11,6 +12,8 @@ use attendance\User;
 use Auth;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Input;
+use Illuminate\Support\Facades\Session;
 
 class AttendanceController extends Controller
 {
@@ -50,6 +53,74 @@ class AttendanceController extends Controller
     }
 
     /**
+     * Set the attendance setting for the module
+     */
+    public function setAttendanceSetting()
+    {
+        //If it has modules list and a attendance rate
+        if (Input::has('modulesList') && Input::has('percentRate')) {
+            $moduleID = Input::get('modulesList');
+            $percentRate = Input::get('percentRate');
+            //Find the module and  set their attendance rate
+            $module = Module::find($moduleID);
+            if ($module != null) {
+                $attendanceSetting = AttendanceSetting::where('module_id', '=', $module->id)->first();
+                $this->createAttendanceSetting($attendanceSetting, $percentRate, $moduleID);
+            }else{
+                session(['attendanceError' => 'No Module has found.']);
+            }
+        }else{
+            session(['attendanceError' => 'One of the field is missing data']);
+        }
+
+        //redirect the page
+        return redirect('/attendance');
+    }
+
+    /**
+     * Create attendance setting
+     * @param $attendanceSetting
+     * @param $percentRate
+     * @param $moduleID
+     */
+    private function createAttendanceSetting($attendanceSetting, $percentRate, $moduleID)
+    {
+        $correctPercent = $this->checkPercentRate($percentRate);
+        if ($correctPercent) {
+            if ($attendanceSetting != null) {
+                $attendanceSetting->timestamps = false;
+                $attendanceSetting->percentRate = $percentRate;
+                $attendanceSetting->save();
+                session(['attendanceSuccess' => 'Attendance percent updated successfully']);
+            } else {
+                $attendanceSetting = new AttendanceSetting();
+                $attendanceSetting->timestamps = false;
+                $attendanceSetting->percentRate = $percentRate;
+                $attendanceSetting->module_id = $moduleID;
+                $attendanceSetting->save();
+                session(['attendanceSuccess' => 'Attendance percent created successfully']);
+            }
+        }
+    }
+
+    /**
+     * Return true if the percent rate is within 100 and 1, false otherwise.
+     * @param $percentRate
+     * @return bool
+     */
+    private function checkPercentRate($percentRate)
+    {
+        //Check if the percent rate is a decimal and within the range
+        if ((is_double($percentRate) || is_numeric($percentRate)) && $percentRate <= 100 && $percentRate > 0) {
+            return true;
+        } else {
+            session(['attendanceError' => 'Percent is not in the range of 1 to 100']);
+            return false;
+        }
+    }
+
+
+    /**
      * Set the attendance of the student
      * @param $userID
      */
@@ -79,7 +150,7 @@ class AttendanceController extends Controller
     private function checkStudentAttendance($lessonStart, $firstChoice, $userID)
     {
         //Check if this student has already register in this lesson
-        $studentAttendance = StudentAttendance::latest('lessonStart_id')->where('user_id', '=', $userID)->where('module_id',$firstChoice->module_id)->first();
+        $studentAttendance = StudentAttendance::latest('lessonStart_id')->where('user_id', '=', $userID)->where('module_id', $firstChoice->module_id)->first();
         if ($studentAttendance == null) {
             $withinTime = $this->checkUserWithinValidTime($userID, $lessonStart->start_time);
             if ($withinTime) {
@@ -159,7 +230,7 @@ class AttendanceController extends Controller
                     $result = 'false';
                 }
             }
-        }else{
+        } else {
             $result = 'No Module';
         }
 
