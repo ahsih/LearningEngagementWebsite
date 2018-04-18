@@ -4,20 +4,20 @@
             <div class="panel-body">
                 <!-- Get all the modules the tutor teaches -->
                 <Label id="modules">Your Modules:
+                    <span class="text-danger">
                     @foreach ($modules as $module)
-                        '{{ $module->module_name }}'
-                    @endforeach
+                            '{{ $module->module_name }}'
+                        @endforeach
+                    </span>
                 </label>
                 </br>
-                <h4>Add New Module:</h4>
+                <h4>Add A New Module:</h4>
                 <label> Module Name:</label>
                 <input type="text" name="module_name" id="moduleName" placeHolder="put your module name here"
                        class="moduleBoxLarge"/>
                 <input type="button" class="btn btn-success" id="addModule" value="Add Module"></br>
-                <h4>OR: Select the current module to your list</h4>
+                <h4>Select One Of The Existing Modules</h4>
                 <input type="button" class="btn btn-success" id="expandModules" value="Module List"></br>
-                <hint>If you do wish to remove the module from your list, please contact administrator.
-                </hint>
             </div>
         </div>
     </div>
@@ -33,7 +33,7 @@
         <div id="popup-wrapper">
             <div class="alert alert-warning">
                 <a class="pull-right glyphicon glyphicon-remove" id="closeModuleAlert"></a>
-                <p class="text-center"> Module already existed or is empty!</p>
+                <p class="text-center"> Module is already existed or is empty!</p>
             </div>
         </div>
     </div>
@@ -43,10 +43,10 @@
     <div class="panel panel-heading">
         <h2 class="module-bottom-zero font-navy">@if ($moduleName != null)Polling Result For Module:
             {{ $moduleName }}
-            @else You have No Classroom Polling Module
+            @else You Do Not Have Classroom Polling Module
             @endif
         </h2>
-        <button class="btn btn-primary center-block" id="directToPolling">Create classroom polling</button>
+        <button class="btn btn-primary center-block" id="directToPolling">Create Classroom Polling</button>
         <div id="selectLessonList">
             @if($activeLesson != null || $activeLesson != 0)
                 @if(!$activeLesson->end_point)
@@ -68,7 +68,7 @@
                     <button type="submit" class="btn btn-primary">Start the lesson</button>
                     {!! Form::close() !!}
                 @else
-                    <h5> No lessons in this module at the moment!</h5>
+                    <h5> No lessons Has Been Created In This Module At The Moment!</h5>
                 @endif
             @endif
         </div>
@@ -77,12 +77,12 @@
                 @if($activeLesson->lesson->questions != null && sizeof($activeLesson->lesson->questions) > 0)
                     @for($i = $activeLesson->question_count;$i > -1; $i--)
                         <div class="tutorQuestionPolling">
-                            <input type="hidden" value="{{ $activeLesson->lesson->questions[$i]->id }}" />
+                            <input type="hidden" value="{{ $activeLesson->lesson->questions[$i]->id }}"/>
                             <canvas id="pollingChart{{$activeLesson->lesson->questions[$i]->id}}"></canvas>
                         </div>
                     @endfor
                 @else
-                    <p> You don't have any questions in this module at the moment!</p>
+                    <p> You Do Not Have Any Questions In This Module At The Moment!</p>
                 @endif
             @endif
         </div>

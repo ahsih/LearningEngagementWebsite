@@ -2,7 +2,7 @@
     @if($role == 'tutor')
         <div class="container lightBlue">
             <div class="panel panel-heading">
-                <h2 class="module-bottom-zero margin-zero-top font-navy text-center"><b> Create Classroom polling</b>
+                <h2 class="module-bottom-zero margin-zero-top font-navy text-center"><b> Create Classroom Polling</b>
                 </h2>
                 <div class="panel-body">
                     <div class="row">
@@ -22,7 +22,7 @@
                                 {{ Session::forget('pollingSuccess') }}
                             </div>
                             <div id="createLesson">
-                                <h4 class="module-bottom-zero margin-zero-top font-navy">Create new lesson</h4>
+                                <h4 class="module-bottom-zero margin-zero-top font-navy">Create A New Lesson</h4>
                                 <small class="text-info">Insert your lesson name below here</small>
                                 {!! Form::open(['action' => 'PollingController@createLesson']) !!}
                                 {!! Form::token() !!}
@@ -43,14 +43,14 @@
                                        value="{{ $totalAmountLesson }}"/>
                                 <p class="noMarginBottom text-success pull-left">Total Lesson:</p>
                                 <p class="text-primary"><b id="amountOfLesson">{{ $totalAmountLesson }}</b></p>
-                                <button type="submit" class="btn btn-success">Create new Lesson</button>
+                                <button type="submit" class="btn btn-success">Create New Lesson</button>
                                 <hr>
                                 {!! Form::close() !!}
                             </div>
                             <div id="createQuestionnaire">
                                 {!! Form::open(['action' => 'PollingController@createPoll']) !!}
                                 {!! Form::token() !!}
-                                <h4 class="module-bottom-zero margin-zero-top font-navy">Create new question </h4>
+                                <h4 class="module-bottom-zero margin-zero-top font-navy">Create New Question </h4>
                                 <small>Student will receive one reward point in this module every time they answer the correct answer in the question</small>
                                 <div class="form-group">
                                     <label>Module:</label>
@@ -115,7 +115,7 @@
                                         <option value="2">Optional Answer 2</option>
                                     </select>
                                 </div>
-                                <button type="submit" class="pull-right btn btn-success">Create new classroom polling
+                                <button type="submit" class="pull-right btn btn-success">Create New Classroom Polling
                                 </button>
                                 <br>
                                 {!! Form::close() !!}
@@ -150,7 +150,7 @@
                                     @else
                                         You do not have a lesson yet!
                                     @endif</h4>
-                                <small>This will change as you change the 'lesson' drop down in 'create new question'
+                                <small>This change once you changes the 'Lesson' drop-down box in 'Create New Question'
                                 </small>
                                 <hr>
                                 <div id="listOfQuestions">

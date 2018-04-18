@@ -34,7 +34,7 @@
             <!-- live chat -->
             <div class="panel panel-heading">
                 <h2 class="module-bottom-zero font-navy">@if ($moduleName != null)
-                        Group Chat Module: {{ $moduleName }}
+                        Group Chat For Module {{ $moduleName }}
                     @else You Do Not Have A Group Chat Module
                     @endif
                 </h2>

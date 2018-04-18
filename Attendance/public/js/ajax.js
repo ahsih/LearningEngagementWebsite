@@ -67,6 +67,9 @@ $(document).ready(function () {
                 } else if (data.result == 'requestAlreadyMade') {
                     $('#popUpModuleErrorMessage').empty();
                     $('#popUpModuleErrorMessage').append('<p>You have already made the request to join this module</p><b>' + data.moduleName + '</b>');
+                } else if(data.result == 'NoModuleID'){
+                    $('#popUpModuleErrorMessage').empty();
+                    $('#popUpModuleErrorMessage').append('<p>No module has been chosen.</p>');
                 } else {
                     $('#popUpModuleErrorMessage').empty();
                     $('#popUpModuleErrorMessage').append('<p>Module <b>' + data.moduleName + '</b> already exist in your library!</p>');

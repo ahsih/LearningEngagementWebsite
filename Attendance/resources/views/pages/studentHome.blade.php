@@ -4,12 +4,14 @@
             <div class="panel-body">
                 <!-- Get all the modules the tutor teaches -->
                 <Label id="modules">Your Study Modules:
+                    <span class="text-danger">
                     @foreach ($modules as $module)
                         {{ $module->module_name }}
                     @endforeach
+                    </span>
                 </label>
                 </br>
-                <h4>Request to join the module</h4>
+                <h4>Request To Join The Module:</h4>
                 <input type="button" class="btn btn-success" id="expandModules" value="Module List"></br>
                 <hint>You can ask your module tutor to remove you from the module</hint>
             </div>
@@ -49,7 +51,7 @@
                     @endif
                 @endfor
             @else
-                <p> No lesson polling has been started yet</p>
+                <p> None of the Lesson Polling Has Been Started yet</p>
             @endif
         </div>
     </div>
@@ -57,7 +59,7 @@
 @section('reward')
     <div class="container lightBlue">
         <div class="panel panel-heading">
-            <h2 class="noMarginBottom margin-zero-top font-navy text-center">Reward</h2>
+            <h2 class="noMarginBottom margin-zero-top font-navy text-center">Rewards</h2>
             <div class="panel-body noPadding">
                 <div id="rewardAmountTitle">
                     @if($rewardPoint > 0)
@@ -67,7 +69,8 @@
                         <p class="margin-zero-top noMarginBottom"> You have no reward point on this
                             module: {{ $moduleName }}</p>
                     @endif
-                    <small class="margin-zero-top">You lose your reward point once you claim!</small>
+                    <small>Each Polling Respond Give You One Point</small><br>
+                    <small class="margin-zero-top">You lose your reward point once you claim the reward!</small>
                 </div>
                 <div class="scrollable-rewardList">
                     <table class="table table-condensed fixLayout">

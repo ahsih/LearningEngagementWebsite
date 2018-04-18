@@ -1,13 +1,13 @@
 @extends('layouts.otherPage') @section('pageContent')
     <div class="container lightBlue">
         <div class="panel panel-heading">
-            <h3 class="titleText text-center margin-zero-top noMarginBottom">Your Reward</h3>
+            <h3 class="titleText text-center margin-zero-top noMarginBottom">Your Rewards</h3>
             <div class="panel-body">
                 <h4 class="font-navy">Your Reward Points</h4>
                 <table class="table table-striped">
                     <tr>
                         <th>Module Name</th>
-                        <th>Reward Point</th>
+                        <th>Reward Points</th>
                     </tr>
                     @if(sizeof($modules) > 0)
                         @foreach($modules as $module)

@@ -1,7 +1,7 @@
 @extends('layouts.otherPage') @section('pageContent')
     <div class="container lightBlue">
         <div class="panel panel-heading">
-            <h3 class="margin-zero-top noMarginBottom font-navy text-center">Attendance for your module</h3>
+            <h3 class="margin-zero-top noMarginBottom font-navy text-center">Attendance For Your Module</h3>
             <div class="panel-body">
                 <div class="row">
                     <div class="col-lg-8 col-sm-8 col-md-8">
@@ -32,7 +32,7 @@
                                 </select>
                             </div>
                             <div class="form-group">
-                                <label>Attendance Rate</label>
+                                <label>Set Your Module Attendance Level</label>
                                 <input type="number" step=".01" class="form-control" name="percentRate"
                                        placeholder="Set your acceptable attendance rate for this module"/>
                             </div>
@@ -42,13 +42,13 @@
                     </div>
                     <div class="col-lg-4 col-sm-4 col-md-4">
                         <div id="moduleAttendanceRate">
-                            <h4 class="font-navy margin-zero-top noMarginBottom">Module Acceptable Attendance Rate</h4>
+                            <h4 class="font-navy margin-zero-top noMarginBottom">Module Acceptable Attendance Level</h4>
                             <small class="text-primary margin-zero-top">By default, an acceptable attendance is 80%
                             </small>
                             <table class="table table-striped">
                                 <tr>
                                     <th>Module Name</th>
-                                    <th>Acceptable Attendance Rate</th>
+                                    <th>Acceptable Attendance Level</th>
                                 </tr>
                                 @if($modules != null && sizeof($modules) > 0)
                                     @foreach($modules as $module)
@@ -69,7 +69,7 @@
                 <br>
                 <!-- Create a line -->
                 <hr>
-                <h4 class="font-navy margin-zero-top">Student Attendance in your module</h4>
+                <h4 class="font-navy margin-zero-top">Student Attendance In Your Module</h4>
                 @if($modules != null && sizeof($modules) > 0)
                     @foreach($modules as $module)
                         <h5 class="font-navy">Module {{ $module->module_name }}-> There are a total of <span
@@ -79,11 +79,12 @@
                                 <tr>
                                     <th>UserName</th>
                                     <th>Email</th>
-                                    <th>Attendance rate</th>
+                                    <th>Attendance Level</th>
                                 </tr>
                                 <?php
                                 $listOfUsers = DB::table('module_user')
                                     ->join('users', 'module_user.user_id', '=', 'users.id')
+                                    ->join('role_user', 'users.id', '=', 'role_user.user_id')
                                     ->leftJoin('student_attendances', 'users.id', '=', 'student_attendances.user_id')
                                     ->select(DB::raw("count('users.id') as attendanceCount, users.*"))
                                     ->where('module_user.module_id', '=', $module->id)
@@ -119,7 +120,16 @@
                                     @endif
                                 @endforeach
                             </table>
-                            <h5>There are a total of <span class="text-success">{{$module->users->count() }}</span>
+                            <?php
+                                $amountTutor = 0;
+                                //Get a total number of the tutor
+                                foreach($module->users as $user){
+                                    if($user->hasRole('tutor')){
+                                            $amountTutor++;
+                                    }
+                                }
+                            ?>
+                            <h5>There are a total of <span class="text-success">{{$module->users->count() - $amountTutor }}</span>
                                 students recorded in this module</h5>
                         </div>
                     @endforeach

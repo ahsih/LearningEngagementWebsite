@@ -1,7 +1,7 @@
 @extends('layouts.otherPage') @section('pageContent')
     <div class="container lightBlue">
         <div class="panel panel-heading">
-            <h4><strong>Your Response:</strong></h4>
+            <h4><strong>Your Responses:</strong></h4>
             <div class="panel-body">
                 @if($responses != null && sizeof($responses) > 0)
                     @foreach($responses as $response)

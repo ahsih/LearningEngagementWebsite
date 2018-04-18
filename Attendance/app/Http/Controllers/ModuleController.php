@@ -29,59 +29,68 @@ class ModuleController extends Controller
     {
         //Get the request ID
         $moduleID = request()->moduleID;
-        $moduleName = Module::find($moduleID)->module_name;
 
-        //Get the user details
-        //Attach the module ID to the user
-        $user = User::find(Auth::user()->id);
-        $module = Module::find($moduleID);
-        //if user do not contains this module
-        if (!$user->hasModule($moduleID)) {
+        //If module is not empty
+        if ($moduleID != null) {
 
-            //If it a student, then he has to request to join the module
-            if ($user->hasRole('student')) {
-                //Check if it already exist in the table
-                $requestAlreadyExist = requestModule::where('user_id', '=', $user->id)
-                    ->where('module_id', '=', $moduleID)->exists();
+            $moduleName = Module::find($moduleID)->module_name;
 
-                if ($requestAlreadyExist) {
-                    $result = "requestAlreadyMade";
+            //Get the user details
+            //Attach the module ID to the user
+            $user = User::find(Auth::user()->id);
+            $module = Module::find($moduleID);
+
+            //if user do not contains this module
+            if (!$user->hasModule($moduleID)) {
+
+                //If it a student, then he has to request to join the module
+                if ($user->hasRole('student')) {
+                    //Check if it already exist in the table
+                    $requestAlreadyExist = requestModule::where('user_id', '=', $user->id)
+                        ->where('module_id', '=', $moduleID)->exists();
+
+                    if ($requestAlreadyExist) {
+                        $result = "requestAlreadyMade";
+                    } else {
+                        //Add new request
+                        $newRequest = new requestModule();
+                        $newRequest->user_id = $user->id;
+                        $newRequest->module_id = $moduleID;
+                        $newRequest->full_name = $user->name;
+                        $newRequest->email = $user->email;
+                        $newRequest->module_name = $module->module_name;
+                        $newRequest->timestamps = false;
+                        $newRequest->save();
+
+                        $result = "requestAdded";
+                    }
+
+                    //If it a tutor
                 } else {
-                    //Add new request
-                    $newRequest = new requestModule();
-                    $newRequest->user_id = $user->id;
-                    $newRequest->module_id = $moduleID;
-                    $newRequest->full_name = $user->name;
-                    $newRequest->email = $user->email;
-                    $newRequest->module_name = $module->module_name;
-                    $newRequest->timestamps = false;
-                    $newRequest->save();
+                    $user->modules()->attach($moduleID);
 
-                    $result = "requestAdded";
+                    //Get first choice of the user, if user doesn't have a first choice of the module,
+                    //Then he will set this module as first choice
+                    $firstChoiceModule = FirstChoiceUserModule::where('user_id', '=', $user->id)->exists();
+                    //If it null
+                    if (!$firstChoiceModule) {
+                        $firstChoiceModule = new FirstChoiceUserModule();
+                        $firstChoiceModule->user_id = $user->id;
+                        $firstChoiceModule->module_id = $moduleID;
+                        $firstChoiceModule->timestamps = false;
+                        //Save first choice
+                        $firstChoiceModule->save();
+                    }
+                    $result = "moduleAdded";
                 }
 
-                //If it a tutor
             } else {
-                $user->modules()->attach($moduleID);
 
-                //Get first choice of the user, if user doesn't have a first choice of the module,
-                //Then he will set this module as first choice
-                $firstChoiceModule = FirstChoiceUserModule::where('user_id', '=', $user->id)->exists();
-                //If it null
-                if (!$firstChoiceModule) {
-                    $firstChoiceModule = new FirstChoiceUserModule();
-                    $firstChoiceModule->user_id = $user->id;
-                    $firstChoiceModule->module_id = $moduleID;
-                    $firstChoiceModule->timestamps = false;
-                    //Save first choice
-                    $firstChoiceModule->save();
-                }
-                $result = "moduleAdded";
+                $result = "false";
             }
-
         } else {
-
-            $result = "false";
+            $moduleName = "N/A";
+            $result = "NoModuleID";
         }
 
         $data = array(
@@ -95,7 +104,8 @@ class ModuleController extends Controller
      * Add the module to the database
      * Getting the module name from the form
      */
-    public function addModule()
+    public
+    function addModule()
     {
         //Get the request module
         $moduleName = request()->moduleName;
@@ -148,7 +158,8 @@ class ModuleController extends Controller
     /**
      * Delete all the declined message from the user
      */
-    public function deleteDeclineRequest()
+    public
+    function deleteDeclineRequest()
     {
         //Delete all the declined request from the user.
         declineModules::where('user_id', '=', Auth::user()->id)->delete();
@@ -157,7 +168,8 @@ class ModuleController extends Controller
     /**
      * Change the default live chat module
      */
-    public function changeLiveChatModule()
+    public
+    function changeLiveChatModule()
     {
         //Get the ID the user wish to change
         $moduleID = request()->moduleID;

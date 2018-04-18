@@ -4,7 +4,7 @@
     @else
         <div class="container lightBlue">
             <div class="panel panel-default">
-                <div class="panel-heading"><h3 class="text-center titleText">Approve student request</h3>
+                <div class="panel-heading"><h3 class="text-center titleText">Approve Student Request</h3>
                 </div>
                 <div class="panel-body">
                     {!! Form::open(['action' => 'ManagementController@acceptRequest']) !!}
@@ -38,7 +38,7 @@
         </div>
         <div class="container lightBlue">
             <div class="panel panel-default">
-                <h3 class="titleText text-center">Change your module for modification</h3>
+                <h3 class="titleText text-center">Change Your Module For Modification</h3>
                 <select class="form-control" id="liveChatModuleID">
                     <optgroup label="Modules">
                         @foreach ($modules as $module)
@@ -50,8 +50,8 @@
             </div>
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <h3 class="text-center titleText">Modify students in your
-                        module: <b class="text-danger">{{ $moduleName }}</b></h3>
+                    <h3 class="text-center titleText">Add/Delete Students In Your
+                        Module: <b class="text-danger">{{ $moduleName }}</b></h3>
                 </div>
                 @if(Session::has('managementError'))
                     <p class="noMarginBottom text-danger"><b>{{ Session::get('managementError') }}</b></p>
@@ -63,7 +63,7 @@
                 {{ Session::forget('managementSuccess') }}
                 <div class="row">
                     <div class="col-lg-6 col-md-6 col-sm-6">
-                        <h4 class="text-danger text-center">Add new students to the module</h4>
+                        <h4 class="text-danger text-center">Add A New Students To The Module</h4>
                         <div class="scrollable-module">
                             {!! Form::open(['action' => 'ManagementController@addStudentToModule']) !!}
                             {!! Form::token() !!}
@@ -93,12 +93,12 @@
                         {{ csrf_field() }}
                         <input type="file" name="file"/>
                         <input type="hidden" value="" name="moduleID"/>
-                        <button class="btn btn-success" id='uploadFile'>Upload list of student emails to be added
+                        <button class="btn btn-success" id='uploadFile'>Upload A List Of Student Emails To Be Added
                         </button>
                         {!! Form::close() !!}
                     </div>
                     <div class="col-lg-6 col-md-6 col-sm-6">
-                        <h4 class="text-danger text-center">Delete existing students from the current module</h4>
+                        <h4 class="text-danger text-center">Delete Existing Students From The Current Module</h4>
                         <div class="scrollable-module">
                             {!! Form::open(['action' => 'ManagementController@deleteStudentInModule']) !!}
                             {!! Form::token() !!}

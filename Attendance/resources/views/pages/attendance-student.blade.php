@@ -5,13 +5,13 @@
             <div class="panel-body">
                 <div class="row">
                     <div class="col-lg-7 col-md-7 col-sm-7">
-                        <h4 class="font-navy">Your Attendance Rate</h4>
+                        <h4 class="font-navy">Your Attendance Level</h4>
                         <table class="table table-striped">
                             <tr>
                                 <th>Module Name</th>
                                 <th>You have attend</th>
                                 <th>Total Lessons</th>
-                                <th>Attendance Rate</th>
+                                <th>Attendance Level</th>
                             </tr>
                             @if($modules != null && sizeof($modules) > 0)
                                 @foreach($modules as $module)
