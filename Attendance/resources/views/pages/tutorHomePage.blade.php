@@ -57,7 +57,7 @@
                 <button type="submit" class="btn btn-danger btn-lg" id="stopLesson">Stop</button>
             @else
                 @if(sizeof($lessons) > 0)
-                    <h4 class="noMarginBottom margin-zero-top font-navy">Pick A Lesson</h4>
+                    <h4 class="noMarginBottom margin-zero-top font-navy">Pick A Polling</h4>
                     {!! Form::open(['action' => 'PollingController@createActiveLesson']) !!}
                     {!! Form::token() !!}
                     <select id="firstModuleLessonList" name="firstModuleLessList">
@@ -65,7 +65,7 @@
                             <option value="{{ $lesson->id }}">{{ $lesson->lesson_name }}</option>
                         @endforeach
                     </select>
-                    <button type="submit" class="btn btn-primary">Start the lesson</button>
+                    <button type="submit" class="btn btn-primary">Start the polling</button>
                     {!! Form::close() !!}
                 @else
                     <h5> No lessons Has Been Created In This Module At The Moment!</h5>

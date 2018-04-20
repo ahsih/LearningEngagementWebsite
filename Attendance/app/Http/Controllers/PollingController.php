@@ -182,7 +182,11 @@ class PollingController extends Controller
                 $activeLesson->lesson_id = $lessonID;
                 $activeLesson->question_count = 0;
                 //Set the end point
-                $activeLesson->end_point = false;
+                if (Lesson::find($lessonID)->questions->count() <= 1) {
+                    $activeLesson->end_point = true;
+                } else {
+                    $activeLesson->end_point = false;
+                }
                 //No timestamps
                 $activeLesson->timestamps = false;
                 $activeLesson->save();
@@ -202,7 +206,8 @@ class PollingController extends Controller
     /**
      * When tutor press 'Next' on his classroom polling, it should display next question to the student.
      */
-    public function nextLessonQuestion()
+    public
+    function nextLessonQuestion()
     {
         //Get the first choice of the module the student/tutor pick
         $firstChoiceModule = FirstChoiceUserModule::where('user_id', '=', Auth::user()->id)->first();
@@ -224,7 +229,8 @@ class PollingController extends Controller
     /**
      * Stop the lesson, so that tutor can start another lesson
      */
-    public function stopLesson()
+    public
+    function stopLesson()
     {
         //Get the first choice of the module the student/tutor pick
         $firstChoiceModule = FirstChoiceUserModule::where('user_id', '=', Auth::user()->id)->first();
@@ -240,7 +246,8 @@ class PollingController extends Controller
      * Set true on the end point of the lesson pointer
      * @param $activeLesson
      */
-    private function setEndPoint($activeLesson)
+    private
+    function setEndPoint($activeLesson)
     {
         //Set the end point to be true.
         $activeLesson->timestamps = false;
@@ -252,7 +259,8 @@ class PollingController extends Controller
      * Adding question count by 1 in the lesson pointer
      * @param $activeLesson
      */
-    private function addingQuestionCount($activeLesson)
+    private
+    function addingQuestionCount($activeLesson)
     {
         //Check the question count compared to the size of the lesson total questions
         $activeLesson->question_count = $activeLesson->question_count + 1;
@@ -264,7 +272,8 @@ class PollingController extends Controller
      * Create a polling for tutor to create a question
      * @return polling main page
      */
-    public function createPoll()
+    public
+    function createPoll()
     {
         //Get all the input
         $post = Input::all();
@@ -342,7 +351,8 @@ class PollingController extends Controller
      * @param $error
      * @return mixed
      */
-    private function checkError($post, $error)
+    private
+    function checkError($post, $error)
     {
         //Check if the lesson is null
         if (!Input::has('lessonList')) {
@@ -380,7 +390,8 @@ class PollingController extends Controller
     /**
      * Save the student response
      */
-    public function saveResponse()
+    public
+    function saveResponse()
     {
         //Get the value
         $optionalAnswerValue = request()->optionalAnswerValue;
@@ -415,7 +426,8 @@ class PollingController extends Controller
      * @param $questionValue
      * @param $optionalAnswerValue
      */
-    private function addResponse($questionValue, $optionalAnswerValue)
+    private
+    function addResponse($questionValue, $optionalAnswerValue)
     {
         //Create a new response
         //And put all the data inside here
@@ -432,7 +444,8 @@ class PollingController extends Controller
      * @param $questionValue
      * @param $optionalAnswerValue
      */
-    private function saveReward($questionValue, $optionalAnswerValue)
+    private
+    function saveReward($questionValue, $optionalAnswerValue)
     {
         //Get this question that link to the module
         $question = question::find($questionValue);
@@ -469,7 +482,8 @@ class PollingController extends Controller
      * @param $optionalAnswerValue
      * @return bool
      */
-    private function checkCorrectAnswer($question, $optionalAnswerValue)
+    private
+    function checkCorrectAnswer($question, $optionalAnswerValue)
     {
         //Check if the question
         if ($question->correct_id == $optionalAnswerValue || $question->correct_id == 0) {
@@ -482,7 +496,8 @@ class PollingController extends Controller
     /**
      * Get the total amount of the lesson on the module that is being selected.
      */
-    public function getTotalAmountLesson()
+    public
+    function getTotalAmountLesson()
     {
         return Lesson::where('module_id', '=', request()->moduleID)->count();
     }
@@ -491,7 +506,8 @@ class PollingController extends Controller
      * This is used for the one for create new question
      * @return a list of lesson from this module
      */
-    public function getLessonsFromModule()
+    public
+    function getLessonsFromModule()
     {
         $lessons = Lesson::where('module_id', '=', request()->moduleID)->get();
 
@@ -515,7 +531,8 @@ class PollingController extends Controller
      * @return data if new classroom polling exist
      * Use for student to check if there is new polling to fill.
      */
-    public function getUpdatePolling()
+    public
+    function getUpdatePolling()
     {
         //Get the current user
         $user = User::find(Auth::user()->id);
@@ -554,7 +571,8 @@ class PollingController extends Controller
      * For create new lesson
      * @return A list of the lessons
      */
-    public function getAllLessonsFromModule()
+    public
+    function getAllLessonsFromModule()
     {
         $lessons = Lesson::where('module_id', '=', request()->moduleID)->get();
         $moduleName = Module::find(request()->moduleID)->module_name;
@@ -570,7 +588,8 @@ class PollingController extends Controller
      * return a list of questions from this lesson
      * @return A list of questions from this lesson
      */
-    public function getQuestionsFromLesson()
+    public
+    function getQuestionsFromLesson()
     {
         //Get the lesson ID
         $lessonID = request()->lessonID;
@@ -591,7 +610,8 @@ class PollingController extends Controller
      * @param $questionCount
      * @return string
      */
-    private function checkPollingCountSession($questionCount)
+    private
+    function checkPollingCountSession($questionCount)
     {
         //Check if session exist, if not, then create a new one
         //The session used to store amount of classroom polling in
@@ -616,7 +636,8 @@ class PollingController extends Controller
      * @param $questionCount
      * @return string
      */
-    private function checkPollCountAndQuestionCount($questionCount)
+    private
+    function checkPollCountAndQuestionCount($questionCount)
     {
         //Get the polling count total
         $pollingCount = session()->get('pollingCount');
@@ -637,7 +658,8 @@ class PollingController extends Controller
      * @param $questionValue
      * @return bool
      */
-    private function checkQuestionExistInUserResponse($questionValue)
+    private
+    function checkQuestionExistInUserResponse($questionValue)
     {
         //Check if this question already exist in the user response
         $response = Response::where('user_id', '=', Auth::user()->id)
@@ -657,7 +679,8 @@ class PollingController extends Controller
      * Check if the optional answer is inside the question
      * @return boolean whether exist or not, exist = true, not = false
      */
-    private function checkOptionalExistInQuestion($questionValue, $optionalAnswerValue)
+    private
+    function checkOptionalExistInQuestion($questionValue, $optionalAnswerValue)
     {
 
         // use optional answer model to find the question ID
@@ -681,7 +704,8 @@ class PollingController extends Controller
     /**
      * Create the graph to display the result
      */
-    public function createGraph()
+    public
+    function createGraph()
     {
         //Get question ID
         $questionID = request()->questionID;

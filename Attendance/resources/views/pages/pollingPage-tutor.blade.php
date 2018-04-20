@@ -22,8 +22,8 @@
                                 {{ Session::forget('pollingSuccess') }}
                             </div>
                             <div id="createLesson">
-                                <h4 class="module-bottom-zero margin-zero-top font-navy">Create A New Lesson</h4>
-                                <small class="text-info">Insert your lesson name below here</small>
+                                <h4 class="module-bottom-zero margin-zero-top font-navy">Create A New Polling</h4>
+                                <small class="text-info">Insert your polling name below here</small>
                                 {!! Form::open(['action' => 'PollingController@createLesson']) !!}
                                 {!! Form::token() !!}
                                 <hr>
@@ -35,15 +35,15 @@
                                         @endforeach
                                     </select>
                                     <br>
-                                    <label>Lesson Name:</label>
+                                    <label>Polling Name:</label>
                                     <input type="text" name="lessonName" class="form-control"
                                            placeholder="Lesson Name"/>
                                 </div>
                                 <input type="hidden" name="hiddenAmountOfLesson" id="hiddenAmountOfLesson"
                                        value="{{ $totalAmountLesson }}"/>
-                                <p class="noMarginBottom text-success pull-left">Total Lesson:</p>
+                                <p class="noMarginBottom text-success pull-left">Total Polling:</p>
                                 <p class="text-primary"><b id="amountOfLesson">{{ $totalAmountLesson }}</b></p>
-                                <button type="submit" class="btn btn-success">Create New Lesson</button>
+                                <button type="submit" class="btn btn-success">Create New Polling</button>
                                 <hr>
                                 {!! Form::close() !!}
                             </div>
@@ -71,7 +71,7 @@
                                     </select>
                                 </div>
                                 <div class="form-group">
-                                    <label>Lesson:</label>
+                                    <label>Polling:</label>
                                     <select class="form-control" name="lessonList" id="lessonList">
                                         @if($lessons != null)
                                             @foreach($lessons as $lesson)
@@ -126,7 +126,7 @@
                                 <br>
                                 <h4 id="listOfLessonTitle"
                                     class="module-bottom-zero margin-zero-top font-navy text-center">@if(sizeof($modules) > 0)
-                                        List of the lessons in
+                                        List of the pollings in
                                         this
                                         module: {{ $modules[0]->module_name }}
                                     @else You do not have modules!
@@ -146,11 +146,11 @@
                                     @if($lessons != null && sizeof($lessons) > 0)
                                         List of the questions in
                                         this
-                                        lesson: {{ $lessons[0]->lesson_name }}
+                                        polling: {{ $lessons[0]->lesson_name }}
                                     @else
-                                        You do not have a lesson yet!
+                                        You do not have a polling yet!
                                     @endif</h4>
-                                <small>This change once you changes the 'Lesson' drop-down box in 'Create New Question'
+                                <small>This change once you changes the 'Polling' drop-down box in 'Create New Question'
                                 </small>
                                 <hr>
                                 <div id="listOfQuestions">

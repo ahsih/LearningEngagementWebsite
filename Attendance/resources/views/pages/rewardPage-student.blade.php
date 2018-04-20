@@ -37,6 +37,7 @@
                     @endif
                 </table>
                 <h4 class="font-navy">Your award list</h4>
+                <hint>If the prize has been removed, the reward points will be refunded back to your account!</hint>
                 <table class="table table-striped">
                     <tr>
                         <th>Module Name</th>
@@ -47,7 +48,11 @@
                         @foreach($userAwards as $award)
                             <tr>
                                 <td class="text-primary">{{ $award->module->module_name }}</td>
-                                <td class="text-primary">{{ $award->reward->reward_name }}</td>
+                                @if($award->reward != null)
+                                    <td class="text-primary">{{ $award->reward->reward_name }}</td>
+                                    @else
+                                    <td class="text-primary">This prize has been removed by the tutor</td>
+                                @endif
                                 @if($award->prize_taken)
                                     <td class="text-success">Prize has been taken</td>
                                 @else

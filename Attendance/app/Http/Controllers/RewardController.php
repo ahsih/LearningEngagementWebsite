@@ -59,12 +59,12 @@ class RewardController extends Controller
             $data['tutorAwards'] = $tutorAwards;
 
             return view('pages.rewardPage-tutor')->with($data);
-        }else{
+        } else {
             //Get a list of the module this user has
             $modules = $user->modules;
 
             //Get a list of the module
-            $userAwards = Award::where('user_id','=',$user->id)->get();
+            $userAwards = Award::where('user_id', '=', $user->id)->get();
 
             //Push to the array
             $data['userAwards'] = $userAwards;
@@ -78,16 +78,17 @@ class RewardController extends Controller
      * Remove the award from the list
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
-    public function removeAward(){
+    public function removeAward()
+    {
         //List of awards
         $listAwards = Input::all();
         //if the size of array is more than 1, then there is something to be deleted
-        if(sizeof($listAwards) > 1){
-            foreach($listAwards as $key => $value){
+        if (sizeof($listAwards) > 1) {
+            foreach ($listAwards as $key => $value) {
                 //if the value is on ( mean the checkbox is ticked)
                 //Then we need to delete it from the award list
-                if($value == 'on'){
-                    $awardID = str_replace("award","",$key);
+                if ($value == 'on') {
+                    $awardID = str_replace("award", "", $key);
                     $award = Award::find($awardID);
                     //update the award, that the prize has been taken
                     $award->prize_taken = true;
@@ -95,7 +96,7 @@ class RewardController extends Controller
                     session(['awardSuccess' => 'Award updated successfully']);
                 }
             }
-        }else{
+        } else {
             session(['awardError' => 'Award updated failed, maybe nothing to update?']);
         }
 
@@ -198,6 +199,18 @@ class RewardController extends Controller
 
         //Check if the reward is empty or not
         if ($reward != null) {
+            //Before deleting this reward, it should refund any student who has not take the prize yet.
+            if (sizeof($reward->awards) > 0) {
+                //loop each award and refund the point back to the student if they didn't take the prize yet.
+                foreach ($reward->awards as $award) {
+                    if (!$award->prize_taken) {
+                        $rewardAchieved = RewardAchieve::where('user_id', '=', $award->user_id)->first();
+                        $rewardAchieved->amount += $reward->amount_to_achieve;
+                        $rewardAchieved->save();
+                    }
+                }
+            }
+
             //Delete the reward
             $reward->delete();
             session(['rewardSuccess' => 'Delete Successfully']);

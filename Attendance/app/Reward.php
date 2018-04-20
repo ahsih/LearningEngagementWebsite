@@ -21,4 +21,12 @@ class Reward extends Model
     public function users(){
         return $this->belongsTo(User::class);
     }
+
+    /**
+     * This has many award model
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function awards(){
+        return $this->hasMany(Award::class);
+    }
 }
