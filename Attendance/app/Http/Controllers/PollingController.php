@@ -389,6 +389,7 @@ class PollingController extends Controller
 
     /**
      * Save the student response
+     * @return mixed|string
      */
     public
     function saveResponse()
@@ -397,6 +398,9 @@ class PollingController extends Controller
         $optionalAnswerValue = request()->optionalAnswerValue;
         //Get the question value
         $questionValue = request()->questionValue;
+
+        //Set default reward point to zero
+        $rewardPoint = 0;
 
         //Check if this question already exist in user response
         $responseExist = $this->checkQuestionExistInUserResponse($questionValue);
@@ -408,17 +412,25 @@ class PollingController extends Controller
         if ($optionalExist) {
             if (!$responseExist) {
                 //Save to reward achieve, if it's necessary
-                $this->saveReward($questionValue, $optionalAnswerValue);
+                $rewardPoint = $this->saveReward($questionValue, $optionalAnswerValue);
                 //Save the response
                 $this->addResponse($questionValue, $optionalAnswerValue);
 
-                return $questionValue;
+                $result = $questionValue;
             } else {
-                return 'responseExist';
+                $result = 'responseExist';
             }
         } else {
-            return 'optionalNotExist';
+            $result = 'optionalNotExist';
         }
+
+        $data = array(
+            'result' => $result,
+            'rewardPoint' => $rewardPoint,
+        );
+
+        return $data;
+
     }
 
     /**
@@ -443,10 +455,14 @@ class PollingController extends Controller
      * Save reward for this student if it's necessary
      * @param $questionValue
      * @param $optionalAnswerValue
+     * @return integer - the reward point
      */
     private
     function saveReward($questionValue, $optionalAnswerValue)
     {
+
+        //By default the reward point is zero
+        $rewardPoint = 0;
         //Get this question that link to the module
         $question = question::find($questionValue);
         $moduleID = $question->lesson->modules->id;
@@ -463,6 +479,7 @@ class PollingController extends Controller
                 //increment by 1
                 $rewardAchieve->amount = $rewardAchieve->amount + 1;
                 $rewardAchieve->save();
+                $rewardPoint = $rewardAchieve->amount;
             } else {
                 //Create a new reward achieve
                 $rewardAchieve = new RewardAchieve();
@@ -470,9 +487,10 @@ class PollingController extends Controller
                 $rewardAchieve->user_id = Auth::user()->id;
                 $rewardAchieve->amount = 1;
                 $rewardAchieve->save();
+                $rewardPoint = $rewardAchieve->amount;
             }
         }
-
+        return $rewardPoint;
 
     }
 

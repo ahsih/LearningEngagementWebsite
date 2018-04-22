@@ -296,12 +296,18 @@ $(document).ready(function () {
 
         //If the ajax request is completed.
         request.done(function (data) {
-            if (data == 'optionalNotExist') {
+            if (data.result == 'optionalNotExist') {
                 $('#studentPollingNotifications').append("<p class='text-danger'>Oh no, look like somebody change the questionID or optional ID!</p>");
-            } else if (data == 'responseExist') {
+            } else if (data.result == 'responseExist') {
                 $('#studentPollingNotifications').append("<p class='text-danger'>This user has already respond to this poll!</p>")
             } else {
-                $('div#question' + data).remove();
+                $('div#question' + data.result).remove();
+
+                //Update the reward point:
+                var rewardPoint = " <p class='noMarginBottom'>Your current reward point on this module is: <b class='text-danger circleNumber'>"+ data.rewardPoint +"</b></p>";
+                $('#RewardPoint').find('p').remove();
+                $('#RewardPoint').append(rewardPoint);
+
             }
         });
 

@@ -237,6 +237,7 @@ class ManagementController extends Controller
                         $addAmount++;
                         //Add the user to the module
                         User::find($user->id)->modules()->attach($firstChoice->module_id);
+                        $this->setUserFirstChoiceModule($user,$firstChoice->module_id);
                     }
                 }
             }
@@ -250,6 +251,24 @@ class ManagementController extends Controller
 
 
         return redirect('/management');
+    }
+
+    /**
+     * Set the user first choice module
+     * @param user - the current user
+     * @param modueID - the module ID
+     */
+    private function setUserFirstChoiceModule($user,$moduleID){
+        //Check if this user has a first choice module on their list
+        $firstChoiceOfUser = FirstChoiceUserModule::where('user_id','=',$user->id)->first();
+        if($firstChoiceOfUser == null){
+            $firstChoiceModule = new FirstChoiceUserModule();
+            $firstChoiceModule->user_id = $user->id;
+            $firstChoiceModule->module_id = $moduleID;
+            $firstChoiceModule->timestamps = false;
+            //Save first choice
+            $firstChoiceModule->save();
+        }
     }
 
     /**

@@ -62,13 +62,15 @@
             <h2 class="noMarginBottom margin-zero-top font-navy text-center">Rewards</h2>
             <div class="panel-body noPadding">
                 <div id="rewardAmountTitle">
-                    @if($rewardPoint > 0)
-                        <p class="noMarginBottom">Your current reward point on this module: {{ $moduleName }} is: <b
-                                    class="text-danger circleNumber">{{ $rewardPoint }}</b></p>
-                    @else
-                        <p class="margin-zero-top noMarginBottom"> You have no reward point on this
-                            module: {{ $moduleName }}</p>
-                    @endif
+                    <div id="RewardPoint">
+                        @if($rewardPoint > 0)
+                            <p class="noMarginBottom">Your current reward point on this module: {{ $moduleName }} is: <b
+                                        class="text-danger circleNumber">{{ $rewardPoint }}</b></p>
+                        @else
+                            <p class="margin-zero-top noMarginBottom"> You have no reward point on this
+                                module: {{ $moduleName }}</p>
+                        @endif
+                    </div>
                     <small>Each Polling Respond Give You One Point</small><br>
                     <small class="margin-zero-top">You lose your reward point once you claim the reward!</small>
                 </div>
