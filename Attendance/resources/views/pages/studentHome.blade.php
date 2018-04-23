@@ -71,7 +71,7 @@
                                 module: {{ $moduleName }}</p>
                         @endif
                     </div>
-                    <small>Each Polling Respond Give You One Point</small><br>
+                    <small>Answer The Correct Polling Will Give You One Point</small><br>
                     <small class="margin-zero-top">You lose your reward point once you claim the reward!</small>
                 </div>
                 <div class="scrollable-rewardList">

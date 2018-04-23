@@ -151,19 +151,18 @@ class ConversationController extends Controller
         //Get the user first choice live chat module
         $module = FirstChoiceUserModule::where('user_id', '=', $user->id)->first();
 
+        $result = "No Data";
+
         if ($module != null) {
 
             //count list of chats
-            $totalModuleConversations = Conversation::orderBy('created_at')
-                ->where('module_id', '=', $module->module_id)
-                ->count();
+            $totalModuleConversations = Conversation::where('module_id', '=', $module->module_id)->count();
 
             //Store in session
             //If session has the key, if not then create a new one
             if (!session()->has('totalModuleChats')) {
                 session(['totalModuleChats' => $totalModuleConversations]);
 
-                return "No Data";
             } else {
                 //Get the session value
                 $value = session()->get('totalModuleChats');
@@ -171,12 +170,12 @@ class ConversationController extends Controller
                 //If it different, then redirect the page and save a new session value
                 if ($value != $totalModuleConversations) {
                     session(['totalModuleChats' => $totalModuleConversations]);
-                    return "redirect";
+                    $result = "redirect";
                 }
             }
         }
 
-        return "No Data";
+        return $result;
     }
 
 

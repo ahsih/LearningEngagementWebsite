@@ -152,7 +152,7 @@ $(document).ready(function () {
 
         //Then pass to the Ajax request
         var request = $.ajax({
-            method: 'POST',
+            type: 'POST',
             url: '/sendLiveChatText',
             data: {
                 'textMessage': textMessage,
@@ -196,7 +196,7 @@ $(document).ready(function () {
             //If it success
             success: function (data) {
 
-                if (data != "No Data") {
+                if (data == "redirect") {
                     if (window.location.pathname == '/' || window.location.pathname == "/home") {
                         location.reload();
                     }

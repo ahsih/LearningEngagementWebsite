@@ -22,8 +22,8 @@
                                 {{ Session::forget('pollingSuccess') }}
                             </div>
                             <div id="createLesson">
-                                <h4 class="module-bottom-zero margin-zero-top font-navy">Create A New Polling</h4>
-                                <small class="text-info">Insert your polling name below here</small>
+                                <h4 class="module-bottom-zero margin-zero-top font-navy">Create A New Lesson</h4>
+                                <small class="text-info">Insert your lesson name below here</small>
                                 {!! Form::open(['action' => 'PollingController@createLesson']) !!}
                                 {!! Form::token() !!}
                                 <hr>
@@ -31,20 +31,30 @@
                                     <label>Module:</label>
                                     <select class="form-control" name="moduleListLesson" id="moduleListLesson">
                                         @foreach($modules as $module)
-                                            <option value="{{ $module->id }}">{{ $module->module_name }}</option>
+                                            @if(Session::has('lessonCreatedModuleID'))
+                                                @if(Session::get('lessonCreatedModuleID') == $module->id)
+                                                    <option value="{{ $module->id }}"
+                                                            selected>{{ $module->module_name }}</option>
+                                                @else
+                                                    <option value="{{ $module->id }}"
+                                                            selected>{{ $module->module_name }}</option>
+                                                @endif
+                                            @else
+                                                <option value="{{ $module->id }}">{{ $module->module_name }}</option>
+                                            @endif
                                         @endforeach
                                     </select>
                                     <br>
-                                    <label>Polling Name:</label>
+                                    <label>Lesson Name:</label>
                                     <input type="text" name="lessonName" class="form-control"
                                            placeholder="Lesson Name"/>
                                 </div>
                                 <input type="hidden" name="hiddenAmountOfLesson" id="hiddenAmountOfLesson"
                                        value="{{ $totalAmountLesson }}"/>
-                                <p class="noMarginBottom text-success pull-left">Total Polling:</p>
+                                <p class="noMarginBottom text-success pull-left">Total Lesson:</p>
                                 <p class="text-primary"><b id="amountOfLesson">{{ $totalAmountLesson }}</b></p>
                                 <br>
-                                <button type="submit" class="btn btn-success">Create New Polling</button>
+                                <button type="submit" class="btn btn-success">Create New Lesson</button>
                                 <hr>
                                 {!! Form::close() !!}
                             </div>
@@ -52,7 +62,9 @@
                                 {!! Form::open(['action' => 'PollingController@createPoll']) !!}
                                 {!! Form::token() !!}
                                 <h4 class="module-bottom-zero margin-zero-top font-navy">Create New Question </h4>
-                                <small>Student will receive one reward point in this module every time they answer the correct answer in the question</small>
+                                <small>Student will receive one reward point in this module every time they answer the
+                                    correct answer in the question
+                                </small>
                                 <div class="form-group">
                                     <label>Module:</label>
                                     <select class="form-control" name="moduleList" id="moduleListPolling">
@@ -72,7 +84,7 @@
                                     </select>
                                 </div>
                                 <div class="form-group">
-                                    <label>Polling:</label>
+                                    <label>Lesson:</label>
                                     <select class="form-control" name="lessonList" id="lessonList">
                                         @if($lessons != null)
                                             @foreach($lessons as $lesson)
@@ -127,15 +139,27 @@
                                 <br>
                                 <h4 id="listOfLessonTitle"
                                     class="module-bottom-zero margin-zero-top font-navy text-center">@if(sizeof($modules) > 0)
-                                        List of the pollings in
+                                        List of the lesson in
                                         this
-                                        module: {{ $modules[0]->module_name }}
+                                        module:
+                                        @if(Session::has('lessonCreatedModuleID'))
+                                            <?php
+                                            $moduleName = \attendance\Module::find(Session::get('lessonCreatedModuleID'))->module_name;
+                                            ?>
+                                            {{ $moduleName }}
+                                        @else
+                                            {{ $modules[0]->module_name }}
+                                        @endif
                                     @else You do not have modules!
                                     @endif</h4>
                                 <hr>
                                 <div id="listOfLessons">
-                                    @if($lessons != null)
-                                        @foreach($lessons as $lesson)
+                                    @if(Session::has('lessonCreatedModuleID'))
+                                        @foreach(\attendance\Module::find(Session::get('lessonCreatedModuleID'))->lessons as $lesson)
+                                            <h5 class="margin-zero-top noMarginBottom font-navy">{{ $lesson->lesson_name }}</h5>
+                                        @endforeach
+                                    @else
+                                        @foreach($modules[0]->lessons as $lesson)
                                             <h5 class="margin-zero-top noMarginBottom font-navy">{{ $lesson->lesson_name }}</h5>
                                         @endforeach
                                     @endif
@@ -149,9 +173,9 @@
                                         this
                                         polling: {{ $lessons[0]->lesson_name }}
                                     @else
-                                        You do not have a polling yet!
+                                        You do not have a lesson yet!
                                     @endif</h4>
-                                <small>This change once you changes the 'Polling' drop-down box in 'Create New Question'
+                                <small>This change once you changes the 'Lesson' drop-down box in 'Create New Question'
                                 </small>
                                 <hr>
                                 <div id="listOfQuestions">

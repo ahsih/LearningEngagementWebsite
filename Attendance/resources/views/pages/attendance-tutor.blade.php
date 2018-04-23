@@ -100,8 +100,12 @@
                                             <?php
                                             //Get the attendance result
                                             $user = \attendance\User::find($user->id);
-                                            $result = $user->studentAttendance->where('module_id', $module->id)->count() / $module->lessonStart->count() * 100;
-                                            $result = number_format($result, 2, '.', "");
+                                            if ($module->lessonStart->count() != null && $module->lessonStart->count() > 0) {
+                                                $result = $user->studentAttendance->where('module_id', $module->id)->count() / $module->lessonStart->count() * 100;
+                                                $result = number_format($result, 2, '.', "");
+                                            } else {
+                                                $result = number_format(0, 2, '.', "");
+                                            }
                                             ?>
                                             @if($module->attendanceSetting != null)
                                                 @if($result < $module->attendanceSetting->percentRate)
@@ -121,15 +125,16 @@
                                 @endforeach
                             </table>
                             <?php
-                                $amountTutor = 0;
-                                //Get a total number of the tutor
-                                foreach($module->users as $user){
-                                    if($user->hasRole('tutor')){
-                                            $amountTutor++;
-                                    }
+                            $amountTutor = 0;
+                            //Get a total number of the tutor
+                            foreach ($module->users as $user) {
+                                if ($user->hasRole('tutor')) {
+                                    $amountTutor++;
                                 }
+                            }
                             ?>
-                            <h5>There are a total of <span class="text-success">{{$module->users->count() - $amountTutor }}</span>
+                            <h5>There are a total of <span
+                                        class="text-success">{{$module->users->count() - $amountTutor }}</span>
                                 students recorded in this module</h5>
                         </div>
                     @endforeach

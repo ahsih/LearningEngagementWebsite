@@ -122,6 +122,7 @@ class PollingController extends Controller
             $lesson->save();
 
             //Created successfully
+            session(['lessonCreatedModuleID' => $moduleID]);
             session(['pollingSuccess' => 'Lesson has been created successfully on module: ' . Module::find($moduleID)->module_name]);
         } else {
             session(['pollingError' => $error]);
@@ -141,9 +142,13 @@ class PollingController extends Controller
     {
         $error = array();
         //Check if lesson name is not empty or space
+
         if ($lessonName == "" || ctype_space($lessonName)) {
             array_push($error, 'Lesson name is empty');
+        }else if(Lesson::where('module_id','=',$moduleID)->where('lesson_name','=',$lessonName)->exists()){
+            array_push($error, 'Same lesson name existed in the list');
         }
+
         //Check if it a valid module
         $moduleCount = Module::find($moduleID);
         if ($moduleCount == null) {
@@ -556,6 +561,7 @@ class PollingController extends Controller
         $user = User::find(Auth::user()->id);
         //Find their first choice module
         $firstChoiceModule = FirstChoiceUserModule::where('user_id', '=', $user->id)->first();
+
         //Get the lesson pointer
         if ($firstChoiceModule != null) {
             $activeLesson = ActiveLesson::where('module_id', '=', $firstChoiceModule->module_id)->first();
@@ -634,9 +640,11 @@ class PollingController extends Controller
         //Check if session exist, if not, then create a new one
         //The session used to store amount of classroom polling in
         if (session()->has('pollingCount')) {
+            $pollingCountSession = session()->get('pollingCount');
             // If the session was no active lesson, then return the $data as data
-            if (session()->get('pollingCount') == 'No Active Lesson') {
-                $data = 'data';
+            if ($pollingCountSession === "No Active Lesson") {
+                session(['pollingCount' => $questionCount]);
+                $data = 'Data';
             } else {
                 $data = $this->checkPollCountAndQuestionCount($questionCount);
             }
