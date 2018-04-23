@@ -197,7 +197,7 @@ $(document).ready(function () {
             success: function (data) {
 
                 if (data != "No Data") {
-                    if (window.location.pathname == '/' || window.location.pathname == '/home') {
+                    if (window.location.pathname == '/' || window.location.pathname == "/home") {
                         location.reload();
                     }
                 }
@@ -216,7 +216,7 @@ $(document).ready(function () {
             success: function (data) {
 
                 if (data != "No Data") {
-                    if (window.location.pathname == '/' || window.location.pathname == '/home') {
+                    if (window.location.pathname == '/' || window.location.pathname == "home") {
                         location.reload();
                     }
                 }

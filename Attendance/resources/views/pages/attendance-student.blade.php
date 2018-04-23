@@ -21,8 +21,12 @@
                                         <td>{{ $module->lessonStart->count() }}</td>
                                         <?php
                                         //Get the attendance result
-                                        $result = $user->studentAttendance->where('module_id', $module->id)->count() / $module->lessonStart->count() * 100;
-                                        $result = number_format($result, 2, '.', "");
+                                        if ($module->lessonStart->count() != 0) {
+                                            $result = $user->studentAttendance->where('module_id', $module->id)->count() / $module->lessonStart->count() * 100;
+                                            $result = number_format($result, 2, '.', "");
+                                        }else{
+                                            $result = number_format(0, 2, '.', "");;
+                                        }
                                         ?>
                                         @if($module->attendanceSetting != null)
                                             @if($result < $module->attendanceSetting->percentRate)
