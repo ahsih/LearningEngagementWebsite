@@ -152,7 +152,7 @@ $(document).ready(function () {
 
         //Then pass to the Ajax request
         var request = $.ajax({
-            type: 'POST',
+            method: 'POST',
             url: '/sendLiveChatText',
             data: {
                 'textMessage': textMessage,
@@ -185,7 +185,7 @@ $(document).ready(function () {
     //--------------------------------------------------------------
 
     //-------------------------------------------------------------
-    //Every 2 seconds update the chat
+    //Every 4 seconds update the chat
     window.setInterval(function () {
         //Call the ajax
         //Send no data and it GET request as we getting the data from the controller
@@ -203,9 +203,9 @@ $(document).ready(function () {
                 }
             }
         });
-    }, 2000);
+    }, 4000);
 
-    //Every 2 seconds check if there are new classroom polling for student to fill in
+    //Every 5 seconds check if there are new classroom polling for student to fill in
     window.setInterval(function () {
         //Get the classroom polling data
         $.ajax({
@@ -222,7 +222,7 @@ $(document).ready(function () {
                 }
             }
         });
-    }, 2000);
+    }, 5000);
 
     //--------------------------------------------------------------
     //--------------------------------------------------------------

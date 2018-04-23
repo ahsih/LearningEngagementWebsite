@@ -152,6 +152,7 @@ class ConversationController extends Controller
         $module = FirstChoiceUserModule::where('user_id', '=', $user->id)->first();
 
         if ($module != null) {
+
             //count list of chats
             $totalModuleConversations = Conversation::orderBy('created_at')
                 ->where('module_id', '=', $module->module_id)
@@ -165,7 +166,7 @@ class ConversationController extends Controller
                 return "No Data";
             } else {
                 //Get the session value
-                $value = session('totalModuleChats');
+                $value = session()->get('totalModuleChats');
                 //compare
                 //If it different, then redirect the page and save a new session value
                 if ($value != $totalModuleConversations) {
@@ -174,6 +175,7 @@ class ConversationController extends Controller
                 }
             }
         }
+
         return "No Data";
     }
 
