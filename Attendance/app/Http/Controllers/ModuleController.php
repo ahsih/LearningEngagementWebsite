@@ -175,19 +175,21 @@ class ModuleController extends Controller
         $moduleID = request()->moduleID;
 
         //Change in the first choice live chat system
-        $firstChoiceModule = FirstChoiceUserModule::where('user_id', '=', Auth::user()->id)->first();
-        //If first choice module id is not same as the module id that has been given, then change
-        //If it null, then create a new one
-        if ($firstChoiceModule == null) {
-            $firstChoiceModule = new FirstChoiceUserModule();
-            $firstChoiceModule->module_id = $moduleID;
-            $firstChoiceModule->user_id = Auth::User()->id;
-            $firstChoiceModule->timestamps = false;
-            $firstChoiceModule->save();
-        } else if ($firstChoiceModule->module_id != $moduleID) {
-            $firstChoiceModule->module_id = $moduleID;
-            $firstChoiceModule->timestamps = false;
-            $firstChoiceModule->save();
+        if ($moduleID != null) {
+            $firstChoiceModule = FirstChoiceUserModule::where('user_id', '=', Auth::user()->id)->first();
+            //If first choice module id is not same as the module id that has been given, then change
+            //If it null, then create a new one
+            if ($firstChoiceModule == null) {
+                $firstChoiceModule = new FirstChoiceUserModule();
+                $firstChoiceModule->module_id = $moduleID;
+                $firstChoiceModule->user_id = Auth::User()->id;
+                $firstChoiceModule->timestamps = false;
+                $firstChoiceModule->save();
+            } else if ($firstChoiceModule->module_id != $moduleID) {
+                $firstChoiceModule->module_id = $moduleID;
+                $firstChoiceModule->timestamps = false;
+                $firstChoiceModule->save();
+            }
         }
     }
 

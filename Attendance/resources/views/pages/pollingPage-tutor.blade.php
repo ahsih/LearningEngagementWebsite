@@ -43,6 +43,7 @@
                                        value="{{ $totalAmountLesson }}"/>
                                 <p class="noMarginBottom text-success pull-left">Total Polling:</p>
                                 <p class="text-primary"><b id="amountOfLesson">{{ $totalAmountLesson }}</b></p>
+                                <br>
                                 <button type="submit" class="btn btn-success">Create New Polling</button>
                                 <hr>
                                 {!! Form::close() !!}

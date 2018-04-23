@@ -57,7 +57,7 @@ class ManagementController extends Controller
             $firstChoice = FirstChoiceUserModule::where('user_id', '=', $request->user()->id)->first();
 
             //Get the module name
-            $module_name = $this->getModuleName($firstChoice->module_id);
+            $module_name = $this->getModuleName($firstChoice);
 
             $listUsers = User::all();
             //Store all the students who's are not in this module
@@ -105,11 +105,11 @@ class ManagementController extends Controller
      * @param $moduleID
      * @return $module_name
      */
-    private function getModuleName($moduleID)
+    private function getModuleName($firstChoice)
     {
         //Get the module name if it's exist
-        if (Module::find($moduleID)->exists()) {
-            $module_name = Module::find($moduleID)->module_name;
+        if ($firstChoice != null) {
+            $module_name = Module::find($firstChoice->module_id)->module_name;
         } else {
             $module_name = null;
         }
