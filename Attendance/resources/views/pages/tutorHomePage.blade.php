@@ -56,7 +56,7 @@
                 @endif
                 <button type="submit" class="btn btn-danger btn-lg" id="stopLesson">Stop</button>
             @else
-                @if(sizeof($lessons) > 0)
+                @if($lessons != null && sizeof($lessons) > 0)
                     <h4 class="noMarginBottom margin-zero-top font-navy">Pick A Polling</h4>
                     {!! Form::open(['action' => 'PollingController@createActiveLesson']) !!}
                     {!! Form::token() !!}
