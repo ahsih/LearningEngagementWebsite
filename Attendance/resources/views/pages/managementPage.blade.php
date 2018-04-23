@@ -50,8 +50,12 @@
             </div>
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <h3 class="text-center titleText">Add/Delete Students In Your
-                        Module: <b class="text-danger">{{ $moduleName }}</b></h3>
+                    @if($moduleName != null)
+                        <h3 class="text-center titleText">Add/Delete Students In Your
+                            Module: <b class="text-danger">{{ $moduleName }}</b></h3>
+                    @else
+                        <h3 class="text-center titleText">You Do Not Have A Module To Manage</h3>
+                    @endif
                 </div>
                 @if(Session::has('managementError'))
                     <p class="noMarginBottom text-danger"><b>{{ Session::get('managementError') }}</b></p>

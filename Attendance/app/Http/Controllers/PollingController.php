@@ -145,7 +145,7 @@ class PollingController extends Controller
             array_push($error, 'Lesson name is empty');
         }
         //Check if it a valid module
-        $moduleCount = Module::find($moduleID)->count();
+        $moduleCount = Module::find($moduleID);
         if ($moduleCount == null) {
             array_push($error, 'Not a valid module');
         }

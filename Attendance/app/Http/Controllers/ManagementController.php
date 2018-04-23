@@ -33,7 +33,7 @@ class ManagementController extends Controller
     public function index(Request $request)
     {
         //Forget the session of the count if exist.
-        if(session()->has('requestModulesCount')){
+        if (session()->has('requestModulesCount')) {
             session()->forget('requestModulesCount');
         }
 
@@ -55,7 +55,9 @@ class ManagementController extends Controller
             //Get the module this tutor teaches
             $modules = User::find($request->user()->id)->modules;
             $firstChoice = FirstChoiceUserModule::where('user_id', '=', $request->user()->id)->first();
-            $module_name = Module::find($firstChoice->module_id)->module_name;
+
+            //Get the module name
+            $module_name = $this->getModuleName($firstChoice->module_id);
 
             $listUsers = User::all();
             //Store all the students who's are not in this module
@@ -96,6 +98,23 @@ class ManagementController extends Controller
         );
 
         return view('pages.managementPage')->with($data);
+    }
+
+    /**
+     * Get the module name from the module ID provided
+     * @param $moduleID
+     * @return $module_name
+     */
+    private function getModuleName($moduleID)
+    {
+        //Get the module name if it's exist
+        if (Module::find($moduleID)->exists()) {
+            $module_name = Module::find($moduleID)->module_name;
+        } else {
+            $module_name = null;
+        }
+
+        return $module_name;
     }
 
     /**
@@ -206,9 +225,9 @@ class ManagementController extends Controller
             }
         }
 
-        if($deleteAmount == 0) {
+        if ($deleteAmount == 0) {
             session(['managementError' => 'No student has been deleted']);
-        }else{
+        } else {
             session(['managementSuccess' => 'Total ' . $deleteAmount . ' students has been deleted']);
         }
 
@@ -237,15 +256,15 @@ class ManagementController extends Controller
                         $addAmount++;
                         //Add the user to the module
                         User::find($user->id)->modules()->attach($firstChoice->module_id);
-                        $this->setUserFirstChoiceModule($user,$firstChoice->module_id);
+                        $this->setUserFirstChoiceModule($user, $firstChoice->module_id);
                     }
                 }
             }
         }
 
-        if($addAmount == 0) {
+        if ($addAmount == 0) {
             session(['managementError' => 'No student has been added']);
-        }else{
+        } else {
             session(['managementSuccess' => 'Total ' . $addAmount . ' students has been added']);
         }
 
@@ -258,10 +277,11 @@ class ManagementController extends Controller
      * @param user - the current user
      * @param modueID - the module ID
      */
-    private function setUserFirstChoiceModule($user,$moduleID){
+    private function setUserFirstChoiceModule($user, $moduleID)
+    {
         //Check if this user has a first choice module on their list
-        $firstChoiceOfUser = FirstChoiceUserModule::where('user_id','=',$user->id)->first();
-        if($firstChoiceOfUser == null){
+        $firstChoiceOfUser = FirstChoiceUserModule::where('user_id', '=', $user->id)->first();
+        if ($firstChoiceOfUser == null) {
             $firstChoiceModule = new FirstChoiceUserModule();
             $firstChoiceModule->user_id = $user->id;
             $firstChoiceModule->module_id = $moduleID;
@@ -309,7 +329,8 @@ class ManagementController extends Controller
      * Change from tutor profile to student
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
-    public function changeToStudent(){
+    public function changeToStudent()
+    {
 
         //Get all the users
         //change from tutor profile to student profile
