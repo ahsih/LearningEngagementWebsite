@@ -4,7 +4,7 @@
             <h3 class="margin-zero-top noMarginBottom font-navy text-center">Your Recorded Attendance</h3>
             <div class="panel-body">
                 <div class="row">
-                    <div class="col-lg-7 col-md-7 col-sm-7">
+                    <div class="col-lg-7 col-md-6 col-sm-6">
                         <h4 class="font-navy">Your Attendance Level</h4>
                         <table class="table table-striped">
                             <tr>

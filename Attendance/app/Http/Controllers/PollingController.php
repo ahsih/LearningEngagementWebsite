@@ -145,7 +145,7 @@ class PollingController extends Controller
 
         if ($lessonName == "" || ctype_space($lessonName)) {
             array_push($error, 'Lesson name is empty');
-        }else if(Lesson::where('module_id','=',$moduleID)->where('lesson_name','=',$lessonName)->exists()){
+        } else if (Lesson::where('module_id', '=', $moduleID)->where('lesson_name', '=', $lessonName)->exists()) {
             array_push($error, 'Same lesson name existed in the list');
         }
 
@@ -268,8 +268,8 @@ class PollingController extends Controller
     function addingQuestionCount($activeLesson)
     {
         //Check the question count compared to the size of the lesson total questions
-        $newValue = $activeLesson->question_count + 1;
-        $activeLesson->question_count = $newValue;
+        $newValue = $activeLesson->question_count;
+        $activeLesson->question_count = $newValue + 1;
         $activeLesson->timestamps = false;
         $activeLesson->save();
     }

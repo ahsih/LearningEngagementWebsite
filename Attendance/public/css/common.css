@@ -264,3 +264,7 @@
 .borderVerticalLine{
     border-right:1px groove black;
 }
+
+.backZAxis{
+    z-index: 0;
+}
