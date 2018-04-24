@@ -90,7 +90,7 @@ class ConversationController extends Controller
     private function checkInappropriateWord($textMessage)
     {
         //Check if text message contains inappropriate word
-        $fileName = resource_path() . '\InappropriateWord';
+        $fileName = resource_path() . '/InappropriateWord';
         $contents = File::get($fileName);
 
         //line by line stored as array
