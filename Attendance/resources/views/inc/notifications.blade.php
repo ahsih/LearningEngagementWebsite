@@ -2,6 +2,7 @@
 <div id="liveChatSettings" class="hidden-popup">
     <div id="popup-wrapper">
         <div class="alert alert-info">
+            <br>
             <h5 class="pull-left"> Change your live-chat module</h5>
             <a class="pull-right glyphicon glyphicon-remove" id="closeLiveChatSettings"></a>
             <select id="liveChatModuleID" class="form-control">
