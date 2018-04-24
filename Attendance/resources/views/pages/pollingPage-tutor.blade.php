@@ -51,14 +51,49 @@
                                 </div>
                                 <input type="hidden" name="hiddenAmountOfLesson" id="hiddenAmountOfLesson"
                                        value="{{ $totalAmountLesson }}"/>
-                                <p class="noMarginBottom text-success pull-left">Total Lesson:</p>
-                                <p class="text-primary"><b id="amountOfLesson">{{ $totalAmountLesson }}</b></p>
-                                <br>
+                                <p class="noMarginBottom text-success pull-left">Total Lesson</p>
+                                <p class="text-primary">:<b id="amountOfLesson">{{ $totalAmountLesson }}</b></p>
                                 <button type="submit" class="btn btn-success">Create New Lesson</button>
-                                <hr>
                                 {!! Form::close() !!}
                             </div>
-                            <div id="createQuestionnaire">
+                        </div>
+                        <div class="col-sm-4 col-md-4 col-lg-4">
+                            <div id="LessonInThisModule">
+                                <br>
+                                <h4 id="listOfLessonTitle"
+                                    class="module-bottom-zero margin-zero-top font-navy text-center">@if(sizeof($modules) > 0)
+                                        List of the lesson in
+                                        this
+                                        module:
+                                        @if(Session::has('lessonCreatedModuleID'))
+                                            <?php
+                                            $moduleName = \attendance\Module::find(Session::get('lessonCreatedModuleID'))->module_name;
+                                            ?>
+                                            {{ $moduleName }}
+                                        @else
+                                            {{ $modules[0]->module_name }}
+                                        @endif
+                                    @else You do not have modules!
+                                    @endif</h4>
+                                <hr class="noMarginBottom">
+                                <div id="listOfLessons">
+                                    @if(Session::has('lessonCreatedModuleID'))
+                                        @foreach(\attendance\Module::find(Session::get('lessonCreatedModuleID'))->lessons as $lesson)
+                                            <h5 class="margin-zero-top noMarginBottom font-navy">{{ $lesson->lesson_name }}</h5>
+                                        @endforeach
+                                    @else
+                                        @foreach($modules[0]->lessons as $lesson)
+                                            <h5 class="margin-zero-top noMarginBottom font-navy">{{ $lesson->lesson_name }}</h5>
+                                        @endforeach
+                                    @endif
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-sm-8 col-md-8 col-lg-8"><div id="createQuestionnaire">
                                 {!! Form::open(['action' => 'PollingController@createPoll']) !!}
                                 {!! Form::token() !!}
                                 <h4 class="module-bottom-zero margin-zero-top font-navy">Create New Question </h4>
@@ -132,41 +167,8 @@
                                 </button>
                                 <br>
                                 {!! Form::close() !!}
-                            </div>
-                        </div>
-                        <div class="col-sm-4 col-md-4 col-lg-4">
-                            <div id="LessonInThisModule">
-                                <br>
-                                <h4 id="listOfLessonTitle"
-                                    class="module-bottom-zero margin-zero-top font-navy text-center">@if(sizeof($modules) > 0)
-                                        List of the lesson in
-                                        this
-                                        module:
-                                        @if(Session::has('lessonCreatedModuleID'))
-                                            <?php
-                                            $moduleName = \attendance\Module::find(Session::get('lessonCreatedModuleID'))->module_name;
-                                            ?>
-                                            {{ $moduleName }}
-                                        @else
-                                            {{ $modules[0]->module_name }}
-                                        @endif
-                                    @else You do not have modules!
-                                    @endif</h4>
-                                <hr>
-                                <div id="listOfLessons">
-                                    @if(Session::has('lessonCreatedModuleID'))
-                                        @foreach(\attendance\Module::find(Session::get('lessonCreatedModuleID'))->lessons as $lesson)
-                                            <h5 class="margin-zero-top noMarginBottom font-navy">{{ $lesson->lesson_name }}</h5>
-                                        @endforeach
-                                    @else
-                                        @foreach($modules[0]->lessons as $lesson)
-                                            <h5 class="margin-zero-top noMarginBottom font-navy">{{ $lesson->lesson_name }}</h5>
-                                        @endforeach
-                                    @endif
-                                </div>
-                                <hr>
-                            </div>
-                            <div id="Questions in this Lesson">
+                            </div></div>
+                        <div class="col-sm-4 col-md-4 col-lg-4"><div id="Questions in this Lesson">
                                 <h4 id="questionTitle" class="module-bottom-zero margin-zero-top font-navy text-center">
                                     @if($lessons != null && sizeof($lessons) > 0)
                                         List of the questions in
@@ -175,9 +177,9 @@
                                     @else
                                         You do not have a lesson yet!
                                     @endif</h4>
-                                <small>This change once you changes the 'Lesson' drop-down box in 'Create New Question'
+                                <small>This will change once you changes the 'Lesson' drop-down box in 'Create New Question'
                                 </small>
-                                <hr>
+                                <hr class="margin-zero-top">
                                 <div id="listOfQuestions">
                                     @if(Session::has('lessonID'))
                                         @foreach(\attendance\Lesson::find(Session::get('lessonID'))->questions as $question)
@@ -191,8 +193,7 @@
                                         @endif
                                     @endif
                                 </div>
-                            </div>
-                        </div>
+                            </div></div>
                     </div>
                 </div>
             </div>

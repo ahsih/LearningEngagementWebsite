@@ -260,3 +260,7 @@
 #liveUser {
     background-color: #e3f2fd;
 }
+
+.borderVerticalLine{
+    border-right:1px groove black;
+}

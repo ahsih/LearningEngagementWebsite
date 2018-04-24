@@ -66,7 +66,7 @@
                 @endif
                 {{ Session::forget('managementSuccess') }}
                 <div class="row">
-                    <div class="col-lg-6 col-md-6 col-sm-6">
+                    <div class="col-lg-6 col-md-6 col-sm-6 borderVerticalLine" >
                         <h4 class="text-danger text-center">Add A New Students To The Module</h4>
                         <div class="scrollable-module">
                             {!! Form::open(['action' => 'ManagementController@addStudentToModule']) !!}
