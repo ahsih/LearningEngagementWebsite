@@ -2,8 +2,8 @@
 <div id="liveChatSettings" class="hidden-popup">
     <div id="popup-wrapper">
         <div class="alert alert-info">
+            <h5 class="pull-left"> Change your live-chat module</h5>
             <a class="pull-right glyphicon glyphicon-remove" id="closeLiveChatSettings"></a>
-            <h5> Change your live-chat module</h5>
             <select id="liveChatModuleID" class="form-control">
                 <optgroup label="Modules">
                     @foreach ($modules as $module)
@@ -47,9 +47,9 @@
 <div id="moduleList" class="moduleList-popup">
     <div id="popup-wrapper">
         <div class="alert alert-info" id="modulePopUp">
-            <a class="pull-right glyphicon glyphicon-remove" id="closeModuleList"></a>
             <br>
             <div>
+                <a class="pull-right glyphicon glyphicon-remove" id="closeModuleList"></a>
                 <label>Modules:</label>
                 <select id="listOfModules" class="form-control">
                     @foreach($allModules as $module)
