@@ -13,7 +13,7 @@
                 </br>
                 <h4>Request To Join The Module:</h4>
                 <input type="button" class="btn btn-success" id="expandModules" value="Module List"></br>
-                <hint>You can ask your module tutor to remove you from the module</hint>
+                <hint>You can ask your module tutor to remove you from the module you wish to quit</hint>
             </div>
         </div>
     </div>

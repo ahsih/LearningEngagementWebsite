@@ -48,12 +48,17 @@
     <div id="popup-wrapper">
         <div class="alert alert-info" id="modulePopUp">
             <a class="pull-right glyphicon glyphicon-remove" id="closeModuleList"></a>
-            <select id="listOfModules" class="form-control">
-                @foreach($allModules as $module)
-                    <option value="{{ $module->id  }}"> {{ $module->module_name }}</option>
-                @endforeach
-            </select>
-            <input type="button" class="btn btn-success" value="Submit" id="selectModules"/></br>
+            <br>
+            <div>
+                <label>Modules:</label>
+                <select id="listOfModules" class="form-control">
+                    @foreach($allModules as $module)
+                        <option value="{{ $module->id  }}"> {{ $module->module_name }}</option>
+                    @endforeach
+                </select>
+            </div>
+
+            <input type="button" class="btn btn-success" value="Join" id="selectModules"/></br>
             <div id="popUpModuleErrorMessage"></div>
         </div>
     </div>
