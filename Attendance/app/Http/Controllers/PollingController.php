@@ -268,7 +268,8 @@ class PollingController extends Controller
     function addingQuestionCount($activeLesson)
     {
         //Check the question count compared to the size of the lesson total questions
-        $activeLesson->question_count = $activeLesson->question_count + 1;
+        $newValue = $activeLesson->question_count + 1;
+        $activeLesson->question_count = $newValue;
         $activeLesson->timestamps = false;
         $activeLesson->save();
     }
