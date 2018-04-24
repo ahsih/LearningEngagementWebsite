@@ -482,11 +482,10 @@ $(document).ready(function () {
         //Get the total amount of the lesson
         //call ajax
         $.ajax({
-            type: 'GET',
+            type: 'POST',
             url: '/nextLessonQuestion',
             data: null,
             success: function () {
-                location.reload();
             }
         });
     });
